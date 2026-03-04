@@ -1,37 +1,77 @@
-# cu-concrete
+# cu-concrete - 系统安全加固工具
 
-#### 介绍
-This tool is an automated security configuration hardening and compliance checking tool for operating systems.
+cu-concrete 是一个用于 Linux 系统的安全加固工具，能够自动化检测和修复系统层面的安全隐患。
 
-#### 软件架构
-软件架构说明
+## 功能特性
 
+- 提供30+项基础安全加固项
+- 支持按部门/模块组织加固策略
+- 每个加固项包含检查、修复、回滚逻辑
+- 支持 YAML 配置驱动
+- 提供图形界面和命令行界面两种操作方式
 
-#### 安装教程
+## 安装方式
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### 方法一：直接运行（开发环境）
 
-#### 使用说明
+```bash
+# 克隆项目
+git clone <repository-url>
+cd cu-concrete
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+# 运行TUI界面
+./start_interface.sh
 
 
-#### 特技
+```
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+## 使用说明
+
+### 图形界面(TUI)
+
+```bash
+./start_interface.sh
+```
+
+### 命令行界面(CLI)
+
+```bash
+
+# 列出可加固项目
+python main.py harden --list
+
+# 对所有项目执行加固
+python main.py harden --all
+
+# 对特定项目执行加固
+python main.py harden items 1_2,1_3
+
+# 列出可还原项目
+python main.py restore --list
+
+# 还原所有项目
+python main.py restore --all
+
+
+
+## 项目结构
+
+- `department_1_policy/` - 第一类安全策略
+- `cli/` - 命令行界面实现
+- `interface.py` - 图形界面实现
+- `checklist.py` - 检查项管理
+- `fixlist.py` - 加固项管理
+- `rollbacklist.py` - 还原项管理
+- `mappingdes.py` - 策略映射管理
+
+## 技术栈
+
+- Python 3.x
+- whiptail (TUI界面)
+- YAML (配置文件)
+
+## 注意事项
+
+1. 工具需要root权限运行
+2. 在生产环境中使用前请先在测试环境验证
+3. 某些加固项可能需要重启系统才能生效
