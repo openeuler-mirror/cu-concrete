@@ -1,0 +1,24 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 13
+query:
+    form: "safeaccount"
+    path: "/etc/sudoers"
+    path2: "/root/.ssh/authorized_keys"
+    path3: "/root/.ssh/id_rsa"
+    path4: "/root/.ssh/id_dsa"
+change:
+    value1: "root@userpass"
+    value2: "safeaccount    ALL=(ALL)    NOPASSWD: ALL"
+    value3:
+        - '700'
+        - '644'   
+        - '600'
+    path:  "/home/safe_account"
+    path1: "/home/safe_account/.ssh/"
+    path2: "/home/safe_account/.ssh/authorized_keys" 
+    path3: "/home/safe_account/.ssh/id_rsa"
+    path4: "/home/safe_account/.ssh/id_dsa"
+
+description: "添加用于安全管理的账户"

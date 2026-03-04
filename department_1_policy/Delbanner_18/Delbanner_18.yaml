@@ -1,0 +1,16 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 18
+query:
+    path: 
+        - '/etc/issue'
+        - '/etc/issue.net'
+        - '/etc/motd'
+change:
+    value:
+        - '/etc/issue.bak'
+        - '/etc/issue.net.bak'
+        - '/etc/motd.bak'
+
+description: "会话界面的提醒字符段备份并删除"

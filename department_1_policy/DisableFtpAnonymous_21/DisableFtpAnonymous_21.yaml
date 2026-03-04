@@ -1,0 +1,20 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 21
+query:
+    path: 
+        - '/etc/passwd'
+        - '/etc/vsftpd.conf'
+        - '/etc/vsftpd/vsftpd.conf'
+        - '/etc/ftpusers'
+    form:
+        - '^ftp:x'
+        - 'anonymous_enable=YES'
+        - '^#ftp:x'
+change:
+    value: 
+        - 'anonymous_enable=NO'
+        - 'root'
+
+description: "禁止匿名账户登录ftp"

@@ -1,0 +1,11 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 4
+query:
+  - path: "/etc/passwd" #配置文件路径
+    form: '{ print $1 }'  #正则表达式
+
+backup_path: "/etc/passwd_bak"
+description: 'uid为0用户检查'
+# 检测UID权限为0的账户,并删除
