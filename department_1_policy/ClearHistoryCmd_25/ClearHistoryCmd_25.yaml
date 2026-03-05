@@ -1,0 +1,9 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 25
+query:
+    path: "/root/.bash_history"
+    path1: "/root/.bash_history_bak"
+description: "删除历史命令行记录"
+

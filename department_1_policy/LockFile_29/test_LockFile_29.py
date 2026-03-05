@@ -1,0 +1,96 @@
+import os
+import pytest
+import pandas as pd
+from LockFile_29 import LockFile_29
+
+yaml_path = os.path.join(os.path.dirname(__file__), 'LockFile_29.yaml')
+pkl_path = '/tmp/test_data_status.pkl'
+file_paths = ['/tmp/test_passwd', '/tmp/test_shadow', '/tmp/test_group']
+
+@pytest.fixture(autouse=True)
+def prepare_files():
+    # 复制 yaml
+    if os.path.exists(yaml_path):
+        os.system(f'cp {yaml_path} /tmp/LockFile_29.yaml')
+    # 构造 data_status.pkl
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    # 构造模拟关键文件
+    for fp in file_paths:
+        with open(fp, 'w') as f:
+            f.write('test')
+    yield
+    # 先去除不可更改属性再删除模拟关键文件
+    for fp in file_paths:
+        if os.path.exists(fp):
+            os.system(f'chattr -i {fp}')
+            os.remove(fp)
+    for fp in [pkl_path, '/tmp/LockFile_29.yaml']:
+        if os.path.exists(fp):
+            os.remove(fp)
+
+def build_instance():
+    obj = LockFile_29()
+    obj.config_file = '/tmp/LockFile_29.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {
+        'dep': 1,
+        'id': 29,
+        'query': {
+            'path': file_paths
+        },
+        'change': {
+            'value': ['+i', '-i']
+        },
+        'description': '锁定关键文件'
+    }
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
+
+def test_init():
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 29
+    assert isinstance(obj.status_form, pd.DataFrame)
+
+def test_finalfix():
+    obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['129', 'status']
+    assert val == 2
+
+def test_fix():
+    obj = build_instance()
+    obj.fix()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['129', 'status']
+    assert val == 2
+
+def test_check():
+    obj = build_instance()
+    obj.fix()
+    result = obj.check()
+    assert isinstance(result, bool)
+
+def test_rollback():
+    obj = build_instance()
+    obj.fix()
+    obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['129', 'status']
+    assert val == 0
+
+def test_reset():
+    obj = build_instance()
+    obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['129', 'status']
+    assert val == 2
+
+def test_get_des():
+    obj = build_instance()
+    des = obj.get_des()
+    obj.rollback()
+    assert des == '锁定关键文件'

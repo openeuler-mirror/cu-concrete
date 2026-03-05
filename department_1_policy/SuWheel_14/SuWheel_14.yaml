@@ -1,0 +1,14 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 14
+query:
+    form: 
+        - "auth.*required.*pam_wheel.so.*use_uid"
+        - "SU_WHEEL_ONLY yes"
+    path: 
+        - "/etc/pam.d/su"
+        - "/etc/login.defs"
+    
+
+description: "su权限的设定"

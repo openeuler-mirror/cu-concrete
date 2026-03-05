@@ -1,0 +1,19 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 22
+query:
+    path: 
+        - '/etc/ssh/sshd_config'
+
+    form:
+        - '^[[:space:]]*(#)?[[:space:]]*Port'
+change:
+    set:
+        - 'sudo firewall-cmd --zone=public --add-port=1234/tcp --permanent'
+        - 'sudo firewall-cmd --reload'
+        - 'sudo firewall-cmd --zone=public --add-port=22/tcp --permanent'
+    value: 
+        - 'Port 1234'
+        - 'Port 22'
+description: "修改ssh登录端口"
