@@ -1,8 +1,0 @@
-#部门编号
-dep: 1
-#加固项编号
-id: 2
-query:
-    # value: ['listen', 'gdm', 'webservd','nobody', 'nobody4', 'noaccess'] #锁定账户名
-    value: ['listen', 'gdm', 'webservd','nobody', 'nobody4', 'noaccess']
-description: '锁定无效用户'
