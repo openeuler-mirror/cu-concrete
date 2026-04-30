@@ -15,6 +15,15 @@ class DataFrame:
         if not self.columns and (not self._data):
             return '<Empty DataFrame>'
         col_widths = {}
+        for col in self.columns:
+            col_widths[col] = len(str(col))
+        row_indices = list(self._data.keys())
+        for row in row_indices:
+            for col in self.columns:
+                val = self._data.get(row, {}).get(col, '')
+                col_widths[col] = max(col_widths[col], len(str(val)))
+        header = ' '.join((f'{col:>{col_widths[col]}}' for col in self.columns))
+        lines = [f"{'':<8} {header}"]
 
     def __repr__(self):
         pass
