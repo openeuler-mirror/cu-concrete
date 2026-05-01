@@ -1,0 +1,78 @@
+from base_shell import base_shell, base_pipe_shell
+import os
+
+class base_shell_function:
+
+    def __init__(self):
+        pass
+
+    def append_line(new_line, file):
+        cmd = ['sh', '-c', 'echo "$1" >> "$2"', 'sh', new_line, file]
+        return base_shell(cmd)
+
+    def remove_line(line, file):
+        cmd = ['sudo', 'sed', '-i', f'/{line}/d', file]
+        return base_shell(cmd)
+
+    def remove_file(file):
+        pass
+
+    def sed_shell(old, new, path):
+        pass
+
+    def grep_shell(form, path):
+        pass
+
+    def mv_shell(source_path, new_path):
+        pass
+
+    def cp_shell(source_path, new_path):
+        pass
+
+    def touch_shell(path):
+        pass
+
+    def awk_shell(split, form, path):
+        pass
+
+    def command_search(command):
+        pass
+
+    def search_audit_rule(form):
+        pass
+
+    def delete_audit_rule():
+        pass
+
+    def reload_audit_rules():
+        pass
+
+    def pipe_grep_shell(form, path, path1):
+        pass
+
+    def get_service_file(service_name):
+        pass
+
+    def file_owner(path):
+        pass
+
+    def file_permission(path):
+        pass
+
+    def chown_file(form, path):
+        pass
+
+    def chmod_file(form, path):
+        pass
+
+    def append_content_to_file(content, path):
+        pass
+
+    def remove_user_from_group(user, group):
+        pass
+
+    def append_user_group(group, user):
+        pass
+
+    def get_group_user(group_name):
+        pass
