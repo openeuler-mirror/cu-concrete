@@ -15,10 +15,12 @@ class base_shell_function:
         return base_shell(cmd)
 
     def remove_file(file):
-        pass
+        cmd = ['rm', '-rf', file]
+        return base_shell(cmd)
 
     def sed_shell(old, new, path):
-        pass
+        cmd = ['sed', '-i', f's@{old}@{new}@g', path]
+        return base_shell(cmd)
 
     def grep_shell(form, path):
         pass
