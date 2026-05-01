@@ -31,10 +31,11 @@ class base_shell_function:
         return base_shell(cmd)
 
     def cp_shell(source_path, new_path):
-        pass
+        cmd = ['cp', '-p', source_path, new_path]
+        return base_shell(cmd)
 
     def touch_shell(path):
-        pass
+        cmd = ['touch', path]
 
     def awk_shell(split, form, path):
         pass
