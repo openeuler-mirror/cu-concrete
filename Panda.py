@@ -51,21 +51,46 @@ class DataFrame:
         支持 df['column_name'] 获取某一列
         返回一个 dict: {row_index: value}
         """
-        pass
+        if key in self.columns:
+            return {row: self._data[row].get(key, None) for row in self._data}
+        else:
+            raise KeyError(f"Column '{key}' not found")
 
 class _Loc:
 
     def __init__(self, df):
-        pass
+        self.df = df
 
     def __getitem__(self, key):
-        pass
+        if isinstance(key, tuple):
+            row, col = key
+            return self.df._data.get(row, {}).get(col, None)
+        else:
+            return self.df._data.get(key, {}).copy()
 
     def __setitem__(self, key, value):
-        pass
+        if isinstance(key, tuple):
+            row, col = key
+            if row not in self.df._data:
+                self.df._data[row] = {}
+            self.df._data[row][col] = value
+            if col not in self.df.columns:
+                self.df.columns.append(col)
+        else:
+            self.df._data[key] = value.copy() if hasattr(value, 'copy') else value
 
 def read_pickle(filepath):
     """
     从文件加载并返回一个 DataFrame 对象
     """
-    pass
+    try:
+        with open(filepath, 'rb') as f:
+            obj = pickle.load(f)
+        if isinstance(obj, DataFrame):
+            return obj
+        else:
+            raise TypeError('File does not contain a DataFrame object')
+    except FileNotFoundError:
+        return None
+    except Exception as e:
+        return None
