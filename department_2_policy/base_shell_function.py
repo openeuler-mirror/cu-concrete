@@ -23,10 +23,12 @@ class base_shell_function:
         return base_shell(cmd)
 
     def grep_shell(form, path):
-        pass
+        cmd = ['grep', '-E', form, path]
+        return base_shell(cmd)
 
     def mv_shell(source_path, new_path):
-        pass
+        cmd = ['mv', '-p', 'source_path', new_path]
+        return base_shell(cmd)
 
     def cp_shell(source_path, new_path):
         pass
