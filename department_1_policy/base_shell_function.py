@@ -60,9 +60,15 @@ class base_shell_function:
 
     def pipe_grep_shell(form, path, path1):
         cmd = 'grep -s {} {}| grep {}'.format(form, path, path1)
+        return base_pipe_shell(cmd)
 
     def get_service_file(service_name):
-        pass
+        cmd = ['systemctl', 'show', '-p', 'FragmentPath', '--value', service_name]
+        result = base_shell(cmd)
+        if result[1] == 0 and result[0].strip():
+            path = result[0].strip()
+            if os.path.isfile(path):
+                return path
 
     def file_owner(path):
         pass
