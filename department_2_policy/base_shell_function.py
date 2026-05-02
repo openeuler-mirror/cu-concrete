@@ -36,12 +36,14 @@ class base_shell_function:
 
     def touch_shell(path):
         cmd = ['touch', path]
+        return base_shell(cmd)
 
     def awk_shell(split, form, path):
-        pass
+        cmd = ['awk', '-F', split, form, path]
+        return base_shell(cmd)
 
     def command_search(command):
-        pass
+        cmd = ['command', '-v', command]
 
     def search_audit_rule(form):
         pass
