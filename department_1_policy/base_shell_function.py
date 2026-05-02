@@ -82,10 +82,11 @@ class base_shell_function:
         return base_pipe_shell(cmd)
 
     def file_permission(path):
-        pass
+        cmd = f'stat -c %a {path}'
+        return base_pipe_shell(cmd)
 
     def chown_file(form, path):
-        pass
+        cmd = f'chown {form} {path}'
 
     def chmod_file(form, path):
         pass
