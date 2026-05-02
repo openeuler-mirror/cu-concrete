@@ -69,9 +69,17 @@ class base_shell_function:
             path = result[0].strip()
             if os.path.isfile(path):
                 return path
+        if os.path.isfile(f'/usr/lib/systemd/system/{service_name}'):
+            return f'/usr/lib/systemd/system/{service_name}'
+        elif os.path.isfile(f'/etc/systemd/system/{service_name}'):
+            return f'/etc/systemd/system/{service_name}'
+        elif os.path.isfile(f'/lib/systemd/system/{service_name}'):
+            return f'/lib/systemd/system/{service_name}'
+        return f'/usr/lib/systemd/system/{service_name}'
 
     def file_owner(path):
-        pass
+        cmd = f'stat -c %U:%G {path}'
+        return base_pipe_shell(cmd)
 
     def file_permission(path):
         pass
