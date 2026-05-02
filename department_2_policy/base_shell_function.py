@@ -95,9 +95,12 @@ class base_shell_function:
 
     def append_content_to_file(content, path):
         cmd = ['sudo', 'tee', '-a', path]
+        value = content
+        return base_shell(cmd, input=f'\n{value}')
 
     def remove_user_from_group(user, group):
-        pass
+        cmd = ['gpasswd', '-d', user, group]
+        return base_shell(cmd)
 
     def append_user_group(group, user):
         pass
