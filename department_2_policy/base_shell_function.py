@@ -44,12 +44,14 @@ class base_shell_function:
 
     def command_search(command):
         cmd = ['command', '-v', command]
+        return base_shell(cmd)
 
     def search_audit_rule(form):
-        pass
+        cmd = 'auditctl -l | grep "{}"'.format(form)
+        return base_pipe_shell(cmd)
 
     def delete_audit_rule():
-        pass
+        cmd = ['auditctl', '-D']
 
     def reload_audit_rules():
         pass
