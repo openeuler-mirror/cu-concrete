@@ -87,12 +87,14 @@ class base_shell_function:
 
     def chown_file(form, path):
         cmd = f'chown {form} {path}'
+        return base_pipe_shell(cmd)
 
     def chmod_file(form, path):
-        pass
+        cmd = f'chmod {form} {path}'
+        return base_pipe_shell(cmd)
 
     def append_content_to_file(content, path):
-        pass
+        cmd = ['sudo', 'tee', '-a', path]
 
     def remove_user_from_group(user, group):
         pass
