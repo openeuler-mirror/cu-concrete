@@ -103,7 +103,9 @@ class base_shell_function:
         base_shell(cmd)
 
     def append_user_group(group, user):
-        pass
+        cmd = ['usermod', '-g', group, user]
+        base_shell(cmd)
 
     def get_group_user(group_name):
-        pass
+        cmd = ['getent', 'group', group_name]
+        base_shell(cmd)
