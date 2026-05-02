@@ -52,12 +52,14 @@ class base_shell_function:
 
     def delete_audit_rule():
         cmd = ['auditctl', '-D']
+        return base_shell(cmd)
 
     def reload_audit_rules():
-        pass
+        cmd = ['augenrules', '--load']
+        return base_shell(cmd)
 
     def pipe_grep_shell(form, path, path1):
-        pass
+        cmd = 'grep -s {} {}| grep {}'.format(form, path, path1)
 
     def get_service_file(service_name):
         pass
