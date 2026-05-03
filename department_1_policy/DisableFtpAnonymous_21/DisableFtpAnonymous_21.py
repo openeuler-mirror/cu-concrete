@@ -28,9 +28,19 @@ class DisableFtpAnonymous_21(base_fix):
 
     def finalfix(self):
         self.status = 2
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
-        pass
+        self.status = 1
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        bsf.sed_shell(self.config['query']['form'][1], self.config['change']['value'][0], self.config['query']['path'][1])
+        bsf.sed_shell(self.config['query']['form'][1], self.config['change']['value'][0], self.config['query']['path'][2])
 
     def check(self):
         pass
