@@ -1,0 +1,13 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 20
+query:
+    form: '^net.ipv4.icmp_echo_ignore_all'
+    path: "/etc/sysctl.conf"
+change:
+    value: 
+        - 'net.ipv4.icmp_echo_ignore_all = 1'
+        - 'net.ipv4.icmp_echo_ignore_all = 0'
+
+description: "禁止响应ping,避免被扫描发现"
