@@ -33,6 +33,20 @@ class DeleteKeyword_17(base_fix):
 
     def fix(self):
         self.status = 1
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        bsf.remove_line(self.config['change']['value'][0], self.config['query']['path'])
+        bsf.remove_line(self.config['change']['value'][1], self.config['query']['path'])
+        bsf.remove_line(self.config['change']['value'][2], self.config['query']['path'])
+        bsf.remove_line(self.config['change']['value'][3], self.config['query']['path'])
+        bsf.remove_line(self.config['change']['value'][4], self.config['query']['path'])
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
         pass
