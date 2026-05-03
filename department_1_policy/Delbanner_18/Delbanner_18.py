@@ -43,15 +43,36 @@ class Delbanner_18(base_fix):
         bsf.cp_shell(self.config['query']['path'][1], self.config['change']['value'][1])
         bsf.cp_shell(self.config['query']['path'][2], self.config['change']['value'][2])
         base_shell(['rm', '-rf', self.config['query']['path'][0]])
+        base_shell(['rm', '-rf', self.config['query']['path'][1]])
+        base_shell(['rm', '-rf', self.config['query']['path'][2]])
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        for i in range(3):
+            if os.path.exists(self.config['query']['path'][i]):
+                except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        bsf.cp_shell(self.config['change']['value'][0], self.config['query']['path'][0])
+        bsf.cp_shell(self.config['change']['value'][1], self.config['query']['path'][1])
+        bsf.cp_shell(self.config['change']['value'][2], self.config['query']['path'][2])
+        result = self.check()
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        if result == False:
+            self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 0
+            self.status_form.to_pickle(self.pkl_file)
 
     def reset(self):
-        pass
+        self.rollback()
+        self.fix()
 
     def get_des(self):
-        pass
+        description = self.config['description']
+        return description
