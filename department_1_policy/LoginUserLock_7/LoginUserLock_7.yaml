@@ -1,0 +1,20 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 7
+query:
+    # value: ['listen', 'gdm', 'webservd','nobody', 'nobody4', 'noaccess'] #锁定账户名
+    form: 
+        - 'deny=3 even_deny_root unlock_time=60'
+        - 'auth        required      pam_faillock.so preauth audit deny=3 even_deny_root unlock_time=60'
+        - 'auth        sufficient    pam_faillock.so authsucc audit deny=3 even_deny_root unlock_time=60'
+        - 'pam_faillock.so authfail'
+    path: "/etc/pam.d/password-auth"
+change:
+    value: 
+        - 'deny=3 even_deny_root unlock_time=300'
+        - 'auth        required      pam_faillock.so preauth audit deny=3 even_deny_root unlock_time=300'
+        - 'auth        sufficient    pam_faillock.so authsucc audit deny=3 even_deny_root unlock_time=300'
+        - 'auth        [default=die] pam_faillock.so authfail audit deny=3 even_deny_root unlock_time=300'
+description: "ssh密码输入错误锁定账户的设定"
+# 加固后，ssh密码输入错误的的情况下锁定账户,输入错误5次后,root及其他用户锁定60秒
