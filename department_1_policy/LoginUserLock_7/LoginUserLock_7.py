@@ -29,9 +29,22 @@ class LoginUserLock_7(base_fix):
     def finalfix(self):
         self.status = 2
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
-        pass
+        self.status = 1
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        bsf.cp_shell(self.config['query']['path'], self.config['query']['path'] + '.bak')
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        flag = bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])
+        if len(flag[0]) != 0:
+            cmd = ['sudo', 'sed', '-i', 's/{}/{}/g'.format(self.config['query']['form'][0], self.config['change']['value'][0]), self.config['query']['path']]
+            base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
 
     def check(self):
         pass
