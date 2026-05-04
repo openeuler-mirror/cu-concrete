@@ -29,9 +29,20 @@ class ForbiIp_30(base_fix):
     def finalfix(self):
         self.status = 2
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
-        pass
+        self.status = 1
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        bsf.cp_shell(self.config['query']['path'][0], self.config['query']['path'][1])
+        bsf.remove_line(self.config['change']['value'], self.config['query']['path'][0])
+        bsf.remove_line(self.config['change']['value2'], self.config['query']['path'][0])
+        cmd = ['sudo', 'tee', '-a', self.config['query']['path'][0]]
 
     def check(self):
         pass
