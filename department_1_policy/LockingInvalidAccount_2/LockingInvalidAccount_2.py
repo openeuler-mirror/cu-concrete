@@ -24,12 +24,19 @@ class LockingInvalidAccount_2(base_fix):
             config = yaml.load(f, Loader=yaml.Loader)
         self.pkl_file = os.path.join(os.path.dirname(self.current_dir), 'data_status.pkl')
         self.config = config
+        self.status = None
 
     def finalfix(self):
-        pass
+        self.status = 2
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
-        pass
+        self.status = 1
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
 
     def check(self):
         pass
