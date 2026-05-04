@@ -1,0 +1,11 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 26
+query:
+    form: "password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok"
+    path: "/etc/pam.d/system-auth"
+change:
+    value: "password   sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=5"
+description: "密码不能与历史的5个密码相同"
+
