@@ -27,10 +27,22 @@ class RebuildUser_5(base_fix):
         self.status = None
 
     def finalfix(self):
-        pass
+        self.status = 2
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
-        pass
+        self.status = 1
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        if len(bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0]) != 0:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0], self.config['change']['value'][0], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['change']['value'][0], self.config['query']['path'])
 
     def check(self):
         pass
