@@ -1,0 +1,17 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 8
+query:
+    # value: ['listen', 'gdm', 'webservd','nobody', 'nobody4', 'noaccess'] #锁定账户名
+    form: "^umask"
+    path: "/etc/profile"
+change:
+    value: "umask 027"
+recovery:
+    value: 'umask 022'
+description: "umask设置用户文件权限"
+# 设置umask 027,表示默认创建新文件权限为750,也就是rxwr-x---(所有者全部权限,属组读写,其它人无)
+#umask值       新建目录默认权限        新建文件默认权限
+#022               755                         644
+#027               750                         640
