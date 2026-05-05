@@ -32,7 +32,19 @@ class RmToShred_31(base_fix):
         self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
-        pass
+        self.status = 1
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        backup_cmd = ['bash', '-c', 'sudo mv /usr/bin/rm /usr/bin/rm-rule 2>/dev/null || true']
+        base_shell(backup_cmd)
+        rm_script_content = self.config['change']['value']
+        script_cmd = ['sudo', 'tee', '/usr/bin/rm']
+        base_shell(script_cmd, input=f'#!/bin/bash\n\n{rm_script_content}')
+        chmod_cmd = ['bash', '-c', 'sudo chmod +x /usr/bin/rm']
 
     def check(self):
         pass
