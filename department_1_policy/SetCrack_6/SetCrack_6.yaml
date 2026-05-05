@@ -1,0 +1,13 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 6
+query:
+    # value: ['listen', 'gdm', 'webservd','nobody', 'nobody4', 'noaccess'] #锁定账户名
+    form: "^password    requisite     pam_pwquality.so"
+    path: "/etc/pam.d/system-auth"
+change:
+    value: 'password    requisite     pam_pwquality.so difok=3 dcredit=-1 lcredit=-1 ucredit=-1 ocredit=-1'
+description: '修改密码相关限制'
+backup_path: "/etc/pam.d/system-auth_bak"
+# 设置密码组成限制,difok新密码必须和旧密码3位不同,密码组成必须有大小写字母,数字,特殊符号
