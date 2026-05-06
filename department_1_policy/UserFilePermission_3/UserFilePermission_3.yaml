@@ -1,0 +1,13 @@
+dep: 1
+id: 3
+query:
+  path:
+    - '/etc/shadow'
+    - '/etc/group'
+    - '/etc/passwd'
+change:
+  set: null
+  value: 
+    - '644'
+    - '600'
+description: '账户权限设置'
