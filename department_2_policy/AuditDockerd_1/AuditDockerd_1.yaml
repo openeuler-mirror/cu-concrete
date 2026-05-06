@@ -1,0 +1,15 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 1
+query:
+    path: 
+      - "/usr/bin/dockerd" #配置文件路径
+      - "/etc/audit/rules.d/01-docker.rules"
+      - "/usr/sbin/auditctl"
+    form: '-w /usr/bin/dockerd -p wa -k docker'  #正则表达式
+change:
+    set: "auditctl"
+    value: "'^[^#;]'"
+backup_path: "/usr/bin/dockerd_bak"
+description: '为/usr/bin/dockerd文件配置审计功能'
