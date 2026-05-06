@@ -1,0 +1,15 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 13
+query:
+    path: 
+      - "/usr/bin/containerd-shim" #配置文件路径
+      - "/etc/audit/rules.d/13-docker.rules"
+      - "/usr/sbin/auditctl"
+    form: "-w /usr/bin/containerd-shim -p wa -k docker"
+change:
+    set: "auditctl"
+    value: "'^[^#;]'"
+description: '为/usr/bin/containerd-shim配置审计功能'
+#Ensure auditing is configured for the Docker related files (Automated) cis 1.1.3
