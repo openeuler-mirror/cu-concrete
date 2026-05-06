@@ -1,0 +1,22 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 15
+query:
+    form: "^disable"
+    path: "/etc/xinetd.d/telnet"
+change:
+    value:
+        - "disable = yes"
+        - "openssh*"
+        - "systemctl disable telnet.socket" #2
+        - "systemctl stop telnet.socket"  #3
+        - "systemctl enable telnet.socket" #4 
+        - "systemctl start telnet.socket" #5
+        - "systemctl enable sshd" #6
+        - "systemctl start sshd" #7
+        - "systemctl disable sshd" #8
+        - "systemctl stop sshd" #9
+
+        
+description: "关闭telent,使用openssh"
