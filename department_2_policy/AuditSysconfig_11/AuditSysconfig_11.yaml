@@ -1,0 +1,15 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 11
+query:
+    path: 
+      - "/etc/sysconfig/docker" #配置文件路径
+      - "/etc/audit/rules.d/11-docker.rules"
+      - "/usr/sbin/auditctl"
+    form: "-w /etc/sysconfig/docker -p wa -k docker"
+change:
+    set: "auditctl"
+    value: "'^[^#;]'"
+description: '为/etc/sysconfig/docker配置审计功能'
+#Ensure auditing is configured for the Docker related files (Automated) cis 1.1.3
