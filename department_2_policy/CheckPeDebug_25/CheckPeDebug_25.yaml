@@ -1,0 +1,10 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 25
+query:
+    path: "/var/run/docker/containerd/containerd-debug.sock" #配置文件路径
+change:
+    value: "660"
+description: '修改containerd-debug.sock文件权限'
+#Ensure auditing is configured for the Docker related files (Automated) cis 1.1.3
