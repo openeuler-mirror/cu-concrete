@@ -1,0 +1,10 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 19
+query:
+    path: "/etc/sysconfig/docker" #配置文件路径
+change:
+    value: "root:root"
+description: '修改/etc/sysconfig/docker文件所有者'
+#Ensure auditing is configured for the Docker related files (Automated) cis 1.1.3
