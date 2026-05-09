@@ -60,9 +60,17 @@ class CheckIcmp_20(base_fix):
         if len(cmd1[0]) == 0:
             except_value = False
         cmd2 = bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path'])
+        if len(cmd2[0]) != 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        bsf.remove_line(self.config['change']['value'][0], self.config['query']['path'])
+        bsf.remove_line(self.config['change']['value'][1], self.config['query']['path'])
+        cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+        value = self.config['change']['value'][1]
+        base_shell(cmd, input=f'\n{value}')
+        cmd2 = ['sysctl', '-p']
 
     def reset(self):
         pass
