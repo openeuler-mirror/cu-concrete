@@ -20,7 +20,9 @@ def main_menu():
     return choice[0]
 
 def text_box():
-    pass
+    w = Whiptail(title=TITLE, backtitle='日志', height=HEIGHT, width=WIDTH)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)
 
 def main():
     pass
