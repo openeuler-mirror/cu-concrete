@@ -1,0 +1,10 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 16
+query:
+    path: "/etc/docker" #配置文件路径
+change:
+    value: "755"
+description: '修改/etc/docker文件权限'
+#Ensure auditing is configured for the Docker related files (Automated) cis 1.1.3
