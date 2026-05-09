@@ -39,6 +39,19 @@ class CheckUidZero_4(base_fix):
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        bsf.cp_shell(self.config['query'][0]['path'], self.config['backup_path'])
+        result = bsf.awk_shell(':', self.config['query'][0]['form'], self.config['query'][0]['path'])
+        users = [user for user in result[0].splitlines() if user != 'root']
+        for user in users:
+            cmd = ['id', user]
+            uid_str = base_shell(cmd)[0]
+            match = re.search('uid=(\\d+)', uid_str)
+            if match and int(match.group(1)) == 0:
+                cmd = ['userdel', '-f', user]
+                base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
 
     def check(self):
         pass
