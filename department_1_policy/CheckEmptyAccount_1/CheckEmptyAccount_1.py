@@ -42,9 +42,24 @@ class CheckEmptyAccount_1(base_fix):
         bsf.cp_shell(self.config['query'][0]['path'], self.config['backup_path'])
         reuslt = bsf.awk_shell(':', self.config['query'][0]['form'], self.config['query'][0]['path'])
         commond_list = [self.config['change'][0]['set']]
+        for user in reuslt[0].splitlines():
+            input_data = f"{user}:{self.config['change'][0]['value']}\n"
+            reuslt = base_shell(commond_list, input=input_data)
+            if reuslt[1] != 0:
+                flag = False
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.awk_shell(':', self.config['query'][0]['form'], self.config['query'][0]['path'])
+        user_list = result[0].splitlines()
+        if len(user_list) == 0:
+            return except_value
+        else:
+            except_value = False
+        return except_value
 
     def rollback(self):
         pass
