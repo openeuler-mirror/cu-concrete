@@ -50,9 +50,16 @@ class CheckIcmp_20(base_fix):
             base_shell(cmd, input=f'\n{value}')
             cmd2 = ['sysctl', '-p']
             base_shell(cmd2)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        cmd1 = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if len(cmd1[0]) == 0:
+            except_value = False
+        cmd2 = bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path'])
 
     def rollback(self):
         pass
