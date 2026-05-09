@@ -43,12 +43,21 @@ class CheckRootDir_9(base_fix):
         base_shell(cmd1)
         cmd2 = ['chmod', self.config['change']['value'], self.config['change']['path']]
         base_shell(cmd2)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        cmd = ['stat', '-c', '%a', self.config['change']['path']]
+        result = base_shell(cmd)
+        if result[0] != '700':
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        cmd1 = ['chown', self.config['change']['form'], self.config['change']['path']]
+        base_shell(cmd1)
 
     def reset(self):
         pass
