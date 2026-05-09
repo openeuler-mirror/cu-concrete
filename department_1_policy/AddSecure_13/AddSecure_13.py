@@ -47,6 +47,12 @@ class AddSecure_13(base_fix):
             cmd = '{}:{}'.format(self.config['query']['form'], self.config['change']['value1'])
             base_shell(['chpasswd'], input=cmd)
         bsf.remove_line(self.config['change']['value2'], self.config['query']['path'])
+        cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+        value = self.config['change']['value2']
+        base_shell(cmd, input=f'\n{value}')
+        cmd3 = ['mkdir', '-p', self.config['change']['path1']]
+        base_shell(cmd3)
+        cmd4 = ['chmod', self.config['change']['value3'][0], self.config['change']['path1']]
 
     def check(self):
         pass
