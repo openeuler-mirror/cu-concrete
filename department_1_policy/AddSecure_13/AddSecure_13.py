@@ -37,6 +37,16 @@ class AddSecure_13(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        cmd = ['id', self.config['query']['form']]
+        result = base_shell(cmd)
+        if result[1] != 0:
+            cmd2 = ['useradd', self.config['query']['form']]
+            base_shell(cmd2)
+            cmd = '{}:{}'.format(self.config['query']['form'], self.config['change']['value1'])
+            base_shell(['chpasswd'], input=cmd)
+        bsf.remove_line(self.config['change']['value2'], self.config['query']['path'])
 
     def check(self):
         pass
