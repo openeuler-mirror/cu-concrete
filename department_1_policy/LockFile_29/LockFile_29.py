@@ -41,9 +41,16 @@ class LockFile_29(base_fix):
         self.status_form.to_pickle(self.pkl_file)
         cmd = ['chattr', self.config['change']['value'][0], self.config['query']['path'][0]]
         base_shell(cmd)
+        cmd = ['chattr', self.config['change']['value'][0], self.config['query']['path'][1]]
+        base_shell(cmd)
+        cmd = ['chattr', self.config['change']['value'][0], self.config['query']['path'][2]]
+        base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
 
     def rollback(self):
         pass
