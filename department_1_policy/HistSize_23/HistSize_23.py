@@ -38,9 +38,25 @@ class HistSize_23(base_fix):
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
+        result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            bsf.sed_shell(result[0], self.config['change']['value'], self.config['query']['path'])
+            strs = f"source {self.config['query']['path']}"
+            cmd = ['bash', '-c', strs]
+            base_shell(cmd)
+        else:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            value = self.config['change']['value']
+            base_shell(cmd, input=f'\n{value}')
+            strs = f"source {self.config['query']['path']}"
+            cmd = ['bash', '-c', strs]
+            base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
 
     def rollback(self):
         pass
