@@ -37,6 +37,12 @@ class DelDangeFile_19(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        cmd = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][0]]
+        cmd2 = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][1]]
+        result1 = base_shell(cmd)
+        result2 = base_shell(cmd2)
 
     def check(self):
         pass
