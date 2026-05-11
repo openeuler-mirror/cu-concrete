@@ -40,9 +40,20 @@ class RebuildUmask_8(base_fix):
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
         flag = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if len(flag[0]) != 0:
+            bsf.sed_shell(flag[0], self.config['change']['value'], self.config['query']['path'])
+        else:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            base_shell(cmd, input=self.config['change']['value'])
+        cmd = ['bash', '-c', 'source {}'.format(self.config['query']['path'])]
+        base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        umasks = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        except_value = True
 
     def rollback(self):
         pass
