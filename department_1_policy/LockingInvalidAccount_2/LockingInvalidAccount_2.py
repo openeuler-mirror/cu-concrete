@@ -37,6 +37,16 @@ class LockingInvalidAccount_2(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        for user in self.config['query']['value']:
+            cmd = ['id', user]
+            result = base_shell(cmd)
+            if result[1] == 0:
+                cmd2 = ['passwd', '-l', user]
+                result = base_shell(cmd2)
+        data = 'type:fix,des:{},result:{}'.format(self.config['description'], result)
+        logging.info(data)
 
     def check(self):
         pass
