@@ -42,12 +42,19 @@ class PassRepe_26(base_fix):
         result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
         if len(result[0]) != 0:
             bsf.sed_shell(result[0], self.config['change']['value'], self.config['query']['path'])
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        result = bsf.grep_shell(self.config['change']['value'], self.config['query']['path'])
 
     def reset(self):
         pass
