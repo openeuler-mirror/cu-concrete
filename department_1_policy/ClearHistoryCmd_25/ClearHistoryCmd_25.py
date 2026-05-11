@@ -44,9 +44,18 @@ class ClearHistoryCmd_25(base_fix):
         base_shell(cmd)
         cmd = ['touch', self.config['query']['path']]
         base_shell(cmd)
+        cmd = ['bash', '-c', 'history -c']
+        base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        cmd = ['wc', '-c', self.config['query']['path']]
+        result = base_shell(cmd)
+        if '0 /root/.bash_history' != result[0]:
+            except_value = False
 
     def rollback(self):
         pass
