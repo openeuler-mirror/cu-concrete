@@ -42,9 +42,24 @@ class ReUserShell_24(base_fix):
         bsf.cp_shell(self.config['query']['path'], self.config['query']['path'] + '.bak')
         result = bsf.awk_shell(':', self.config['query']['form'][0], self.config['query']['path'])
         user = self.config['query']['form'][1]
+        for re in result[0].splitlines():
+            re = re.split()
+            if re[0] in user and re[1] != self.config['change']['value']:
+                cmd = ['usermod', '-s', self.config['change']['value'], re[0]]
+                base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.awk_shell(':', self.config['query']['form'][0], self.config['query']['path'])
+        user = self.config['query']['form'][1]
+        for re in result[0].splitlines():
+            re = re.split()
+            if re[0] in user and re[1] != self.config['change']['value']:
+                except_value = False
+        return except_value
 
     def rollback(self):
         pass
