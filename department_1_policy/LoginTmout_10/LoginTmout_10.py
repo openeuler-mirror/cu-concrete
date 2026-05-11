@@ -43,9 +43,17 @@ class LoginTmout_10(base_fix):
         bsf.remove_line(self.config['change']['form2'], self.config['change']['path'])
         cmd = ['sudo', 'tee', '-a', self.config['change']['path']]
         value = self.config['add']['form']
+        base_shell(cmd, input=f'\n{value}')
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.grep_shell('TMOUT=', self.config['change']['path'])
+        if '300' not in result[0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
         pass
