@@ -57,9 +57,16 @@ class HistSize_23(base_fix):
 
     def check(self):
         except_value = True
+        result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if result[0] != self.config['change']['value'] or len(result[0]) == 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        bsf.remove_line(self.config['change']['value'], self.config['query']['path'])
+        strs = f"source {self.config['query']['path']}"
+        cmd = ['bash', '-c', strs]
+        base_shell(cmd)
 
     def reset(self):
         pass
