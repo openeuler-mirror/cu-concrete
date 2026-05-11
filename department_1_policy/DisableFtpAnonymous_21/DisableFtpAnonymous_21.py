@@ -41,12 +41,20 @@ class DisableFtpAnonymous_21(base_fix):
         self.status_form.to_pickle(self.pkl_file)
         bsf.sed_shell(self.config['query']['form'][1], self.config['change']['value'][0], self.config['query']['path'][1])
         bsf.sed_shell(self.config['query']['form'][1], self.config['change']['value'][0], self.config['query']['path'][2])
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result2 = bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path'][1])
+        result3 = bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path'][2])
+        if result2[0] != self.config['change']['value'][0] or result3[0] != self.config['change']['value'][0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        bsf.sed_shell(self.config['change']['value'][0], self.config['query']['form'][1], self.config['query']['path'][1])
 
     def reset(self):
         pass
