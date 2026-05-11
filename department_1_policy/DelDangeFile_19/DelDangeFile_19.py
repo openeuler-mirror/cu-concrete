@@ -43,9 +43,27 @@ class DelDangeFile_19(base_fix):
         cmd2 = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][1]]
         result1 = base_shell(cmd)
         result2 = base_shell(cmd2)
+        if result1[1] == 0 and result1[0]:
+            files1 = result1[0].strip().split('\n')
+            for file_path in files1:
+                if file_path:
+                    bsf.cp_shell(file_path, file_path + '.bak')
+                    cmd_rm = ['rm', '-f', file_path]
+                    base_shell(cmd_rm)
+        if result2[1] == 0 and result2[0]:
+            files2 = result2[0].strip().split('\n')
+            for file_path in files2:
+                if file_path:
+                    bsf.cp_shell(file_path, file_path + '.bak')
+                    cmd_rm = ['rm', '-f', file_path]
+                    base_shell(cmd_rm)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        cmd = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][0]]
 
     def rollback(self):
         pass
