@@ -45,9 +45,20 @@ class LoginUserLock_7(base_fix):
             cmd = ['sudo', 'sed', '-i', 's/{}/{}/g'.format(self.config['query']['form'][0], self.config['change']['value'][0]), self.config['query']['path']]
             base_shell(cmd)
         data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path'])
+        if result[0] != self.config['change']['value'][1]:
+            except_value = False
+        result = bsf.grep_shell(self.config['change']['value'][2], self.config['query']['path'])
+        if result[0] != self.config['change']['value'][2]:
+            except_value = False
+        result = bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])
+        if result[0] != self.config['change']['value'][3]:
+            except_value = False
 
     def rollback(self):
         pass
