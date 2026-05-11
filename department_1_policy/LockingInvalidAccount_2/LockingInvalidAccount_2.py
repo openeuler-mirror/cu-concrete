@@ -47,12 +47,30 @@ class LockingInvalidAccount_2(base_fix):
                 result = base_shell(cmd2)
         data = 'type:fix,des:{},result:{}'.format(self.config['description'], result)
         logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        for user in self.config['query']['value']:
+            cmd = ['passwd', '-S', user]
+            result = base_shell(cmd)
+            if 'LK' in result[0] or '未知的用户名' in result[0]:
+                except_value = True
+            else:
+                except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        for user in self.config['query']['value']:
+            cmd = ['id', user]
+            result = base_shell(command=cmd)
+            if result[1] == 0:
+                cmd = ['passwd', '-u', user]
+                result2 = base_shell(cmd)
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
 
     def reset(self):
         pass
