@@ -43,9 +43,16 @@ class ForbiIp_30(base_fix):
         bsf.remove_line(self.config['change']['value'], self.config['query']['path'][0])
         bsf.remove_line(self.config['change']['value2'], self.config['query']['path'][0])
         cmd = ['sudo', 'tee', '-a', self.config['query']['path'][0]]
+        value = self.config['change']['value']
+        base_shell(cmd, input=f'\n{value}')
+        cmd = ['sysctl', '-p']
+        base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
 
     def rollback(self):
         pass
