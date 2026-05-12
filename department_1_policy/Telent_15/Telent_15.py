@@ -56,9 +56,17 @@ class Telent_15(base_fix):
         result2 = self.config['change']['value'][6].split(' ')
         base_shell(result2)
         result3 = self.config['change']['value'][7].split(' ')
+        base_shell(result3)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        cmd = ['systemctl', 'is-active', 'telnet.socket']
+        result = base_shell(cmd)
+        if 'inactive' not in result[0]:
+            except_value = False
 
     def rollback(self):
         pass
