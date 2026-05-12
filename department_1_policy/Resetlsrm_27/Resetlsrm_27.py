@@ -38,6 +38,22 @@ class Resetlsrm_27(base_fix):
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.to_pickle(self.pkl_file)
+        result = bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path'])
+        if len(result[0]) == 0:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            value = self.config['change']['value'][0]
+            base_shell(cmd, input=f'\n{value}')
+        result = bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path'])
+        if len(result[0]) == 0:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            value = self.config['change']['value'][0]
+            base_shell(cmd, input=f'\n{value}')
+        result = bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path'])
+        if len(result[0]) == 0:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            value = self.config['change']['value'][1]
+            base_shell(cmd, input=f'\n{value}')
 
     def check(self):
         pass
