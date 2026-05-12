@@ -61,9 +61,17 @@ class ShutCAD_28(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        cmd = ['systemctl', self.config['change']['value'][1], self.config['query']['path']]
+        base_shell(cmd)
+        result = self.check()
+        if result == False:
+            self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 0
+            self.status_form.to_pickle(self.pkl_file)
 
     def reset(self):
-        pass
+        self.rollback()
+        self.fix()
 
     def get_des(self):
-        pass
+        description = self.config['description']
+        return description
