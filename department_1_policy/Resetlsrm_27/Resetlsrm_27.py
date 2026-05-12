@@ -54,9 +54,16 @@ class Resetlsrm_27(base_fix):
             cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
             value = self.config['change']['value'][1]
             base_shell(cmd, input=f'\n{value}')
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path'])
+        if len(result[0]) == 0:
+            except_value = False
+        result = bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path'])
 
     def rollback(self):
         pass
