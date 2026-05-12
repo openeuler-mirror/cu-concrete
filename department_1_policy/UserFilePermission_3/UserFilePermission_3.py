@@ -50,9 +50,19 @@ class UserFilePermission_3(base_fix):
 
     def check(self):
         except_value = True
+        cmd = ['stat', '-c', '%a', self.config['query']['path'][0]]
+        if base_shell(cmd)[0] != self.config['change']['value'][1]:
+            except_value = False
+        cmd = ['stat', '-c', '%a', self.config['query']['path'][1]]
+        if base_shell(cmd)[0] != self.config['change']['value'][0]:
+            except_value = False
+        cmd = ['stat', '-c', '%a', self.config['query']['path'][2]]
+        if base_shell(cmd)[0] != self.config['change']['value'][0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        result = base_shell(['lsattr', '/etc/passwd'])
 
     def reset(self):
         pass
