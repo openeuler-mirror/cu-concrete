@@ -39,6 +39,28 @@ class SysLog_11(base_fix):
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
+        result = bsf.grep_shell('\\' + self.config['query']['form1'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            bsf.sed_shell(result[0], self.config['change']['value1'], self.config['query']['path'])
+        else:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            value = self.config['change']['value1']
+            base_shell(cmd, input=f'\n{value}')
+        result = bsf.grep_shell(self.config['query']['form2'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            bsf.sed_shell(result[0], self.config['change']['value2'], self.config['query']['path'])
+        else:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            value = self.config['change']['value2']
+            base_shell(cmd, input=f'\n{value}')
+        result = bsf.grep_shell(self.config['query']['form3'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            bsf.sed_shell(result[0], self.config['change']['value3'], self.config['query']['path'])
+        else:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            value = self.config['change']['value3']
+            base_shell(cmd, input=f'\n{value}')
+        cmd = ['sudo', 'systemctl', 'restart', 'rsyslog']
 
     def check(self):
         pass
