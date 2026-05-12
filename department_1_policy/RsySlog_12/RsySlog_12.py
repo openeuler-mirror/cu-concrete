@@ -41,9 +41,18 @@ class RsySlog_12(base_fix):
         self.status_form.to_pickle(self.pkl_file)
         bsf.remove_line(self.config['query']['form'], self.config['query']['path'])
         cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+        value = self.config['change']['value']
+        base_shell(cmd, input=f'{value}')
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if len(result[0]) == 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
         pass
