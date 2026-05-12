@@ -56,12 +56,21 @@ class SuWheel_14(base_fix):
             base_shell(cmd, input=f'\n{value}')
         data = 'type:fix,des:{}'.format(self.config['description'])
         logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result1 = bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'][1])
+        if len(result1[0]) == 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        bsf.cp_shell(self.config['query']['path'][0] + '.bak', self.config['query']['path'][0])
 
     def reset(self):
         pass
