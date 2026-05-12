@@ -47,12 +47,24 @@ class SSHRoot_22(base_fix):
         base_shell(cmd2)
         cmd3 = ['systemctl', 'restart', 'sshd']
         base_shell(cmd3)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result1 = bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path'][0])
+        if result1[0] != self.config['change']['value'][0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        bsf.sed_shell(self.config['change']['value'][0], self.config['change']['value'][1], self.config['query']['path'][0])
+        cmd1 = self.config['change']['set'][0].split(' ')
 
     def reset(self):
         pass
