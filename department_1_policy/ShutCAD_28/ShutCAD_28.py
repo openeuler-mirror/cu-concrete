@@ -44,12 +44,23 @@ class ShutCAD_28(base_fix):
         self.status_form.to_pickle(self.pkl_file)
         cmd = ['systemctl', self.config['change']['value'][0], self.config['query']['path']]
         base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        cmd = ['systemctl', 'status', self.config['query']['path']]
+        result = base_shell(cmd)
+        if 'masked' not in result[0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
 
     def reset(self):
         pass
