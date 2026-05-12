@@ -46,12 +46,23 @@ class RootLogin_16(base_fix):
             bsf.append_line(self.config['change']['value'][0], self.config['query']['path'])
         cmd = self.config['change']['value'][1].split(' ')
         base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if 'yes' in result[0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
 
     def reset(self):
         pass
