@@ -61,9 +61,14 @@ class SysLog_11(base_fix):
             value = self.config['change']['value3']
             base_shell(cmd, input=f'\n{value}')
         cmd = ['sudo', 'systemctl', 'restart', 'rsyslog']
+        base_shell(cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.grep_shell('\\' + self.config['change']['value1'], self.config['query']['path'])
 
     def rollback(self):
         pass
