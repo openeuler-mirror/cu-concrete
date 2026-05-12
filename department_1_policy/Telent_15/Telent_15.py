@@ -46,6 +46,16 @@ class Telent_15(base_fix):
                     bsf.sed_shell(re, self.config['change']['value'][0], self.config['query']['path'])
         value1 = self.config['change']['value'][2].split(' ')
         value2 = self.config['change']['value'][3].split(' ')
+        base_shell(value1)
+        base_shell(value2)
+        value3 = base_shell(['rpm', '-qa'])
+        value4 = base_shell(['grep', 'openssh'], input=value3[0])
+        value5 = base_shell(['wc', '-l'], input=value4[0])
+        if len(value5) != 0:
+            base_shell(['yum', '-y', 'install'] + value4[0].splitlines())
+        result2 = self.config['change']['value'][6].split(' ')
+        base_shell(result2)
+        result3 = self.config['change']['value'][7].split(' ')
 
     def check(self):
         pass
