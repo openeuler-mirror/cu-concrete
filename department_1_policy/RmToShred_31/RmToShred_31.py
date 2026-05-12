@@ -45,12 +45,23 @@ class RmToShred_31(base_fix):
         script_cmd = ['sudo', 'tee', '/usr/bin/rm']
         base_shell(script_cmd, input=f'#!/bin/bash\n\n{rm_script_content}')
         chmod_cmd = ['bash', '-c', 'sudo chmod +x /usr/bin/rm']
+        base_shell(chmod_cmd)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        import os
+        if not os.path.exists('/usr/bin/rm'):
+            return False
+        result = bsf.grep_shell(self.config['query']['form'], '/usr/bin/rm')
+        if len(result[0]) != 0:
+            return True
+        else:
+            return False
 
     def rollback(self):
-        pass
+        delete_cmd = ['bash', '-c', 'sudo rm -f /usr/bin/rm']
 
     def reset(self):
         pass
