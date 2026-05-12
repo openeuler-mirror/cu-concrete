@@ -39,6 +39,23 @@ class SuWheel_14(base_fix):
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
+        bsf.cp_shell(self.config['query']['path'][0], self.config['query']['path'][0] + '.bak')
+        bsf.cp_shell(self.config['query']['path'][1], self.config['query']['path'][1] + '.bak')
+        result = bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'][0])
+        if len(result[0]) == 0:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path'][0]]
+            value = self.config['query']['form'][0]
+            base_shell(cmd, input=f'\n{value}')
+        else:
+            re = result[0].split('#')
+            bsf.sed_shell(result[0], re[1], self.config['query']['path'][0])
+        result1 = bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'][1])
+        if len(result1[0]) == 0:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path'][1]]
+            value = self.config['query']['form'][1]
+            base_shell(cmd, input=f'\n{value}')
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
 
     def check(self):
         pass
