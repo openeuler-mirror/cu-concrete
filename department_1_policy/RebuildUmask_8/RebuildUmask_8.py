@@ -54,9 +54,21 @@ class RebuildUmask_8(base_fix):
     def check(self):
         umasks = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
         except_value = True
+        if len(umasks[0]) == 0:
+            except_value = False
+        cmd = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if '027' not in cmd[0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        flag = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
+        if len(flag[0]) != 0:
+            bsf.sed_shell(flag[0], self.config['recovery']['value'], self.config['query']['path'])
+        else:
+            cmd = ['sudo', 'tee', '-a', self.config['query']['path']]
+            base_shell(cmd, input=self.config['recovery']['value'])
+        cmd = ['bash', '-c', 'source {}'.format(self.config['query']['path'])]
 
     def reset(self):
         pass
