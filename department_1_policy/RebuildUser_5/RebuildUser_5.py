@@ -61,6 +61,14 @@ class RebuildUser_5(base_fix):
 
     def check(self):
         except_value = True
+        line = bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0]
+        parts = line.split()
+        value = int(parts[1])
+        if value == 99999:
+            except_value = False
+        line = bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0]
+        parts = line.split()
+        value = int(parts[1])
 
     def rollback(self):
         pass
