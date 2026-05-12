@@ -43,9 +43,24 @@ class RebuildUser_5(base_fix):
             bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0], self.config['change']['value'][0], self.config['query']['path'])
         else:
             bsf.append_line(self.config['change']['value'][0], self.config['query']['path'])
+        if len(bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0]) != 0:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0], self.config['change']['value'][1], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['change']['value'][1], self.config['query']['path'])
+        if len(bsf.grep_shell(self.config['query']['form'][2], self.config['query']['path'])[0]) != 0:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][2], self.config['query']['path'])[0], self.config['change']['value'][2], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['change']['value'][2], self.config['query']['path'])
+        if len(bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])[0]) != 0:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])[0], self.config['change']['value'][3], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['change']['value'][3], self.config['query']['path'])
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
 
     def rollback(self):
         pass
