@@ -50,9 +50,27 @@ class AuditService_5(base_fix):
 
     def check(self):
         except_value = True
+        result = bsf.command_search(self.config['change']['set'])
+        path = bsf.get_service_file(self.config['query']['path'][0])
+        audit_path = f'-w {path} -p wa -k docker'
+        if len(result[0]) != 0:
+            result2 = bsf.search_audit_rule(path)
+            if result2[1] == 0:
+                except_value = True
+            else:
+                except_value = False
+        else:
+            result3 = bsf.pipe_grep_shell(audit_path, self.config['query']['path'][0], self.config['change']['value'])
+            if result3[1] == 0:
+                except_value = True
+            else:
+                except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        bsf.remove_file(self.config['query']['path'][1])
+        bsf.delete_audit_rule()
+        bsf.reload_audit_rules()
 
     def reset(self):
         pass
