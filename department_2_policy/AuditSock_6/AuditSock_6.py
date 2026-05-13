@@ -44,12 +44,29 @@ class AuditSock_6(base_fix):
             f.write(path + '\n')
         bsf.delete_audit_rule()
         bsf.reload_audit_rules()
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.command_search(self.config['change']['set'])
+        if len(result[0]) != 0:
+            result2 = bsf.search_audit_rule(self.config['query']['path'][0])
+            if result2[0] == self.config['query']['form']:
+                except_value = True
+            else:
+                except_value = False
+        else:
+            result3 = bsf.pipe_grep_shell(self.config['query']['form'], self.config['query']['path'][0], self.config['change']['value'])
+            if result3[0] == self.config['query']['form']:
+                except_value = True
+            else:
+                except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        bsf.remove_file(self.config['query']['path'][1])
 
     def reset(self):
         pass
