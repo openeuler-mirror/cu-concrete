@@ -40,9 +40,16 @@ class AuditService_5(base_fix):
         self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
         path = bsf.get_service_file(self.config['query']['path'][0])
+        with open(self.config['query']['path'][1], 'w') as f:
+            f.write(f'-w {path} -p wa -k docker' + '\n')
+        bsf.delete_audit_rule()
+        bsf.reload_audit_rules()
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
 
     def rollback(self):
         pass
