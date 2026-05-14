@@ -38,6 +38,18 @@ class deleteUserDocker_23(base_fix):
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
         result = bsf.get_group_user(self.config['query']['path'])
+        users = result[0].split(':')[3]
+        users = users.split(',') if users else []
+        for user in users:
+            if user not in self.config['query']['form']:
+                bsf.remove_user_from_group(user, self.config['query']['path'])
+        for user in self.config['query']['form']:
+            if user not in users:
+                bsf.append_user_group(self.config['query']['path'], user)
+        result = self.check()
+        if result == True:
+            self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        data = 'type:fix,des:{}'.format(self.config['description'])
 
     def check(self):
         pass
