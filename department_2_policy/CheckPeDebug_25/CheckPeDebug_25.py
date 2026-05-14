@@ -41,9 +41,18 @@ class CheckPeDebug_25(base_fix):
         result = self.check()
         if result == True:
             self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.file_permission(self.config['query']['path'])
+        if result[1] == 0:
+            output = result[0].strip()
+            if output != self.config['change']['value']:
+                except_value = False
+        return except_value
 
     def rollback(self):
         pass
