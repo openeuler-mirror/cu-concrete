@@ -50,9 +50,24 @@ class deleteUserDocker_23(base_fix):
         if result == True:
             self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
         data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        result = bsf.get_group_user(self.config['query']['path'])
+        if result == None:
+            return except_value
+        else:
+            users = result[0].split(':')[3]
+            users = users.split(',') if users else []
+            for user in users:
+                if user not in self.config['query']['form']:
+                    except_value = False
+            for user in self.config['query']['form']:
+                if user not in users:
+                    except_value = False
+        return except_value
 
     def rollback(self):
         pass
