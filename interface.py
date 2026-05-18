@@ -23,6 +23,14 @@ def text_box():
     w = Whiptail(title=TITLE, backtitle='日志', height=HEIGHT, width=WIDTH)
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(current_dir)
+    log_path = os.path.join(project_root, 'logs', 'app.log')
+    if not os.path.exists(log_path):
+        with open(log_path, 'w', encoding='utf-8') as f:
+            f.write('日志文件为空\n')
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, encoding='utf-8', suffix='.log') as tmpfile:
+        with open(log_path, 'r', encoding='utf-8') as f:
+            tmpfile.write(f.read())
+        tmpfile_name = tmpfile.name
 
 def main():
     pass
