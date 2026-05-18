@@ -64,9 +64,15 @@ class DelDangeFile_19(base_fix):
     def check(self):
         except_value = True
         cmd = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][0]]
+        cmd2 = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][1]]
+        result1 = base_shell(cmd)
+        result2 = base_shell(cmd2)
+        if result1[1] == 0 and result1[0] or (result2[1] == 0 and result2[0]):
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        cmd = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][0] + '.bak']
 
     def reset(self):
         pass
