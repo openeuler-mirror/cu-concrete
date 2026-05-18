@@ -31,9 +31,18 @@ def text_box():
         with open(log_path, 'r', encoding='utf-8') as f:
             tmpfile.write(f.read())
         tmpfile_name = tmpfile.name
+    try:
+        success = w.textbox(tmpfile_name)
+    except Exception as e:
+        logging.error(f'显示日志失败: {e}')
+    finally:
+        if os.path.exists(tmpfile_name):
+            os.unlink(tmpfile_name)
 
 def main():
-    pass
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    log_path = os.path.join(project_root, flag_path)
+    flag = None
 
 def setup_logging(log_dir='logs', log_file='app.log', level=logging.INFO):
     """全局日志配置：基于当前文件位置，确保日志在项目根目录"""
