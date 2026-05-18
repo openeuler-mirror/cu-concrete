@@ -53,6 +53,30 @@ class AddSecure_13(base_fix):
         cmd3 = ['mkdir', '-p', self.config['change']['path1']]
         base_shell(cmd3)
         cmd4 = ['chmod', self.config['change']['value3'][0], self.config['change']['path1']]
+        base_shell(cmd4)
+        if not os.path.exists(self.config['change']['path2']) and os.path.exists(self.config['query']['path2']):
+            bsf.cp_shell(self.config['query']['path2'], self.config['change']['path2'])
+            cmd4 = ['chmod', self.config['change']['value3'][1], self.config['change']['path2']]
+            base_shell(cmd4)
+            u_g = '{}:{}'.format(self.config['query']['form'], self.config['query']['form'])
+            cmd5 = ['chown', u_g, self.config['change']['path2']]
+            base_shell(cmd5)
+        if not os.path.exists(self.config['change']['path3']) and os.path.exists(self.config['query']['path3']):
+            bsf.cp_shell(self.config['query']['path3'], self.config['change']['path3'])
+            cmd6 = ['chmod', self.config['change']['value3'][2], self.config['change']['path3']]
+            base_shell(cmd6)
+            u_g = '{}:{}'.format(self.config['query']['form'], self.config['query']['form'])
+            cmd7 = ['chown', u_g, self.config['change']['path3']]
+            base_shell(cmd7)
+        if not os.path.exists(self.config['change']['path4']) and os.path.exists(self.config['query']['path4']):
+            bsf.cp_shell(self.config['query']['path4'], self.config['change']['path4'])
+            cmd7 = ['chmod', self.config['change']['value3'][2], self.config['change']['path4']]
+            base_shell(cmd7)
+            u_g = '{}:{}'.format(self.config['query']['form'], self.config['query']['form'])
+            cmd8 = ['chown', u_g, self.config['change']['path4']]
+            base_shell(cmd8)
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
 
     def check(self):
         pass
