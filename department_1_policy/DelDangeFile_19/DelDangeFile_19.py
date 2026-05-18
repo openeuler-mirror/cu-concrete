@@ -73,6 +73,22 @@ class DelDangeFile_19(base_fix):
 
     def rollback(self):
         cmd = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][0] + '.bak']
+        cmd2 = ['find', '/home', '-type', 'f', '-name', self.config['query']['form'][1] + '.bak']
+        result1 = base_shell(cmd)
+        result2 = base_shell(cmd2)
+        if result1[1] == 0 and result1[0]:
+            backup_files1 = result1[0].strip().split('\n')
+            for backup_file in backup_files1:
+                if backup_file and backup_file.endswith('.bak'):
+                    original_file = backup_file[:-4]
+                    bsf.cp_shell(backup_file, original_file)
+        if result2[1] == 0 and result2[0]:
+            backup_files2 = result2[0].strip().split('\n')
+            for backup_file in backup_files2:
+                if backup_file and backup_file.endswith('.bak'):
+                    original_file = backup_file[:-4]
+                    bsf.cp_shell(backup_file, original_file)
+        result = self.check()
 
     def reset(self):
         pass
