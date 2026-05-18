@@ -77,9 +77,15 @@ class AddSecure_13(base_fix):
             base_shell(cmd8)
         data = 'type:fix,des:{}'.format(self.config['description'])
         logging.info(data)
+        self.finalfix()
 
     def check(self):
-        pass
+        except_value = True
+        cmd = ['id', self.config['query']['form']]
+        result = base_shell(cmd)
+        if result[1] != 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
         pass
