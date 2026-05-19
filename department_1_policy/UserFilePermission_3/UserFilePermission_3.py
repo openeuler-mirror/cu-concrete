@@ -11,87 +11,90 @@ from base_fix import base_fix
 from base_shell_function import base_shell_function as bsf
 from base_shell import base_shell
 import logging
+# import pandas as pd
 import Panda as pd
-
-class UserFilePermission_3(base_fix):
-
+#TestCase-部门编号-子加固项名称-子加固项编号
+class UserFilePermission_3(base_fix):    
     def __init__(self):
         super().__init__()
+
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_file = os.path.join(self.current_dir, 'UserFilePermission_3.yaml')
-        with open(file=self.config_file, mode='r+', encoding='utf-8') as f:
-            config = yaml.load(f, Loader=yaml.Loader)
-        self.pkl_file = os.path.join(os.path.dirname(self.current_dir), 'data_status.pkl')
-        self.config = config
-        self.status = None
+        self.config_file = os.path.join(self.current_dir, "UserFilePermission_3.yaml")
+        with open(file=self.config_file,mode='r+',encoding='utf-8') as f :
+            config = yaml.load(f,Loader = yaml.Loader)
+        self.pkl_file=os.path.join(os.path.dirname(self.current_dir),'data_status.pkl')
+        self.config=config
+        self.status=None
 
     def finalfix(self):
-        self.status = 2
-        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 2
+        self.status=2
+        self.status_form.loc[str(self.config['dep'])+str(self.config['id']),'status']=2
         self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
         self.status = 1
+        # 每次加固前都读取最新的 pkl，避免覆盖其他加固项状态
         if os.path.exists(self.pkl_file):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
-        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 1
+        self.status_form.loc[str(self.config['dep'])+str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
-        cmd = ['chmod', self.config['change']['value'][1], self.config['query']['path'][0]]
+        cmd=['chmod',self.config['change']['value'][1],self.config['query']['path'][0]]
         base_shell(cmd)
-        cmd = ['chmod', self.config['change']['value'][0], self.config['query']['path'][1]]
+        cmd=['chmod',self.config['change']['value'][0],self.config['query']['path'][1]]
         base_shell(cmd)
-        cmd = ['chmod', self.config['change']['value'][0], self.config['query']['path'][2]]
+        cmd=['chmod',self.config['change']['value'][0],self.config['query']['path'][2]]
         base_shell(cmd)
-        data = 'type:fix,des:{}'.format(self.config['description'])
+        data='type:fix,des:{}'.format(self.config['description'])
         logging.info(data)
         self.finalfix()
-
+        
     def check(self):
-        except_value = True
-        cmd = ['stat', '-c', '%a', self.config['query']['path'][0]]
-        if base_shell(cmd)[0] != self.config['change']['value'][1]:
-            except_value = False
-        cmd = ['stat', '-c', '%a', self.config['query']['path'][1]]
-        if base_shell(cmd)[0] != self.config['change']['value'][0]:
-            except_value = False
-        cmd = ['stat', '-c', '%a', self.config['query']['path'][2]]
-        if base_shell(cmd)[0] != self.config['change']['value'][0]:
-            except_value = False
+        except_value=True
+        cmd=['stat','-c','%a',self.config['query']['path'][0]]
+        if base_shell(cmd)[0]!=self.config['change']['value'][1]:
+            except_value=False
+        cmd=['stat','-c','%a',self.config['query']['path'][1]]
+        if base_shell(cmd)[0]!=self.config['change']['value'][0]:
+            except_value=False
+        cmd=['stat','-c','%a',self.config['query']['path'][2]]
+        if base_shell(cmd)[0]!=self.config['change']['value'][0]:
+            except_value=False
         return except_value
-
+    
     def rollback(self):
-        result = base_shell(['lsattr', '/etc/passwd'])
+        result=base_shell(['lsattr','/etc/passwd'])
         if 'i' in result[0]:
-            base_shell(['chattr', '-i', '/etc/passwd'])
-            base_shell(['chattr', '-i', '/etc/shadow'])
-            base_shell(['chattr', '-i', '/etc/group'])
-            cmd = ['chmod', '644']
+            base_shell(['chattr','-i','/etc/passwd'])
+            base_shell(['chattr','-i','/etc/shadow'])
+            base_shell(['chattr','-i','/etc/group'])
+            cmd=['chmod','644']
             for p in self.config['query']['path']:
                 cmd.append(p)
             base_shell(cmd)
-            base_shell(['chattr', '+i', '/etc/passwd'])
-            base_shell(['chattr', '+i', '/etc/shadow'])
-            base_shell(['chattr', '+i', '/etc/group'])
+            base_shell(['chattr','+i','/etc/passwd'])
+            base_shell(['chattr','+i','/etc/shadow'])
+            base_shell(['chattr','+i','/etc/group'])
         else:
-            cmd = ['chmod', '644']
+            cmd=['chmod','644']
             for p in self.config['query']['path']:
                 cmd.append(p)
             base_shell(cmd)
         result = self.check()
+        # 每次还原前都读取最新的 pkl，避免覆盖其他加固项状态
         if os.path.exists(self.pkl_file):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
         if result == False:
-            self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 0
+            self.status_form.loc[str(self.config['dep'])+str(self.config['id']), 'status'] = 0
             self.status_form.to_pickle(self.pkl_file)
 
     def reset(self):
         self.rollback()
         self.fix()
-
+    
     def get_des(self):
-        description = self.config['description']
+        description=self.config['description']
         return description
