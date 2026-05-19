@@ -84,6 +84,16 @@ class SysLog_11(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        result = bsf.grep_shell('^' + self.config['change']['value1'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            result = bsf.sed_shell(result[0], '', self.config['query']['path'])
+        result = bsf.grep_shell('^' + self.config['change']['value2'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            result = bsf.sed_shell(result[0], '', self.config['query']['path'])
+        result = bsf.grep_shell('^' + self.config['change']['value3'], self.config['query']['path'])
+        if len(result[0]) != 0:
+            result = bsf.sed_shell(result[0], '', self.config['query']['path'])
+        cmd = ['sudo', 'systemctl', 'restart', 'rsyslog']
 
     def reset(self):
         pass
