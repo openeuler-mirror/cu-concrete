@@ -67,9 +67,19 @@ class Telent_15(base_fix):
         result = base_shell(cmd)
         if 'inactive' not in result[0]:
             except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        bsf.sed_shell(self.config['change']['value'][0], 'disable = no', self.config['query']['path'])
+        result3 = self.config['change']['value'][4].split(' ')
+        result4 = self.config['change']['value'][5].split(' ')
+        base_shell(result3)
+        base_shell(result4)
+        result5 = self.config['change']['value'][8].split(' ')
 
     def reset(self):
         pass
