@@ -69,6 +69,15 @@ class RebuildUser_5(base_fix):
         line = bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0]
         parts = line.split()
         value = int(parts[1])
+        if value == 5:
+            except_value = False
+        line = bsf.grep_shell(self.config['query']['form'][2], self.config['query']['path'])[0]
+        parts = line.split()
+        value = int(parts[1])
+        if value == 0:
+            except_value = False
+        line = bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])[0]
+        parts = line.split()
 
     def rollback(self):
         pass
