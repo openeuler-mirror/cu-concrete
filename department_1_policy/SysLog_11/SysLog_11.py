@@ -69,9 +69,21 @@ class SysLog_11(base_fix):
     def check(self):
         except_value = True
         result = bsf.grep_shell('\\' + self.config['change']['value1'], self.config['query']['path'])
+        if len(result[0]) == 0:
+            except_value = False
+        result = bsf.grep_shell('^' + self.config['change']['value2'], self.config['query']['path'])
+        if len(result[0]) == 0:
+            except_value = False
+        result = bsf.grep_shell('^' + self.config['change']['value3'], self.config['query']['path'])
+        if len(result[0]) == 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
 
     def reset(self):
         pass
