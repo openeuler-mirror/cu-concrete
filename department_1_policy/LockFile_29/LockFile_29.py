@@ -60,9 +60,17 @@ class LockFile_29(base_fix):
         if 'i' not in result[0]:
             except_value = False
         cmd = ['lsattr', self.config['query']['path'][2]]
+        result = base_shell(cmd)
+        if 'i' not in result[0]:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        cmd = ['chattr', self.config['change']['value'][1], self.config['query']['path'][0]]
+        base_shell(cmd)
+        cmd = ['chattr', self.config['change']['value'][1], self.config['query']['path'][1]]
+        base_shell(cmd)
+        cmd = ['chattr', self.config['change']['value'][1], self.config['query']['path'][2]]
 
     def reset(self):
         pass
