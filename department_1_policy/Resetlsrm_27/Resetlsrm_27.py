@@ -64,9 +64,19 @@ class Resetlsrm_27(base_fix):
         if len(result[0]) == 0:
             except_value = False
         result = bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path'])
+        if len(result[0]) == 0:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        result = bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path'])
+        if len(result[0]) != 0:
+            bsf.remove_line(result[0], self.config['query']['path'])
+        result = bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path'])
 
     def reset(self):
         pass
