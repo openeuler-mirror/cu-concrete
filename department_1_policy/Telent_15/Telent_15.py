@@ -80,9 +80,16 @@ class Telent_15(base_fix):
         base_shell(result3)
         base_shell(result4)
         result5 = self.config['change']['value'][8].split(' ')
+        result6 = self.config['change']['value'][9].split(' ')
+        base_shell(result5)
+        base_shell(result6)
+        self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 0
+        self.status_form.to_pickle(self.pkl_file)
 
     def reset(self):
-        pass
+        self.rollback()
+        self.fix()
 
     def get_des(self):
-        pass
+        description = self.config['description']
+        return description
