@@ -78,9 +78,29 @@ class RebuildUser_5(base_fix):
             except_value = False
         line = bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])[0]
         parts = line.split()
+        value = int(parts[1])
+        if value != 7:
+            except_value = False
+        return except_value
 
     def rollback(self):
-        pass
+        if bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0] != None:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0], self.config['recovery']['value'][0], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['recovery']['value'][0], self.config['query']['path'])
+        if bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0] != None:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0], self.config['recovery']['value'][1], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['recovery']['value'][1], self.config['query']['path'])
+        if bsf.grep_shell(self.config['query']['form'][2], self.config['query']['path'])[0] != None:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][2], self.config['query']['path'])[0], self.config['recovery']['value'][2], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['recovery']['value'][2], self.config['query']['path'])
+        if bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])[0] is not None:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])[0], self.config['recovery']['value'][3], self.config['query']['path'])
+        else:
+            bsf.append_line(self.config['recovery']['value'][3], self.config['query']['path'])
+        result = self.check()
 
     def reset(self):
         pass
