@@ -78,6 +78,9 @@ def main():
 def setup_logging(log_dir='logs', log_file='app.log', level=logging.INFO):
     """全局日志配置：基于当前文件位置，确保日志在项目根目录"""
     current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)
+    full_log_dir = os.path.join(project_root, log_dir)
+    os.makedirs(full_log_dir, exist_ok=True)
 if __name__ == '__main__':
     setup_logging(level=logging.DEBUG)
     main()
