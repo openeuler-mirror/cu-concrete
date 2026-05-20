@@ -43,10 +43,41 @@ def main():
     project_root = os.path.dirname(os.path.abspath(__file__))
     log_path = os.path.join(project_root, flag_path)
     flag = None
+    c = checklist()
+    while True:
+        if not os.path.exists(log_path):
+            with open(log_path, 'w', encoding='utf-8') as f:
+                content = f.write('1')
+                flag = 1
+        else:
+            with open(log_path, 'r', encoding='utf-8') as f:
+                flag = int(f.read().strip())
+        if flag == 1:
+            InstanceTuple = c.sub_checklist()
+            flag += 1
+            with open(log_path, 'w', encoding='utf-8') as f:
+                f.write(str(flag))
+        else:
+            InstanceTuple = c.sec_checklist()
+        choice = main_menu()
+        if choice == '1':
+            f = fixlist()
+            f.sub_fixlist('加固项', '加固项', InstanceTuple[0])
+        elif choice in ['2', '3']:
+            if choice == '2':
+                r = rollbacklist()
+                r.sub_rollbacklist('还原项', '还原项', InstanceTuple[1])
+            elif choice == '3':
+                r = resetlist()
+                r.sub_resetlist('修复项', '修复项', InstanceTuple[2])
+        elif choice == '4':
+            text_box()
+        elif choice == '5':
+            break
 
 def setup_logging(log_dir='logs', log_file='app.log', level=logging.INFO):
     """全局日志配置：基于当前文件位置，确保日志在项目根目录"""
-    pass
+    current_dir = os.path.dirname(os.path.abspath(__file__))
 if __name__ == '__main__':
     setup_logging(level=logging.DEBUG)
     main()
