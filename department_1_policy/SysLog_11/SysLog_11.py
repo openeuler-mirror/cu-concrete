@@ -94,9 +94,16 @@ class SysLog_11(base_fix):
         if len(result[0]) != 0:
             result = bsf.sed_shell(result[0], '', self.config['query']['path'])
         cmd = ['sudo', 'systemctl', 'restart', 'rsyslog']
+        base_shell(cmd)
+        result = self.check()
+        if result == False:
+            self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 0
+            self.status_form.to_pickle(self.pkl_file)
 
     def reset(self):
-        pass
+        self.rollback()
+        self.fix()
 
     def get_des(self):
-        pass
+        description = self.config['description']
+        return description
