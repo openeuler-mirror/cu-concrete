@@ -81,6 +81,9 @@ def setup_logging(log_dir='logs', log_file='app.log', level=logging.INFO):
     project_root = os.path.dirname(current_dir)
     full_log_dir = os.path.join(project_root, log_dir)
     os.makedirs(full_log_dir, exist_ok=True)
+    log_path = os.path.join(full_log_dir, log_file)
+    logging.basicConfig(level=level, format='%(asctime)s | %(levelname)-8s | %(name)s.%(funcName)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S', handlers=[logging.FileHandler(log_path, encoding='utf-8')])
+    logging.getLogger().setLevel(level)
 if __name__ == '__main__':
     setup_logging(level=logging.DEBUG)
     main()
