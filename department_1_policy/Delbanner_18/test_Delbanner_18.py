@@ -25,9 +25,17 @@ def prepare_files():
         f.write('banner1')
     with open(issue_net_bak, 'w') as f:
         f.write('banner2')
+    with open(motd_bak, 'w') as f:
+        f.write('banner3')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
+    for fp in [pkl_path, '/tmp/Delbanner_18.yaml', issue_path, issue_net_path, motd_path, issue_bak, issue_net_bak, motd_bak]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    obj = Delbanner_18()
 
 def test_init():
     pass
