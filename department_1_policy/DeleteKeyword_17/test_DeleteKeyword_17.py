@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = DeleteKeyword_17()
+    obj.config_file = '/tmp/DeleteKeyword_17.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 17, 'query': {'path': log_path}, 'change': {'value': ['virtio', 'kvm', 'KVM', 'Cloud', 'cloudw']}, 'description': '删除带有特定记录的log'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
