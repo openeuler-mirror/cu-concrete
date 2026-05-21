@@ -88,7 +88,22 @@ class AddSecure_13(base_fix):
         return except_value
 
     def rollback(self):
-        pass
+        result = base_shell(['lsattr', '/etc/passwd'])
+        if 'i' in result[0]:
+            base_shell(['chattr', '-i', '/etc/passwd'])
+            base_shell(['chattr', '-i', '/etc/shadow'])
+            base_shell(['chattr', '-i', '/etc/group'])
+            cmd = ['userdel', '-f', self.config['query']['form']]
+            base_shell(cmd)
+            base_shell(['chattr', '+i', '/etc/passwd'])
+            base_shell(['chattr', '+i', '/etc/shadow'])
+            base_shell(['chattr', '+i', '/etc/group'])
+        else:
+            cmd = ['userdel', '-f', self.config['query']['form']]
+        bsf.remove_line(self.config['change']['value2'], self.config['query']['path'])
+        cmd2 = ['rm', '-rf', self.config['change']['path']]
+        base_shell(cmd2)
+        result = self.check()
 
     def reset(self):
         pass
