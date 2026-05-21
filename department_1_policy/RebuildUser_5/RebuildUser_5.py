@@ -101,9 +101,19 @@ class RebuildUser_5(base_fix):
         else:
             bsf.append_line(self.config['recovery']['value'][3], self.config['query']['path'])
         result = self.check()
+        if os.path.exists(self.pkl_file):
+            self.status_form = pd.read_pickle(self.pkl_file)
+        else:
+            bsf.append_line(self.config['recovery']['value'][3], self.config['query']['path'])
+        result = self.check()
+        if result == False:
+            self.status_form.loc[str(self.config['dep']) + str(self.config['id']), 'status'] = 0
+            self.status_form.to_pickle(self.pkl_file)
 
     def reset(self):
-        pass
+        self.rollback()
+        self.fix()
 
     def get_des(self):
-        pass
+        description = self.config['description']
+        return description
