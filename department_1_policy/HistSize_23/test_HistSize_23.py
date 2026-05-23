@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = HistSize_23()
+    obj.config_file = '/tmp/HistSize_23.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 23, 'query': {'path': profile_path, 'form': '^export HISTSIZE='}, 'change': {'value': 'export HISTSIZE=10'}, 'description': '控制当前bash会话中保留的命令'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
