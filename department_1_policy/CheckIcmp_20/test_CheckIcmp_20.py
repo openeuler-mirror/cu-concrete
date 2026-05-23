@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = CheckIcmp_20()
+    obj.config_file = '/tmp/CheckIcmp_20.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 20, 'query': {'form': '^net.ipv4.icmp_echo_ignore_all', 'path': sysctl_conf_path}, 'change': {'value': ['net.ipv4.icmp_echo_ignore_all = 1', 'net.ipv4.icmp_echo_ignore_all = 0']}, 'description': '禁止响应ping,避免被扫描发现'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
