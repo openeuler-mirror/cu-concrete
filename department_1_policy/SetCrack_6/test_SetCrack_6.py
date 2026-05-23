@@ -23,7 +23,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = SetCrack_6()
+    obj.config_file = '/tmp/SetCrack_6.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 6, 'query': {'form': '^password    requisite     pam_pwquality.so', 'path': system_auth_path}, 'change': {'value': 'password    requisite     pam_pwquality.so difok=3 dcredit=-1 lcredit=-1 ucredit=-1 ocredit=-1'}, 'description': '修改密码相关限制', 'backup_path': backup_path}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
