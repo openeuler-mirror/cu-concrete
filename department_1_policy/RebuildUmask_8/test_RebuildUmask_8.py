@@ -23,7 +23,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = RebuildUmask_8()
+    obj.config_file = '/tmp/RebuildUmask_8.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 8, 'query': {'form': '^umask', 'path': profile_path}, 'change': {'value': 'umask 027'}, 'recovery': {'value': 'umask 022'}, 'description': 'umask设置用户文件权限', 'backup_path': backup_path}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
