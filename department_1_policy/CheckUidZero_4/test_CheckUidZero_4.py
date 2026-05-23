@@ -19,9 +19,16 @@ def prepare_files():
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
+    for fp in [pkl_path, '/tmp/CheckUidZero_4.yaml', '/tmp/test_passwd', '/tmp/test_passwd_bak']:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    obj = CheckUidZero_4()
+    obj.config_file = '/tmp/CheckUidZero_4.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 4, 'query': [{'path': '/tmp/test_passwd', 'form': '{ print $1 }'}], 'backup_path': '/tmp/test_passwd_bak', 'description': 'UID为0的账户检查'}
 
 def test_init():
     pass
