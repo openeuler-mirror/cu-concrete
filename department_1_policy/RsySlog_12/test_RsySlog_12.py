@@ -19,9 +19,15 @@ def prepare_files():
 
 def build_instance():
     obj = RsySlog_12()
+    obj.config_file = yaml_path
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 12, 'query': {'form': '^*.*', 'path': rsyslog_path}, 'change': {'value': '*.* /var/log/all.log'}, 'description': '远程系统日志设定'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
 
 def test_finalfix():
     pass
