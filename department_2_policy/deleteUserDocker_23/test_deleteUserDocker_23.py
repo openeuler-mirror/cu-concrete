@@ -1,0 +1,69 @@
+import os
+import sys
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(parent_dir)
+project_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(project_dir)
+import Panda as pd
+import yaml
+import pytest
+import importlib.util
+
+def load_module():
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
+    module_path = os.path.join(base_dir, 'deleteUserDocker_23.py')
+    spec = importlib.util.spec_from_file_location('deleteUserDocker_23_module_new', module_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+yaml_path = os.path.join(os.path.dirname(__file__), 'deleteUserDocker_23.yaml')
+pkl_path = '/tmp/test_data_status_deleteuserdocker_new.pkl'
+file_path = '/tmp/test_delete_user_group_new'
+
+class GroupLike:
+
+    def __init__(self, users):
+        self.users = users
+
+    def __iter__(self):
+        return iter(self.users)
+
+    def split(self, sep):
+        pass
+
+@pytest.fixture(autouse=True)
+def prepare_files():
+    pass
+
+def build_instance():
+    pass
+
+def test_init():
+    pass
+
+def test_finalfix():
+    pass
+
+def test_fix_removes_bad_users_adds_good_users_and_sets_status(monkeypatch):
+    pass
+
+def test_fix_creates_pkl_when_missing(monkeypatch):
+    pass
+
+def test_check_true_when_no_bad_users(monkeypatch):
+    pass
+
+def test_check_false_when_has_bad_users(monkeypatch):
+    pass
+
+def test_rollback_sets_status_to_zero_when_check_false(monkeypatch):
+    pass
+
+def test_rollback_no_change_when_check_true(monkeypatch):
+    pass
+
+def test_reset_calls_rollback_then_fix():
+    pass
+
+def test_get_des():
+    pass
