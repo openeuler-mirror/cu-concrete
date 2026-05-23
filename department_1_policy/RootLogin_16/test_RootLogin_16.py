@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = RootLogin_16()
+    obj.config_file = '/tmp/RootLogin_16.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 16, 'query': {'form': '^PermitRootLogin', 'path': sshd_config_path}, 'change': {'value': ['PermitRootLogin no', 'systemctl restart sshd', 'PermitRootLogin yes']}, 'description': '禁止root账户ssh登录'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
