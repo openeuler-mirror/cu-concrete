@@ -20,6 +20,12 @@ def prepare_files():
 
 def build_instance():
     obj = UserFilePermission_3()
+    obj.config_file = '/tmp/UserFilePermission_3.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 3, 'query': {'path': '/tmp/test_file', 'form': 'testuser'}, 'change': {'value': 644}, 'description': '用户文件权限检查'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
