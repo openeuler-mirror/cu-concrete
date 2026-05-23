@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = PassRepe_26()
+    obj.config_file = '/tmp/PassRepe_26.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 26, 'query': {'form': 'password    sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok', 'path': system_auth_path}, 'change': {'value': 'password   sufficient    pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=5'}, 'description': '密码不能与历史的5个重复密码相同'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
