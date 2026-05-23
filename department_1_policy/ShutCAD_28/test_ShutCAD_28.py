@@ -19,9 +19,15 @@ def prepare_files():
 
 def build_instance():
     obj = ShutCAD_28()
+    obj.config_file = '/tmp/ShutCAD_28.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 28, 'query': {'path': service_name}, 'change': {'value': ['mask', 'unmask']}, 'description': '关闭ctrl+alt+del重启功能'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
 
 def test_finalfix():
     pass
