@@ -23,7 +23,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = LoginUserLock_7()
+    obj.config_file = '/tmp/LoginUserLock_7.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 7, 'query': {'form': 'auth        required      pam_faillock.so preauth audit deny=3  unlock_time=180 even_deny_root root_unlock_time=300', 'path': sshd_path}, 'change': {'value': 'auth        required      pam_faillock.so preauth audit deny=3  unlock_time=180 even_deny_root root_unlock_time=300'}, 'recovery': {'value': 'auth        required      pam_faillock.so preauth audit deny=6  unlock_time=180 even_deny_root root_unlock_time=300'}, 'description': '密码输入错误锁定账户的设定', 'backup_path': backup_path}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
