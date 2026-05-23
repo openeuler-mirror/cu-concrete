@@ -23,7 +23,12 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = ForbiIp_30()
+    obj.config_file = '/tmp/ForbiIp_30.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 30, 'query': {'path': [conf_path, conf_bak_path]}, 'change': {'set': 'net.ipv4.ip_forward', 'value': 'net.ipv4.ip_forward=0'}, 'description': '禁止ip路由转发'}
+    obj.status_form = pd.read_pickle(pkl_path)
 
 def test_init():
     pass
