@@ -23,7 +23,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = LoginTmout_10()
+    obj.config_file = '/tmp/LoginTmout_10.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 10, 'change': {'form1': '^TMOUT', 'form2': '^export TMOUT', 'path': profile_path}, 'add': {'form': 'export TMOUT=300'}, 'description': '用户会话无操作时长中断设定', 'backup_path': backup_path}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
