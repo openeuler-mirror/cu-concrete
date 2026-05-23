@@ -26,7 +26,14 @@ backup_path = '/tmp/test_debug_bak'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
-    pass
+    if os.path.exists(yaml_path):
+        os.system(f'cp {yaml_path} /tmp/AuditDebug_8.yaml')
+    for fp in [file_service, rule_file, auditctl, backup_path]:
+        with open(fp, 'w') as f:
+            f.write('')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
 
 def build_instance():
     pass
