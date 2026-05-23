@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = ReUserShell_24()
+    obj.config_file = '/tmp/ReUserShell_24.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 24, 'query': {'path': passwd_path, 'form': ['{ print $1,$7 }', ['lp', 'sync', 'halt', 'news', 'uucp', 'operator', 'games', 'gopher', 'smmsp', 'nfsnobody', 'nobody']]}, 'change': {'value': '/sbin/nologin'}, 'description': '修改特定用户的shell域'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
