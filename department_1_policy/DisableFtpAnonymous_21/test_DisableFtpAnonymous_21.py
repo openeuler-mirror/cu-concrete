@@ -23,9 +23,17 @@ def prepare_files():
         f.write('root\n')
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
+    yield
+    for fp in [pkl_path, '/tmp/DisableFtpAnonymous_21.yaml', passwd_path, vsftpd_conf_path, vsftpd_conf2_path, ftpusers_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    obj = DisableFtpAnonymous_21()
+    obj.config_file = '/tmp/DisableFtpAnonymous_21.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 21, 'query': {'path': [passwd_path, vsftpd_conf_path, vsftpd_conf2_path, ftpusers_path], 'form': ['^ftp:x', 'anonymous_enabl = YES', '^#ftp:x']}, 'change': {'value': ['anonymous_enabl = NO', 'root']}, 'description': '禁止匿名账户登录ftp'}
 
 def test_init():
     pass
