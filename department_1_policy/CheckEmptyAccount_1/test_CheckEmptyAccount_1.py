@@ -22,10 +22,16 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = CheckEmptyAccount_1()
+    obj.config_file = '/tmp/CheckEmptyAccount_1.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 1, 'query': [{'path': shadow_path, 'form': '( $2 == "" ) { print $1 }'}], 'change': [{'set': 'chpasswd', 'value': '123@123!'}], 'backup_path': backup_path, 'description': '空口令检查'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
 
 def test_finalfix():
     pass
