@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = SuWheel_14()
+    obj.config_file = '/tmp/SuWheel_14.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 14, 'query': {'form': ['auth            sufficient      pam_rootok.so', 'auth            required        pam_wheel.so group=wheel'], 'path': su_path}, 'description': 'su权限的设定'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
