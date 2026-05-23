@@ -36,9 +36,15 @@ def prepare_files():
 
 def build_instance():
     obj = Delbanner_18()
+    obj.config_file = '/tmp/Delbanner_18.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 18, 'query': {'path': [issue_path, issue_net_path, motd_path]}, 'change': {'value': [issue_bak, issue_net_bak, motd_bak]}, 'description': '会话界面的提醒字符段备份并删除'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
 
 def test_finalfix():
     pass
