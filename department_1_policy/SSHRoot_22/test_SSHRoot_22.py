@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = SSHRoot_22()
+    obj.config_file = '/tmp/SSHRoot_22.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 22, 'query': {'path': [sshd_config_path], 'form': ['^[[:space:]]*(#)?[[:space:]]*Port', '^SELINUX=']}, 'change': {'set': ['sudo firewall-cmd --zone=public --add-port=1234/tcp --permanent', 'sudo firewall-cmd --reload', 'sudo firewall-cmd --zone=public --add-port=22/tcp --permanent'], 'value': ['Port 1234', 'Port 22']}, 'description': '修改ssh登录端口'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
