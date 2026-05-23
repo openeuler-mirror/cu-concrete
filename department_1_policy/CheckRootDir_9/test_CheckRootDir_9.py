@@ -19,9 +19,16 @@ def prepare_files():
     for fp in [pkl_path, '/tmp/CheckRootDir_9.yaml']:
         if os.path.exists(fp):
             os.remove(fp)
+    if os.path.exists(root_path):
+        os.rmdir(root_path)
 
 def build_instance():
-    pass
+    obj = CheckRootDir_9()
+    obj.config_file = '/tmp/CheckRootDir_9.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 9, 'change': {'form': 'root:root', 'path': root_path, 'value': '700'}, 'recovery': {'value': '550'}, 'description': 'rootdir权限设定'}
+    obj.status_form = pd.read_pickle(pkl_path)
 
 def test_init():
     pass
