@@ -25,7 +25,14 @@ backup_path = '/tmp/test_etc_bak'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
-    pass
+    if os.path.exists(yaml_path):
+        os.system(f'cp {yaml_path} /tmp/AuditEtc_4.yaml')
+    for fp in [file_etc, rule_file, auditctl, backup_path]:
+        with open(fp, 'w') as f:
+            f.write('')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
 
 def build_instance():
     pass
