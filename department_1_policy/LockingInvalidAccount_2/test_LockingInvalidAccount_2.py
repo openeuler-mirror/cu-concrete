@@ -20,9 +20,16 @@ def build_instance():
     obj = LockingInvalidAccount_2()
     obj.config_file = '/tmp/LockingInvalidAccount_2.yaml'
     obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 2, 'query': {'value': ['liukun']}, 'change': {}, 'description': '锁定无效账号'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 2
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
     pass
