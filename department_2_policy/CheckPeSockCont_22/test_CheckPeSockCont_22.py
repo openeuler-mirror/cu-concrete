@@ -25,9 +25,19 @@ backup_path = '/tmp/test_checkpesockcont_bak'
 def prepare_files():
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/CheckPeSockCont_22.yaml')
+    with open(file_path, 'w') as f:
+        f.write('')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
+    for fp in [pkl_path, '/tmp/CheckPeSockCont_22.yaml', file_path, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'CheckPeSockCont_22')
+    obj = cls()
 
 def test_init():
     pass
