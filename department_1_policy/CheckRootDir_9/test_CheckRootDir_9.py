@@ -29,12 +29,18 @@ def build_instance():
     obj.current_dir = '/tmp'
     obj.config = {'dep': 1, 'id': 9, 'change': {'form': 'root:root', 'path': root_path, 'value': '700'}, 'recovery': {'value': '550'}, 'description': 'rootdir权限设定'}
     obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 9
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
 
 def test_fix():
     pass
