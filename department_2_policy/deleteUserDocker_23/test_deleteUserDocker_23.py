@@ -29,11 +29,20 @@ class GroupLike:
         return iter(self.users)
 
     def split(self, sep):
-        pass
+        return ['group', 'x', '1000', self.users]
 
 @pytest.fixture(autouse=True)
 def prepare_files():
-    pass
+    if os.path.exists(yaml_path):
+        os.system(f'cp {yaml_path} /tmp/deleteUserDocker_23.yaml')
+    with open(file_path, 'w') as f:
+        f.write('')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
+    for fp in [pkl_path, '/tmp/deleteUserDocker_23.yaml', file_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
     pass
