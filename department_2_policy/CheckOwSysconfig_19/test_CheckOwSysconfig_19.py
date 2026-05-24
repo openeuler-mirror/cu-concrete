@@ -27,9 +27,18 @@ def prepare_files():
         os.system(f'cp {yaml_path} /tmp/CheckOwSysconfig_19.yaml')
     with open(file_path, 'w') as f:
         f.write('')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
+    for fp in [pkl_path, '/tmp/CheckOwSysconfig_19.yaml', file_path, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'CheckOwSysconfig_19')
+    obj = cls()
+    obj.config_file = '/tmp/CheckOwSysconfig_19.yaml'
 
 def test_init():
     pass
