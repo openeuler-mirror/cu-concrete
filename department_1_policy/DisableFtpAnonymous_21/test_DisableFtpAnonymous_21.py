@@ -34,12 +34,17 @@ def build_instance():
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
     obj.config = {'dep': 1, 'id': 21, 'query': {'path': [passwd_path, vsftpd_conf_path, vsftpd_conf2_path, ftpusers_path], 'form': ['^ftp:x', 'anonymous_enabl = YES', '^#ftp:x']}, 'change': {'value': ['anonymous_enabl = NO', 'root']}, 'description': '禁止匿名账户登录ftp'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 21
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    obj = build_instance()
 
 def test_fix():
     pass
