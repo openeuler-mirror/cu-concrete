@@ -29,12 +29,17 @@ def build_instance():
     obj.current_dir = '/tmp'
     obj.config = {'dep': 1, 'id': 25, 'query': {'path': bash_history_path, 'path1': bash_history_bak_path}, 'description': '删除历史命令行记录'}
     obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 25
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    obj = build_instance()
+    obj.finalfix()
 
 def test_fix():
     pass
