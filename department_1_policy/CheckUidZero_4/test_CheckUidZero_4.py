@@ -29,9 +29,14 @@ def build_instance():
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
     obj.config = {'dep': 1, 'id': 4, 'query': [{'path': '/tmp/test_passwd', 'form': '{ print $1 }'}], 'backup_path': '/tmp/test_passwd_bak', 'description': 'UID为0的账户检查'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 4
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
     pass
