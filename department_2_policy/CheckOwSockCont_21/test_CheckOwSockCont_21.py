@@ -27,9 +27,17 @@ def prepare_files():
         os.system(f'cp {yaml_path} /tmp/CheckOwSockCont_21.yaml')
     with open(file_path, 'w') as f:
         f.write('')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
+    for fp in [pkl_path, '/tmp/CheckOwSockCont_21.yaml', file_path, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'CheckOwSockCont_21')
+    obj = cls()
 
 def test_init():
     pass
