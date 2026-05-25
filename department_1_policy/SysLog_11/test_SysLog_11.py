@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = SysLog_11()
+    obj.config_file = '/tmp/SysLog_11.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 11, 'query': {'form1': '^*.err;kern.debug;daemon.notice', 'form2': '^cron.*', 'form3': '^authpriv.*', 'path': rsyslog_path}, 'change': {'value1': '*.err;kern.debug;daemon.notice;        /var/log/messages', 'value2': 'cron.*                                 /var/log/cron', 'value3': 'authpriv.*                             /var/log/secure'}, 'description': '本地系统日志设定'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
