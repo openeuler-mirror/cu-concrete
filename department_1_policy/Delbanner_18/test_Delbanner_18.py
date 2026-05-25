@@ -53,9 +53,14 @@ def test_finalfix():
     obj = build_instance()
     obj.finalfix()
     status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['118', 'status']
+    assert val == 2
 
 def test_fix():
-    pass
+    obj = build_instance()
+    obj.fix()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['118', 'status']
 
 def test_check():
     pass
