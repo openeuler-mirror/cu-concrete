@@ -39,7 +39,11 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'AuditSysconfig_11')
+    obj = cls()
+    obj.config_file = '/tmp/AuditSysconfig_11.yaml'
+    obj.pkl_file = pkl_path
 
 def test_init():
     pass
