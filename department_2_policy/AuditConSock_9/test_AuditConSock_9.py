@@ -38,7 +38,16 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls_name_candidates = ['AuditConSock_9', 'AuditDefault_9', 'AuditConSock']
+    cls = None
+    for name in cls_name_candidates:
+        if hasattr(mod, name):
+            cls = getattr(mod, name)
+            break
+    if cls is None:
+        cls = next((getattr(mod, n) for n in dir(mod) if n[0].isupper()), None)
+    obj = cls()
 
 def test_init():
     pass
