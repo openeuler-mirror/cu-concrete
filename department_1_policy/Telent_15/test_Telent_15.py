@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = Telent_15()
+    obj.config_file = '/tmp/Telent_15.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 15, 'query': {'form': '^disable', 'path': telnet_conf_path}, 'change': {'value': ['disable = yes', 'openssh*', 'systemctl disable  telnet.socket', 'systemctl stop telnet.socket', 'systemctl enable telnet.socket', 'systemctl start telnet.socket']}, 'description': '关闭telent,使用openssh'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
