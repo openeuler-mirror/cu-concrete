@@ -20,7 +20,13 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = Resetlsrm_27()
+    obj.config_file = '/tmp/Resetlsrm_27.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 27, 'query': {'path': bashrc_path}, 'change': {'value': ["alias ls='ls -alh'", "alias rm='rm -i'"]}, 'description': '修改ls、rm的显示信息'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
     pass
