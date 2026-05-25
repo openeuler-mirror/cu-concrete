@@ -29,10 +29,14 @@ def build_instance():
     return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 23
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    obj = build_instance()
+    obj.finalfix()
 
 def test_fix():
     pass
