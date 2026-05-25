@@ -45,7 +45,21 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'deleteUserDocker_23')
+    obj = cls()
+    obj.config_file = '/tmp/deleteUserDocker_23.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    if os.path.exists(yaml_path):
+        with open(yaml_path, 'r', encoding='utf-8') as f:
+            yaml_cfg = yaml.load(f, Loader=yaml.Loader)
+        obj.config = yaml_cfg
+        if 'query' in obj.config and 'path' in obj.config['query']:
+            obj.config['query']['path'] = file_path
+    else:
+        obj.config = {'dep': 2, 'id': 23, 'query': {'path': file_path, 'form': ['liukuntest']}, 'change': {'value': ['test1', 'test2', 'test3']}, 'description': '从docker组里删除未被信任的用户,增加信任用户'}
+    obj.status_form = pd.read_pickle(pkl_path)
 
 def test_init():
     pass
