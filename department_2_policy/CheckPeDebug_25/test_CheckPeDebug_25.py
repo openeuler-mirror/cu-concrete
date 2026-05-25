@@ -39,9 +39,23 @@ def build_instance():
     cls = getattr(mod, 'CheckPeDebug_25')
     obj = cls()
     obj.config_file = '/tmp/CheckPeDebug_25.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    if os.path.exists(yaml_path):
+        with open(yaml_path, 'r', encoding='utf-8') as f:
+            yaml_cfg = yaml.load(f, Loader=yaml.Loader)
+        obj.config = yaml_cfg
+        if 'query' in obj.config and 'path' in obj.config['query']:
+            obj.config['query']['path'] = file_path
+        obj.config['backup_path'] = backup_path
+    else:
+        obj.config = {'dep': 2, 'id': 25, 'query': {'path': file_path}, 'change': {'value': '660'}, 'backup_path': backup_path, 'description': '确保 debug 文件权限为 660'}
+    obj.config['cahnge'] = obj.config.get('change')
+    obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
 
 def test_finalfix():
     pass
