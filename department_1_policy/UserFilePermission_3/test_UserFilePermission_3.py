@@ -28,10 +28,15 @@ def build_instance():
     return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 3
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
 
 def test_fix():
     pass
