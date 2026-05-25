@@ -25,7 +25,12 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = LockFile_29()
+    obj.config_file = '/tmp/LockFile_29.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 29, 'query': {'path': file_paths}, 'change': {'value': ['+i', '-i']}, 'description': '锁定关键文件'}
+    obj.status_form = pd.read_pickle(pkl_path)
 
 def test_init():
     pass
