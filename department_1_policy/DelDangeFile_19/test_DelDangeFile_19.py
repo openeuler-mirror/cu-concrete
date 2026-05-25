@@ -23,7 +23,12 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    obj = DelDangeFile_19()
+    obj.config_file = '/tmp/DelDangeFile_19.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 19, 'query': {'form': ['test_netrc', 'test_rhosts']}, 'description': '删除对.netrc,.rhosts的文件'}
+    obj.status_form = pd.read_pickle(pkl_path)
 
 def test_init():
     pass
