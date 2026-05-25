@@ -29,12 +29,17 @@ def build_instance():
     obj.current_dir = '/tmp'
     obj.config = {'dep': 1, 'id': 30, 'query': {'path': [conf_path, conf_bak_path]}, 'change': {'set': 'net.ipv4.ip_forward', 'value': 'net.ipv4.ip_forward=0'}, 'description': '禁止ip路由转发'}
     obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
+    assert obj.config['dep'] == 1
+    assert obj.config['id'] == 30
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    obj = build_instance()
+    obj.finalfix()
 
 def test_fix():
     pass
