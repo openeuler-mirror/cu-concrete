@@ -34,9 +34,16 @@ def prepare_files():
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
+    for fp in [pkl_path, '/tmp/AuditDebug_8.yaml', file_service, rule_file, auditctl, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'AuditDefault_8')
+    obj = cls()
+    obj.config_file = '/tmp/AuditDebug_8.yaml'
+    obj.pkl_file = pkl_path
 
 def test_init():
     pass
