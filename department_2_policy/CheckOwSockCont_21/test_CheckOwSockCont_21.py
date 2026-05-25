@@ -38,9 +38,24 @@ def build_instance():
     mod = load_module()
     cls = getattr(mod, 'CheckOwSockCont_21')
     obj = cls()
+    obj.config_file = '/tmp/CheckOwSockCont_21.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    if os.path.exists(yaml_path):
+        with open(yaml_path, 'r', encoding='utf-8') as f:
+            yaml_cfg = yaml.load(f, Loader=yaml.Loader)
+        obj.config = yaml_cfg
+        if 'query' in obj.config and 'path' in obj.config['query']:
+            obj.config['query']['path'] = file_path
+        obj.config['backup_path'] = backup_path
+    else:
+        obj.config = {'dep': 2, 'id': 21, 'query': {'path': file_path}, 'change': {'value': 'root:root'}, 'backup_path': backup_path, 'description': '确保容器相关 socket/file 归属为 root:root'}
+    obj.config['change'] = obj.config.get('change')
+    obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
 
 def test_finalfix():
     pass
