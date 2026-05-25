@@ -18,9 +18,16 @@ def prepare_files():
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
+    for fp in [pkl_path, '/tmp/RebuildUser_5.yaml', login_defs_path, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    obj = RebuildUser_5()
+    obj.config_file = '/tmp/RebuildUser_5.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 5, 'query': {'form': ['^[[:space:]]*PASS_MAX_DAYS', '^[[:space:]]*PASS_MIN_LEN', '^[[:space:]]*PASS_MIN_DAYS', '^[[:space:]]*PASS_WARN_AGE'], 'path': login_defs_path}, 'change': {'value': ['PASS_MAX_DAYS    90', 'PASS_MIN_LEN     8', 'PASS_MIN_DAYS    1', 'PASS_WARN_AGE    7']}, 'recovery': {'value': ['PASS_MAX_DAYS    99999', 'PASS_MIN_LEN     5', 'PASS_MIN_DAYS    0', 'PASS_WARN_AGE    7']}, 'description': '用户密码长度和有效期相关设定', 'backup_path': backup_path}
 
 def test_init():
     pass
