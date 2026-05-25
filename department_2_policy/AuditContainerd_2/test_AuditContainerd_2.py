@@ -37,7 +37,12 @@ def prepare_files():
             os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = mod.AuditContainerd_2
+    obj = cls()
+    obj.config_file = '/tmp/AuditContainerd_2.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
 
 def test_init():
     pass
