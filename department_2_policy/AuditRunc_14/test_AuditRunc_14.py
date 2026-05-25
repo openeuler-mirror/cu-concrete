@@ -34,9 +34,24 @@ def prepare_files():
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
+    for fp in [pkl_path, '/tmp/AuditRunc_14.yaml', file_service, rule_file, auditctl, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = None
+    for name in ('AuditRunc_14', 'AuditContainerShim_13', 'AuditRunc'):
+        if hasattr(mod, name):
+            cls = getattr(mod, name)
+            break
+    if cls is None:
+        for name in dir(mod):
+            attr = getattr(mod, name)
+            if isinstance(attr, type):
+                cls = attr
+                break
+    assert cls is not None, 'no class found in module'
 
 def test_init():
     pass
