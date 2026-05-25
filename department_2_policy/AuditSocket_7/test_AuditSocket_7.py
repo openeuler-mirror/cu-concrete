@@ -33,9 +33,16 @@ def prepare_files():
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
+    for fp in [pkl_path, '/tmp/AuditSocket_7.yaml', file_sock, rule_file, auditctl, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'AuditSocket_7')
+    obj = cls()
+    obj.config_file = '/tmp/AuditSocket_7.yaml'
+    obj.pkl_file = pkl_path
 
 def test_init():
     pass
