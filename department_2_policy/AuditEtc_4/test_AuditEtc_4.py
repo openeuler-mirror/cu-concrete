@@ -33,9 +33,16 @@ def prepare_files():
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
+    for fp in [pkl_path, '/tmp/AuditEtc_4.yaml', file_etc, rule_file, auditctl, backup_path]:
+        if os.path.exists(fp):
+            os.remove(fp)
 
 def build_instance():
-    pass
+    mod = load_module()
+    cls = getattr(mod, 'AuditDockerd_1')
+    obj = cls()
+    obj.config_file = '/tmp/AuditEtc_4.yaml'
+    obj.pkl_file = pkl_path
 
 def test_init():
     pass
