@@ -41,12 +41,18 @@ def test_fix():
     obj = build_instance()
     obj.fix()
     status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['12', 'status'] == 2 or status_df.loc['12', 'status'] == '2'
 
 def test_check():
-    pass
+    obj = build_instance()
+    result = obj.check()
+    assert isinstance(result, bool)
 
 def test_rollback():
-    pass
+    obj = build_instance()
+    obj.fix()
+    obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
 
 def test_reset():
     pass
