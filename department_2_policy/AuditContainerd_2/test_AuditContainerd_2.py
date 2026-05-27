@@ -43,9 +43,14 @@ def build_instance():
     obj.config_file = '/tmp/AuditContainerd_2.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
+    obj.config = {'dep': 2, 'id': 2, 'query': {'path': [file_containerd, rule_file, auditctl], 'form': '-w /usr/bin/containerd -k containerd'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保为 containerd 守护进程配置审计功能（自动）'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 2
 
 def test_finalfix():
     pass
