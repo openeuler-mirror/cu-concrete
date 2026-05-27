@@ -56,9 +56,15 @@ def build_instance():
 
 def test_init():
     mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 21
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    _, obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['221', 'status'] == 2
 
 def test_fix_sets_owner_and_status(monkeypatch):
     pass
