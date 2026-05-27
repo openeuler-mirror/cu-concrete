@@ -60,12 +60,18 @@ def build_instance():
     else:
         obj.config = {'dep': 2, 'id': 23, 'query': {'path': file_path, 'form': ['liukuntest']}, 'change': {'value': ['test1', 'test2', 'test3']}, 'description': '从docker组里删除未被信任的用户,增加信任用户'}
     obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 23
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    _, obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
 
 def test_fix_removes_bad_users_adds_good_users_and_sets_status(monkeypatch):
     pass
