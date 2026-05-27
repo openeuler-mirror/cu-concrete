@@ -55,10 +55,16 @@ def build_instance():
     return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 22
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    _, obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['222', 'status'] == 2
 
 def test_fix_sets_mode_and_status(monkeypatch):
     pass
