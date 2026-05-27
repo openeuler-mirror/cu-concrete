@@ -48,6 +48,30 @@ def build_instance():
     if cls is None:
         cls = next((getattr(mod, n) for n in dir(mod) if n[0].isupper()), None)
     obj = cls()
+    obj.config_file = '/tmp/AuditConSock_9.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    if os.path.exists(yaml_path):
+        with open(yaml_path, 'r', encoding='utf-8') as f:
+            yaml_cfg = yaml.load(f, Loader=yaml.Loader)
+        obj.config = yaml_cfg
+        if 'query' in obj.config and 'path' in obj.config['query']:
+            orig_paths = obj.config['query']['path']
+            new_paths = []
+            for i, _ in enumerate(orig_paths):
+                if i == 0:
+                    new_paths.append(file_consock)
+                elif i == 1:
+                    new_paths.append(rule_file)
+                elif i == 2:
+                    new_paths.append(auditctl)
+                else:
+                    new_paths.append(orig_paths[i])
+            obj.config['query']['path'] = new_paths
+        obj.config['backup_path'] = backup_path
+    else:
+        obj.config = {'dep': 2, 'id': 9, 'query': {'path': [file_consock, rule_file, auditctl], 'form': '-w /var/run -k consock'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保 conn/socket 相关事件被审计'}
+    obj.status_form = pd.read_pickle(pkl_path)
 
 def test_init():
     pass
