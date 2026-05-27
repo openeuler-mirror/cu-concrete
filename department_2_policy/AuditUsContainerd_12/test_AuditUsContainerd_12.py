@@ -44,9 +44,33 @@ def build_instance():
     obj = cls()
     obj.config_file = '/tmp/AuditUsContainerd_12.yaml'
     obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    if os.path.exists(yaml_path):
+        with open(yaml_path, 'r', encoding='utf-8') as f:
+            yaml_cfg = yaml.load(f, Loader=yaml.Loader)
+        obj.config = yaml_cfg
+        if 'query' in obj.config and 'path' in obj.config['query']:
+            orig_paths = obj.config['query']['path']
+            new_paths = []
+            for i, _ in enumerate(orig_paths):
+                if i == 0:
+                    new_paths.append(file_service)
+                elif i == 1:
+                    new_paths.append(rule_file)
+                elif i == 2:
+                    new_paths.append(auditctl)
+                else:
+                    new_paths.append(orig_paths[i])
+            obj.config['query']['path'] = new_paths
+        obj.config['backup_path'] = backup_path
+    else:
+        obj.config = {'dep': 2, 'id': 12, 'query': {'path': [file_service, rule_file, auditctl], 'form': f'-w /usr/bin/{service_name} -p wa -k uscontainerd'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保 us containerd 相关审计规则存在'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
 
 def test_finalfix():
     pass
