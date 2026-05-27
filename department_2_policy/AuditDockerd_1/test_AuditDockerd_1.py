@@ -43,9 +43,14 @@ def build_instance():
     obj.config_file = '/tmp/AuditDockerd_1.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
+    obj.config = {'dep': 2, 'id': 1, 'query': {'path': [file_dockerd, rule_file, auditctl], 'form': '-w /usr/bin/dockerd -k docker'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保为 Docker 守护进程配置审计功能（自动）'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 1
 
 def test_finalfix():
     pass
