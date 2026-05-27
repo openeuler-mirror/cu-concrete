@@ -43,9 +43,14 @@ def build_instance():
     obj.config_file = '/tmp/AuditVar_3.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
+    obj.config = {'dep': 2, 'id': 3, 'query': {'path': [file_var, rule_file, auditctl], 'form': '-w /var -k var'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保审计可变数据（自动）'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 3
 
 def test_finalfix():
     pass
