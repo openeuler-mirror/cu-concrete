@@ -23,9 +23,17 @@ def prepare_files():
         f.write('FAKE_RSA_KEY')
     with open(id_dsa, 'w') as f:
         f.write('FAKE_DSA_KEY')
+    df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    df.to_pickle(pkl_path)
+    yield
+    for fp in [pkl_path, '/tmp/AddSecure_13.yaml', sudoers_path, auth_keys, id_rsa, id_dsa]:
+        if os.path.exists(fp):
+            os.remove(fp)
+    if os.path.exists(ssh_dir):
+        os.rmdir(ssh_dir)
 
 def build_instance():
-    pass
+    obj = AddSecure_13()
 
 def test_init():
     pass
