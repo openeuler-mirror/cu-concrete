@@ -52,9 +52,15 @@ def test_fix():
 def test_check():
     obj = build_instance()
     obj.fix()
+    result = obj.check()
+    assert isinstance(result, bool)
 
 def test_rollback():
-    pass
+    obj = build_instance()
+    obj.fix()
+    obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['19', 'status'] == 0
 
 def test_reset():
     pass
