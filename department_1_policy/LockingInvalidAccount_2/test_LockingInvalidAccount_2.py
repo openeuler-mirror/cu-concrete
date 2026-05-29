@@ -53,9 +53,15 @@ def test_rollback():
     obj.fix()
     obj.rollback()
     status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['12', 'status'] == 0 or status_df.loc['12', 'status'] == '0'
 
 def test_reset():
-    pass
+    obj = build_instance()
+    obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['12', 'status'] == 2 or status_df.loc['12', 'status'] == '2'
 
 def test_get_des():
-    pass
+    obj = build_instance()
+    des = obj.get_des()
+    assert des == '锁定无效账号'
