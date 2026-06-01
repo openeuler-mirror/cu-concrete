@@ -68,6 +68,15 @@ def test_finalfix():
 
 def test_fix_sets_owner_and_status(monkeypatch):
     mod, obj = build_instance()
+    called = {'chown': False}
+
+    def fake_chown(owner, path):
+        pass
+    monkeypatch.setattr(mod.bsf, 'chown_file', fake_chown)
+    monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('root:root', 0))
+    obj.fix()
+    assert called['chown'] is True
+    status_df = pd.read_pickle(pkl_path)
 
 def test_fix_calls_chown_with_expected_args(monkeypatch):
     pass
