@@ -72,9 +72,19 @@ def test_finalfix():
     _, obj = build_instance()
     obj.finalfix()
     status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['223', 'status'] == 2
 
 def test_fix_removes_bad_users_adds_good_users_and_sets_status(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    calls = {'remove': [], 'append': []}
+
+    def fake_remove(user, group):
+        pass
+
+    def fake_append(group, user):
+        pass
+    monkeypatch.setattr(mod.bsf, 'remove_user_from_group', fake_remove)
+    monkeypatch.setattr(mod.bsf, 'append_user_group', fake_append)
 
 def test_fix_creates_pkl_when_missing(monkeypatch):
     pass
