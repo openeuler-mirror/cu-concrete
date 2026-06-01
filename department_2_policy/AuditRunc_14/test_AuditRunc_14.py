@@ -76,9 +76,14 @@ def build_instance():
         obj.config['backup_path'] = backup_path
     else:
         obj.config = {'dep': 2, 'id': 14, 'query': {'path': [file_service, rule_file, auditctl], 'form': f'-w /usr/bin/{service_name} -p wa -k runc'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保 runc 相关审计规则存在'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 14
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
     pass
