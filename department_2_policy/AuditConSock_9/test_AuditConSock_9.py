@@ -72,12 +72,16 @@ def build_instance():
     else:
         obj.config = {'dep': 2, 'id': 9, 'query': {'path': [file_consock, rule_file, auditctl], 'form': '-w /var/run -k consock'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保 conn/socket 相关事件被审计'}
     obj.status_form = pd.read_pickle(pkl_path)
+    return (mod, obj)
 
 def test_init():
-    pass
+    mod, obj = build_instance()
+    assert obj.config['dep'] == 2
+    assert obj.config['id'] == 9
+    assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    _, obj = build_instance()
 
 def test_fix_writes_rule_and_sets_status(monkeypatch):
     pass
