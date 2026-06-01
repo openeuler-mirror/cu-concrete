@@ -68,6 +68,16 @@ def test_finalfix():
 
 def test_fix_sets_mode_and_status(monkeypatch):
     mod, obj = build_instance()
+    called = {'chmod': False}
+
+    def fake_chmod(mode, path):
+        pass
+    monkeypatch.setattr(mod.bsf, 'chmod_file', fake_chmod)
+    monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('660', 0))
+    obj.fix()
+    assert called['chmod'] is True
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['225', 'status'] == 2
 
 def test_fix_calls_chmod_with_expected_args(monkeypatch):
     pass
