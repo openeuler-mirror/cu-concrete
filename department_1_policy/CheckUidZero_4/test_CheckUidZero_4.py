@@ -57,9 +57,28 @@ def test_check():
 
 def test_rollback():
     obj = build_instance()
+    except_value = True
+    result = bsf.awk_shell(':', obj.config['query'][0]['form'], obj.config['query'][0]['path'])
+    users = [user for user in result[0].splitlines() if user != 'root']
+    for user in users:
+        cmd = ['id', user]
+        uid_str = base_shell(cmd)[0]
+        match = re.search('uid=(\\d+)', uid_str)
+        if match and int(match.group(1)) == 0:
+            except_value = False
+    if except_value == True:
+        obj.fix()
+        obj.rollback()
+        status_df = pd.read_pickle(pkl_path)
+        assert status_df.loc['14', 'status'] == 2
+    else:
+        obj.fix()
+        obj.rollback()
+        status_df = pd.read_pickle(pkl_path)
+        assert status_df.loc['14', 'status'] == 0
 
 def test_reset():
-    pass
+    obj = build_instance()
 
 def test_get_des():
     pass
