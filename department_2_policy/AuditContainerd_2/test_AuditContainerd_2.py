@@ -61,6 +61,13 @@ def test_finalfix():
 
 def test_fix_writes_rule_and_sets_status(monkeypatch):
     mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'reload_audit_rules', lambda: None)
+    obj.fix()
+    with open(rule_file, 'r') as f:
+        content = f.read()
+    assert content == obj.config['query']['form']
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['22', 'status'] == 2
 
 def test_check_command_search_branch(monkeypatch):
     pass
