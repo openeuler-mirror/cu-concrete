@@ -34,9 +34,15 @@ def prepare_files():
 
 def build_instance():
     obj = AddSecure_13()
+    obj.config_file = '/tmp/AddSecure_13.yaml'
+    obj.pkl_file = pkl_path
+    obj.current_dir = '/tmp'
+    obj.config = {'dep': 1, 'id': 13, 'query': {'form': 'safe_account', 'path': sudoers_path, 'path2': auth_keys, 'path3': id_rsa, 'path4': id_dsa}, 'change': {'value1': 'root@userpass', 'value2': 'safe_account    ALL=(ALL)    NOPASSWD: ALL', 'value3': ['700', '644', '600'], 'path': '/tmp/test_safe_account', 'path1': ssh_dir, 'path2': auth_keys, 'path3': id_rsa, 'path4': id_dsa}, 'description': '添加用于安全管理的账户'}
+    obj.status_form = pd.read_pickle(pkl_path)
+    return obj
 
 def test_init():
-    pass
+    obj = build_instance()
 
 def test_finalfix():
     pass
