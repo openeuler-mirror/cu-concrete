@@ -82,9 +82,14 @@ def test_init():
 
 def test_finalfix():
     _, obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['29', 'status'] == 2
 
 def test_fix_writes_rule_and_sets_status(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'reload_audit_rules', lambda *a, **k: None)
+    obj.fix()
 
 def test_check_command_search_branch(monkeypatch):
     pass
