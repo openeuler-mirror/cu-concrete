@@ -64,10 +64,15 @@ def test_check():
     assert isinstance(result, bool)
 
 def test_rollback():
-    pass
+    obj = build_instance()
+    obj.fix()
+    obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['121', 'status']
+    assert val == 0
 
 def test_reset():
-    pass
+    obj = build_instance()
 
 def test_get_des():
     pass
