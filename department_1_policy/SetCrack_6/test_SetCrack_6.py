@@ -64,7 +64,12 @@ def test_rollback():
     assert status_df.loc['16', 'status'] == 0
 
 def test_reset():
-    pass
+    obj = build_instance()
+    obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['16', 'status'] == 2
 
 def test_get_des():
-    pass
+    obj = build_instance()
+    des = obj.get_des()
+    assert des == '修改密码相关限制'
