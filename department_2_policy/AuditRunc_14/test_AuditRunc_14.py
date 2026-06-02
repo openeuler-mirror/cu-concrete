@@ -86,10 +86,14 @@ def test_init():
     assert isinstance(obj.status_form, pd.DataFrame)
 
 def test_finalfix():
-    pass
+    _, obj = build_instance()
+    obj.finalfix()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['214', 'status'] == 2
 
 def test_fix_writes_rule_and_sets_status(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'get_service_file', lambda p: file_service)
 
 def test_check_command_search_branch(monkeypatch):
     pass
