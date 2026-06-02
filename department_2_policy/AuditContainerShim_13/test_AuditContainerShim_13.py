@@ -81,7 +81,13 @@ def test_finalfix():
     assert status_df.loc['213', 'status'] == 2
 
 def test_fix_writes_rule_and_sets_status(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'get_service_file', lambda p: file_service)
+    monkeypatch.setattr(mod.bsf, 'reload_audit_rules', lambda *a, **k: None)
+    obj.fix()
+    with open(rule_file, 'r') as f:
+        content = f.read()
+    assert content == file_service
 
 def test_check_command_search_branch(monkeypatch):
     pass
