@@ -79,12 +79,18 @@ def test_fix_removes_bad_users_adds_good_users_and_sets_status(monkeypatch):
     calls = {'remove': [], 'append': []}
 
     def fake_remove(user, group):
-        pass
+        calls['remove'].append(user)
 
     def fake_append(group, user):
-        pass
+        calls['append'].append(user)
     monkeypatch.setattr(mod.bsf, 'remove_user_from_group', fake_remove)
     monkeypatch.setattr(mod.bsf, 'append_user_group', fake_append)
+    monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['liukuntest', 'other']), 0))
+    obj.fix()
+    assert 'liukuntest' in calls['remove']
+    assert 'test1' in calls['append']
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['223', 'status'] == 2
 
 def test_fix_creates_pkl_when_missing(monkeypatch):
     pass
