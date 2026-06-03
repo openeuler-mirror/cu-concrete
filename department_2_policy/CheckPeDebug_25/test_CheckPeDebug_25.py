@@ -71,7 +71,7 @@ def test_fix_sets_mode_and_status(monkeypatch):
     called = {'chmod': False}
 
     def fake_chmod(mode, path):
-        pass
+        called['chmod'] = True
     monkeypatch.setattr(mod.bsf, 'chmod_file', fake_chmod)
     monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('660', 0))
     obj.fix()
@@ -80,7 +80,15 @@ def test_fix_sets_mode_and_status(monkeypatch):
     assert status_df.loc['225', 'status'] == 2
 
 def test_fix_calls_chmod_with_expected_args(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    calls = {'chmod': None}
+
+    def fake_chmod(mode, path):
+        pass
+    monkeypatch.setattr(mod.bsf, 'chmod_file', fake_chmod)
+    monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('660', 0))
+    obj.fix()
+    assert calls['chmod'] == (obj.config['change']['value'], obj.config['query']['path'])
 
 def test_check_permission_is_expected(monkeypatch):
     pass
