@@ -71,7 +71,7 @@ def test_fix_sets_owner_and_status(monkeypatch):
     called = {'chown': False}
 
     def fake_chown(owner, path):
-        pass
+        called['chown'] = True
     monkeypatch.setattr(mod.bsf, 'chown_file', fake_chown)
     expected_owner = obj.config['change']['value']
     monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: (expected_owner, 0))
@@ -81,7 +81,14 @@ def test_fix_sets_owner_and_status(monkeypatch):
     assert status_df.loc['219', 'status'] == 2
 
 def test_fix_calls_chown_with_expected_args(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    calls = {'chown': None}
+
+    def fake_chown(owner, path):
+        pass
+    monkeypatch.setattr(mod.bsf, 'chown_file', fake_chown)
+    monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('root:root', 0))
+    obj.fix()
 
 def test_check_owner_is_expected(monkeypatch):
     pass
