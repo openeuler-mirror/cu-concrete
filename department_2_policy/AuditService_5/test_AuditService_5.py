@@ -85,9 +85,35 @@ def test_fix_writes_rule_and_sets_status(monkeypatch):
     obj.fix()
     with open(rule_file, 'r') as f:
         content = f.read()
+    assert f'-w {file_service}' in content
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['25', 'status'] == 2
 
 def test_check_and_rollback(monkeypatch):
-    pass
+    mod, obj = build_instance()
+
+    class FakeBSF:
+
+        @staticmethod
+        def command_search(arg):
+            pass
+
+        @staticmethod
+        def pipe_grep_shell(form_arg, path, value):
+            pass
+
+        @staticmethod
+        def get_service_file(p):
+            pass
+
+        @staticmethod
+        def remove_file(path):
+            pass
+
+        @staticmethod
+        def reload_audit_rules():
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
 
 def test_check_command_search_branch(monkeypatch):
     pass
