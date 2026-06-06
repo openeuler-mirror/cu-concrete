@@ -63,6 +63,11 @@ def test_rollback():
 def test_reset():
     obj = build_instance()
     obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['112', 'status']
+    assert val == 2
 
 def test_get_des():
-    pass
+    obj = build_instance()
+    des = obj.get_des()
+    assert des == '远程系统日志设定'
