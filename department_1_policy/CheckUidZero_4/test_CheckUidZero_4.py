@@ -79,6 +79,11 @@ def test_rollback():
 
 def test_reset():
     obj = build_instance()
+    obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['14', 'status'] == 2
 
 def test_get_des():
-    pass
+    obj = build_instance()
+    des = obj.get_des()
+    assert des == 'UID为0的账户检查'
