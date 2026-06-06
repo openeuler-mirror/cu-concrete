@@ -70,7 +70,20 @@ def test_fix_writes_rule_and_sets_status(monkeypatch):
     assert status_df.loc['23', 'status'] == 2
 
 def test_check_command_search_branch(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    form = obj.config['query']['form']
+
+    class FakeBSF:
+
+        @staticmethod
+        def command_search(arg):
+            return (form,)
+
+        @staticmethod
+        def search_audit_rule(path):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    assert obj.check() is True
 
 def test_check_command_search_branch_not_present(monkeypatch):
     pass
