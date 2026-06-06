@@ -2,6 +2,7 @@ import os
 import pytest
 import pandas as pd
 from RebuildUmask_8 import RebuildUmask_8
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'RebuildUmask_8.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 profile_path = '/tmp/test_profile'
@@ -9,12 +10,16 @@ backup_path = '/tmp/test_profile_bak'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/RebuildUmask_8.yaml')
+    # 构造 profile 文件
     with open(profile_path, 'w') as f:
         f.write('export PATH\numask 022\n')
+    # 构造备份文件
     with open(backup_path, 'w') as f:
         f.write('export PATH\numask 022\n')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -27,7 +32,22 @@ def build_instance():
     obj.config_file = '/tmp/RebuildUmask_8.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 8, 'query': {'form': '^umask', 'path': profile_path}, 'change': {'value': 'umask 027'}, 'recovery': {'value': 'umask 022'}, 'description': 'umask设置用户文件权限', 'backup_path': backup_path}
+    obj.config = {
+        'dep': 1,
+        'id': 8,
+        'query': {
+            'form': '^umask',
+            'path': profile_path
+        },
+        'change': {
+            'value': 'umask 027'
+        },
+        'recovery': {
+            'value': 'umask 022'
+        },
+        'description': 'umask设置用户文件权限',
+        'backup_path': backup_path
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
@@ -41,7 +61,7 @@ def test_finalfix():
     obj = build_instance()
     obj.finalfix()
     status_df = pd.read_pickle(pkl_path)
-    assert status_df.loc['18', 'status'] == 2
+    assert status_df.loc['18', 'status'] == 2 
 
 def test_fix():
     obj = build_instance()
@@ -61,8 +81,7 @@ def test_rollback():
     obj.fix()
     obj.rollback()
     status_df = pd.read_pickle(pkl_path)
-    assert status_df.loc['18', 'status'] == 0
-
+    assert status_df.loc['18', 'status'] == 0 
 def test_reset():
     obj = build_instance()
     obj.reset()
