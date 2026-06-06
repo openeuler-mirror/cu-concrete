@@ -2,16 +2,20 @@ import os
 import pytest
 import pandas as pd
 from DeleteKeyword_17 import DeleteKeyword_17
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'DeleteKeyword_17.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 log_path = '/tmp/test_log_messages'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/DeleteKeyword_17.yaml')
+    # 构造 log 文件，包含所有关键字
     with open(log_path, 'w') as f:
         f.write('virtio\nkvm\nKVM\nCloud\ncloudw\notherlog\n')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -24,7 +28,17 @@ def build_instance():
     obj.config_file = '/tmp/DeleteKeyword_17.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 17, 'query': {'path': log_path}, 'change': {'value': ['virtio', 'kvm', 'KVM', 'Cloud', 'cloudw']}, 'description': '删除带有特定记录的log'}
+    obj.config = {
+        'dep': 1,
+        'id': 17,
+        'query': {
+            'path': log_path
+        },
+        'change': {
+            'value': ['virtio', 'kvm', 'KVM', 'Cloud', 'cloudw']
+        },
+        'description': '删除带有特定记录的log'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
