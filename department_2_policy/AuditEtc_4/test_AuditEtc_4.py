@@ -86,9 +86,23 @@ def test_fix_writes_rule_and_sets_status(monkeypatch):
     with open(rule_file, 'r') as f:
         content = f.read()
     assert content == obj.config['query']['form']
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['24', 'status'] == 2
 
 def test_check_command_search_branch(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    form = obj.config['query']['form']
+
+    class FakeBSF:
+
+        @staticmethod
+        def command_search(arg):
+            pass
+
+        @staticmethod
+        def search_audit_rule(path):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
 
 def test_check_command_search_branch_not_present(monkeypatch):
     pass
