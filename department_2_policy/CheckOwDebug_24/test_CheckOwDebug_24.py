@@ -84,16 +84,21 @@ def test_fix_calls_chown_with_expected_args(monkeypatch):
     calls = {'chown': None}
 
     def fake_chown(owner, path):
-        pass
+        calls['chown'] = (owner, path)
     monkeypatch.setattr(mod.bsf, 'chown_file', fake_chown)
     monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('root:root', 0))
     obj.fix()
+    assert calls['chown'] == (obj.config['cahnge']['value'], obj.config['query']['path'])
 
 def test_check_owner_is_expected(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('root:root', 0))
+    assert obj.check() is True
 
 def test_check_owner_not_expected(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('user:user', 0))
+    assert obj.check() is False
 
 def test_check_true_on_owner_error_code(monkeypatch):
     pass
