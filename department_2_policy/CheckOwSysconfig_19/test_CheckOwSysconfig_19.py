@@ -100,12 +100,27 @@ def test_check_owner_is_expected(monkeypatch):
 def test_check_owner_not_expected(monkeypatch):
     mod, obj = build_instance()
     monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('nobody:nogroup', 0))
+    assert obj.check() is False
 
 def test_check_true_on_owner_error_code(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('err', 1))
+    assert obj.check() is True
 
 def test_rollback_updates_status_when_check_fails(monkeypatch):
-    pass
+    mod, obj = build_instance()
+
+    class FakeBSF:
+
+        @staticmethod
+        def chown_file(owner, path):
+            pass
+
+        @staticmethod
+        def file_owner(*args):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    obj.status_form.loc['219', 'status'] = 1
 
 def test_reset(monkeypatch):
     pass
