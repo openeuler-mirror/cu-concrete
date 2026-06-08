@@ -85,9 +85,25 @@ def test_check_owner_is_root(monkeypatch):
 
 def test_check_owner_not_root(monkeypatch):
     mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('user:group', 0))
+    assert obj.check() is False
 
 def test_rollback_updates_status_when_check_fails(monkeypatch):
-    pass
+    mod, obj = build_instance()
+
+    class FakeBSF:
+
+        @staticmethod
+        def file_owner(*args):
+            pass
+
+        @staticmethod
+        def chown_file(owner, path):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    obj.status_form.loc['215', 'status'] = 1
+    obj.status_form.to_pickle(pkl_path)
+    obj.rollback()
 
 def test_reset(monkeypatch):
     pass
