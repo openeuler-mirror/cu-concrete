@@ -2,6 +2,7 @@ import os
 import pytest
 import pandas as pd
 from DisableFtpAnonymous_21 import DisableFtpAnonymous_21
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'DisableFtpAnonymous_21.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 passwd_path = '/tmp/test_passwd'
@@ -11,8 +12,10 @@ ftpusers_path = '/tmp/test_ftpusers'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/DisableFtpAnonymous_21.yaml')
+    # 构造相关配置文件
     with open(passwd_path, 'w') as f:
         f.write('ftp:x:1001:1001:ftp user:/var/ftp:/sbin/nologin\n#ftp:x:1001:1001:ftp user:/var/ftp:/sbin/nologin\n')
     with open(vsftpd_conf_path, 'w') as f:
@@ -21,6 +24,7 @@ def prepare_files():
         f.write('anonymous_enabl = YES\n')
     with open(ftpusers_path, 'w') as f:
         f.write('root\n')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -33,7 +37,18 @@ def build_instance():
     obj.config_file = '/tmp/DisableFtpAnonymous_21.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 21, 'query': {'path': [passwd_path, vsftpd_conf_path, vsftpd_conf2_path, ftpusers_path], 'form': ['^ftp:x', 'anonymous_enabl = YES', '^#ftp:x']}, 'change': {'value': ['anonymous_enabl = NO', 'root']}, 'description': '禁止匿名账户登录ftp'}
+    obj.config = {
+        'dep': 1,
+        'id': 21,
+        'query': {
+            'path': [passwd_path, vsftpd_conf_path, vsftpd_conf2_path, ftpusers_path],
+            'form': ['^ftp:x', 'anonymous_enabl = YES', '^#ftp:x']
+        },
+        'change': {
+            'value': ['anonymous_enabl = NO', 'root']
+        },
+        'description': '禁止匿名账户登录ftp'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
