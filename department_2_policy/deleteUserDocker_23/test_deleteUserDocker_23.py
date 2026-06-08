@@ -93,7 +93,14 @@ def test_fix_removes_bad_users_adds_good_users_and_sets_status(monkeypatch):
     assert status_df.loc['223', 'status'] == 2
 
 def test_fix_creates_pkl_when_missing(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    if os.path.exists(pkl_path):
+        os.remove(pkl_path)
+    monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['gooduser']), 0))
+    monkeypatch.setattr(mod.bsf, 'remove_user_from_group', lambda u, g: None)
+    monkeypatch.setattr(mod.bsf, 'append_user_group', lambda g, u: None)
+    obj.fix()
+    assert os.path.exists(pkl_path)
 
 def test_check_true_when_no_bad_users(monkeypatch):
     pass
