@@ -2,16 +2,21 @@ import os
 import pytest
 import pandas as pd
 from ReUserShell_24 import ReUserShell_24
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'ReUserShell_24.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 passwd_path = '/tmp/test_passwd_shell'
 
+
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/ReUserShell_24.yaml')
+    # 拷贝真实 /etc/passwd 文件
     if os.path.exists('/etc/passwd'):
         os.system(f'cp /etc/passwd {passwd_path}')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -24,7 +29,18 @@ def build_instance():
     obj.config_file = '/tmp/ReUserShell_24.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 24, 'query': {'path': passwd_path, 'form': ['{ print $1,$7 }', ['lp', 'sync', 'halt', 'news', 'uucp', 'operator', 'games', 'gopher', 'smmsp', 'nfsnobody', 'nobody']]}, 'change': {'value': '/sbin/nologin'}, 'description': '修改特定用户的shell域'}
+    obj.config = {
+        'dep': 1,
+        'id': 24,
+        'query': {
+            'path': passwd_path,
+            'form': [ '{ print $1,$7 }', ['lp', 'sync', 'halt', 'news', 'uucp', 'operator', 'games', 'gopher', 'smmsp', 'nfsnobody', 'nobody'] ]
+        },
+        'change': {
+            'value': '/sbin/nologin'
+        },
+        'description': '修改特定用户的shell域'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
