@@ -2,16 +2,21 @@ import os
 import pytest
 import pandas as pd
 from SSHRoot_22 import SSHRoot_22
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'SSHRoot_22.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 sshd_config_path = '/tmp/test_sshd_config'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/SSHRoot_22.yaml')
+    # 构造 sshd_config 文件
     with open(sshd_config_path, 'w') as f:
         f.write('Port 22\n')
+
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -24,7 +29,29 @@ def build_instance():
     obj.config_file = '/tmp/SSHRoot_22.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 22, 'query': {'path': [sshd_config_path], 'form': ['^[[:space:]]*(#)?[[:space:]]*Port', '^SELINUX=']}, 'change': {'set': ['sudo firewall-cmd --zone=public --add-port=1234/tcp --permanent', 'sudo firewall-cmd --reload', 'sudo firewall-cmd --zone=public --add-port=22/tcp --permanent'], 'value': ['Port 1234', 'Port 22']}, 'description': '修改ssh登录端口'}
+    obj.config = {
+        'dep': 1,
+        'id': 22,
+        'query': {
+            'path': [sshd_config_path],
+            'form': [
+                '^[[:space:]]*(#)?[[:space:]]*Port',
+                '^SELINUX='
+            ]
+        },
+        'change': {
+            'set': [
+                'sudo firewall-cmd --zone=public --add-port=1234/tcp --permanent',
+                'sudo firewall-cmd --reload',
+                'sudo firewall-cmd --zone=public --add-port=22/tcp --permanent'
+            ],
+            'value': [
+                'Port 1234',
+                'Port 22'
+            ]
+        },
+        'description': '修改ssh登录端口'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
