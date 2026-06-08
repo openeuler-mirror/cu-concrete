@@ -2,6 +2,7 @@ import os
 import pytest
 import pandas as pd
 from ForbiIp_30 import ForbiIp_30
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'ForbiIp_30.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 conf_path = '/tmp/test_sysctl.conf'
@@ -9,10 +10,13 @@ conf_bak_path = '/tmp/test_sysctl.conf_bak'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/ForbiIp_30.yaml')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
+    # 构造模拟 sysctl.conf 文件
     with open(conf_path, 'w') as f:
         f.write('')
     with open(conf_bak_path, 'w') as f:
@@ -27,7 +31,18 @@ def build_instance():
     obj.config_file = '/tmp/ForbiIp_30.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 30, 'query': {'path': [conf_path, conf_bak_path]}, 'change': {'set': 'net.ipv4.ip_forward', 'value': 'net.ipv4.ip_forward=0'}, 'description': '禁止ip路由转发'}
+    obj.config = {
+        'dep': 1,
+        'id': 30,
+        'query': {
+            'path': [conf_path, conf_bak_path]
+        },
+        'change': {
+            'set': 'net.ipv4.ip_forward',
+            'value': 'net.ipv4.ip_forward=0'
+        },
+        'description': '禁止ip路由转发'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
