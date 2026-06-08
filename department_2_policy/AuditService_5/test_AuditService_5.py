@@ -114,6 +114,12 @@ def test_check_and_rollback(monkeypatch):
         def reload_audit_rules():
             pass
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    with open(obj.config['query']['path'][1], 'w') as f:
+        f.write(obj.config['query']['form'])
+    obj.status_form.loc['25', 'status'] = 1
+    obj.status_form.to_pickle(pkl_path)
+    obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
 
 def test_check_command_search_branch(monkeypatch):
     pass
