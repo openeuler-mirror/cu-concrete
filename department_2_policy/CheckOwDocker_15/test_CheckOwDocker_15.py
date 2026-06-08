@@ -95,18 +95,23 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
 
         @staticmethod
         def file_owner(*args):
-            pass
+            if len(args) == 1:
+                return ('user:group', 0)
+            return None
 
         @staticmethod
         def chown_file(owner, path):
-            pass
+            return None
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     obj.status_form.loc['215', 'status'] = 1
     obj.status_form.to_pickle(pkl_path)
     obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['215', 'status'] == 0
 
 def test_reset(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_owner', lambda p: ('root:root', 0))
 
 def test_get_des():
     pass
