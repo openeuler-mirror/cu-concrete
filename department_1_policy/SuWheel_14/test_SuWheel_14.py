@@ -2,16 +2,20 @@ import os
 import pytest
 import pandas as pd
 from SuWheel_14 import SuWheel_14
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'SuWheel_14.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 su_path = '/tmp/test_su'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/SuWheel_14.yaml')
+    # 构造 su 文件
     with open(su_path, 'w') as f:
         f.write('# su pam config\n')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -24,7 +28,18 @@ def build_instance():
     obj.config_file = '/tmp/SuWheel_14.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 14, 'query': {'form': ['auth            sufficient      pam_rootok.so', 'auth            required        pam_wheel.so group=wheel'], 'path': su_path}, 'description': 'su权限的设定'}
+    obj.config = {
+        'dep': 1,
+        'id': 14,
+        'query': {
+            'form': [
+                'auth            sufficient      pam_rootok.so',
+                'auth            required        pam_wheel.so group=wheel'
+            ],
+            'path': su_path
+        },
+        'description': 'su权限的设定'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
