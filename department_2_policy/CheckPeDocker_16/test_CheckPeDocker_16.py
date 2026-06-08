@@ -84,16 +84,21 @@ def test_fix_calls_chmod_with_expected_args(monkeypatch):
     calls = {'chmod': None}
 
     def fake_chmod(mode, path):
-        pass
+        calls['chmod'] = (mode, path)
     monkeypatch.setattr(mod.bsf, 'chmod_file', fake_chmod)
     monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('755', 0))
     obj.fix()
+    assert calls['chmod'] == (obj.config['cahnge']['value'], obj.config['query']['path'])
 
 def test_check_permission_is_expected(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('755', 0))
+    assert obj.check() is True
 
 def test_check_permission_not_expected(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('644', 0))
+    assert obj.check() is False
 
 def test_check_true_on_permission_error_code(monkeypatch):
     pass
