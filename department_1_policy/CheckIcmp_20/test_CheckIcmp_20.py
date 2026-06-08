@@ -2,16 +2,20 @@ import os
 import pytest
 import pandas as pd
 from CheckIcmp_20 import CheckIcmp_20
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'CheckIcmp_20.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 sysctl_conf_path = '/tmp/test_sysctl.conf'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/CheckIcmp_20.yaml')
+    # 构造 sysctl.conf 文件
     with open(sysctl_conf_path, 'w') as f:
         f.write('net.ipv4.icmp_echo_ignore_all = 0\n')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -24,7 +28,21 @@ def build_instance():
     obj.config_file = '/tmp/CheckIcmp_20.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 20, 'query': {'form': '^net.ipv4.icmp_echo_ignore_all', 'path': sysctl_conf_path}, 'change': {'value': ['net.ipv4.icmp_echo_ignore_all = 1', 'net.ipv4.icmp_echo_ignore_all = 0']}, 'description': '禁止响应ping,避免被扫描发现'}
+    obj.config = {
+        'dep': 1,
+        'id': 20,
+        'query': {
+            'form': '^net.ipv4.icmp_echo_ignore_all',
+            'path': sysctl_conf_path
+        },
+        'change': {
+            'value': [
+                'net.ipv4.icmp_echo_ignore_all = 1',
+                'net.ipv4.icmp_echo_ignore_all = 0'
+            ]
+        },
+        'description': '禁止响应ping,避免被扫描发现'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
