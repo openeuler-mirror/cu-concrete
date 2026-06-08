@@ -102,9 +102,24 @@ def test_check_permission_not_expected(monkeypatch):
 
 def test_check_true_on_permission_error_code(monkeypatch):
     mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('err', 1))
+    assert obj.check() is True
 
 def test_rollback_updates_status_when_check_fails(monkeypatch):
-    pass
+    mod, obj = build_instance()
+
+    class FakeBSF:
+
+        @staticmethod
+        def chown_file(owner, path):
+            pass
+
+        @staticmethod
+        def file_permission(*args):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    obj.status_form.loc['225', 'status'] = 1
+    obj.status_form.to_pickle(pkl_path)
 
 def test_reset(monkeypatch):
     pass
