@@ -2,14 +2,17 @@ import os
 import pytest
 import pandas as pd
 from ShutCAD_28 import ShutCAD_28
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'ShutCAD_28.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 service_name = 'ctrl-alt-del.target'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/ShutCAD_28.yaml')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -22,7 +25,17 @@ def build_instance():
     obj.config_file = '/tmp/ShutCAD_28.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 28, 'query': {'path': service_name}, 'change': {'value': ['mask', 'unmask']}, 'description': '关闭ctrl+alt+del重启功能'}
+    obj.config = {
+        'dep': 1,
+        'id': 28,
+        'query': {
+            'path': service_name
+        },
+        'change': {
+            'value': ['mask', 'unmask']
+        },
+        'description': '关闭ctrl+alt+del重启功能'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
