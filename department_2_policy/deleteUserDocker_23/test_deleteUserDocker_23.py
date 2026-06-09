@@ -101,12 +101,18 @@ def test_fix_creates_pkl_when_missing(monkeypatch):
     monkeypatch.setattr(mod.bsf, 'append_user_group', lambda g, u: None)
     obj.fix()
     assert os.path.exists(pkl_path)
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['223', 'status'] == 2
 
 def test_check_true_when_no_bad_users(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['test1']), 0))
+    assert obj.check() is True
 
 def test_check_false_when_has_bad_users(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['liukuntest']), 0))
+    assert obj.check() is False
 
 def test_rollback_sets_status_to_zero_when_check_false(monkeypatch):
     pass
