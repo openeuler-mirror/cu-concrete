@@ -70,6 +70,12 @@ def test_rollback():
 def test_reset():
     obj = build_instance()
     obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    val = status_df.loc['129', 'status']
+    assert val == 2
 
 def test_get_des():
-    pass
+    obj = build_instance()
+    des = obj.get_des()
+    obj.rollback()
+    assert des == '锁定关键文件'
