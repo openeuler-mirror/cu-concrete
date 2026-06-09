@@ -113,6 +113,12 @@ def test_reset(monkeypatch):
     mod, obj = build_instance()
     monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('755', 0))
     monkeypatch.setattr(mod.bsf, 'chmod_file', lambda mode, path: None)
+    monkeypatch.setattr(mod.bsf, 'chown_file', lambda owner, path: None)
+    obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['218', 'status'] == 2
 
 def test_get_des():
-    pass
+    _, obj = build_instance()
+    des = obj.get_des()
+    assert des == obj.config['description']
