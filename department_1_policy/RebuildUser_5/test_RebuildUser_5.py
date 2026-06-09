@@ -63,6 +63,11 @@ def test_rollback():
 
 def test_reset():
     obj = build_instance()
+    obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['15', 'status'] == 2
 
 def test_get_des():
-    pass
+    obj = build_instance()
+    des = obj.get_des()
+    assert des == '用户密码长度和有效期相关设定'
