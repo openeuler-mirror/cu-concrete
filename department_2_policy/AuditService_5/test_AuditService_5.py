@@ -96,23 +96,24 @@ def test_check_and_rollback(monkeypatch):
 
         @staticmethod
         def command_search(arg):
-            pass
+            return ('',)
 
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
-            pass
+            return ('', 1)
 
         @staticmethod
         def get_service_file(p):
-            pass
+            return file_service
 
         @staticmethod
         def remove_file(path):
-            pass
+            if os.path.exists(path):
+                os.remove(path)
 
         @staticmethod
         def reload_audit_rules():
-            pass
+            return None
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     with open(obj.config['query']['path'][1], 'w') as f:
         f.write(obj.config['query']['form'])
@@ -120,6 +121,7 @@ def test_check_and_rollback(monkeypatch):
     obj.status_form.to_pickle(pkl_path)
     obj.rollback()
     status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['25', 'status'] == 0
 
 def test_check_command_search_branch(monkeypatch):
     pass
