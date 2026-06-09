@@ -111,8 +111,20 @@ def test_check_command_search_branch_not_present(monkeypatch):
     mod, obj = build_instance()
     form = obj.config['query']['form']
 
+    class FakeBSF:
+
+        @staticmethod
+        def command_search(arg):
+            return (form,)
+
+        @staticmethod
+        def search_audit_rule(path):
+            return (None, 1)
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    assert obj.check() is False
+
 def test_check_pipe_grep_branch(monkeypatch):
-    pass
+    mod, obj = build_instance()
 
 def test_check_pipe_grep_branch_not_found(monkeypatch):
     pass
