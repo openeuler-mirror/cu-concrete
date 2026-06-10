@@ -2,6 +2,7 @@ import os
 import pytest
 import pandas as pd
 from DelDangeFile_19 import DelDangeFile_19
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'DelDangeFile_19.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 netrc_path = '/tmp/test_netrc'
@@ -9,12 +10,15 @@ rhosts_path = '/tmp/test_rhosts'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/DelDangeFile_19.yaml')
+    # 构造 .netrc 和 .rhosts 文件
     with open(netrc_path, 'w') as f:
         f.write('netrc content')
     with open(rhosts_path, 'w') as f:
         f.write('rhosts content')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -27,7 +31,14 @@ def build_instance():
     obj.config_file = '/tmp/DelDangeFile_19.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 19, 'query': {'form': ['test_netrc', 'test_rhosts']}, 'description': '删除对.netrc,.rhosts的文件'}
+    obj.config = {
+        'dep': 1,
+        'id': 19,
+        'query': {
+            'form': ['test_netrc', 'test_rhosts']
+        },
+        'description': '删除对.netrc,.rhosts的文件'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
