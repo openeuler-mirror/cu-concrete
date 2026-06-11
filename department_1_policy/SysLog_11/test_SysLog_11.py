@@ -2,16 +2,20 @@ import os
 import pytest
 import pandas as pd
 from SysLog_11 import SysLog_11
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'SysLog_11.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 rsyslog_path = '/tmp/test_rsyslog.conf'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/SysLog_11.yaml')
+    # 构造 rsyslog.conf 文件
     with open(rsyslog_path, 'w') as f:
         f.write('*.* /var/log/all.log\n')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -24,7 +28,22 @@ def build_instance():
     obj.config_file = '/tmp/SysLog_11.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 11, 'query': {'form1': '^*.err;kern.debug;daemon.notice', 'form2': '^cron.*', 'form3': '^authpriv.*', 'path': rsyslog_path}, 'change': {'value1': '*.err;kern.debug;daemon.notice;        /var/log/messages', 'value2': 'cron.*                                 /var/log/cron', 'value3': 'authpriv.*                             /var/log/secure'}, 'description': '本地系统日志设定'}
+    obj.config = {
+        'dep': 1,
+        'id': 11,
+        'query': {
+            'form1': '^*.err;kern.debug;daemon.notice',
+            'form2': '^cron.*',
+            'form3': '^authpriv.*',
+            'path': rsyslog_path
+        },
+        'change': {
+            'value1': '*.err;kern.debug;daemon.notice;        /var/log/messages',
+            'value2': 'cron.*                                 /var/log/cron',
+            'value3': 'authpriv.*                             /var/log/secure'
+        },
+        'description': '本地系统日志设定'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
