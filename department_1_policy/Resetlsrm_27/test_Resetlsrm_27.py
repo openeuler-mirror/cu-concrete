@@ -2,16 +2,20 @@ import os
 import pytest
 import pandas as pd
 from Resetlsrm_27 import Resetlsrm_27
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'Resetlsrm_27.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 bashrc_path = '/tmp/test_bashrc_resetlsrm'
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/Resetlsrm_27.yaml')
+    # 构造 .bashrc 文件
     with open(bashrc_path, 'w') as f:
         f.write('# .bashrc\n')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -24,7 +28,20 @@ def build_instance():
     obj.config_file = '/tmp/Resetlsrm_27.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 27, 'query': {'path': bashrc_path}, 'change': {'value': ["alias ls='ls -alh'", "alias rm='rm -i'"]}, 'description': '修改ls、rm的显示信息'}
+    obj.config = {
+        'dep': 1,
+        'id': 27,
+        'query': {
+            'path': bashrc_path
+        },
+        'change': {
+            'value': [
+                "alias ls='ls -alh'",
+                "alias rm='rm -i'"
+            ]
+        },
+        'description': '修改ls、rm的显示信息'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
