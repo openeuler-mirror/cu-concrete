@@ -2,20 +2,25 @@ import os
 import pytest
 import pandas as pd
 from LockFile_29 import LockFile_29
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'LockFile_29.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 file_paths = ['/tmp/test_passwd', '/tmp/test_shadow', '/tmp/test_group']
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/LockFile_29.yaml')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
+    # 构造模拟关键文件
     for fp in file_paths:
         with open(fp, 'w') as f:
             f.write('test')
     yield
+    # 先去除不可更改属性再删除模拟关键文件
     for fp in file_paths:
         if os.path.exists(fp):
             os.system(f'chattr -i {fp}')
@@ -29,7 +34,17 @@ def build_instance():
     obj.config_file = '/tmp/LockFile_29.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 29, 'query': {'path': file_paths}, 'change': {'value': ['+i', '-i']}, 'description': '锁定关键文件'}
+    obj.config = {
+        'dep': 1,
+        'id': 29,
+        'query': {
+            'path': file_paths
+        },
+        'change': {
+            'value': ['+i', '-i']
+        },
+        'description': '锁定关键文件'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
