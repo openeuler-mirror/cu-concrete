@@ -124,7 +124,20 @@ def test_check_and_rollback(monkeypatch):
     assert status_df.loc['25', 'status'] == 0
 
 def test_check_command_search_branch(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    form = obj.config['query']['form']
+
+    class FakeBSF2:
+
+        @staticmethod
+        def command_search(arg):
+            return (form,)
+
+        @staticmethod
+        def search_audit_rule(path):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF2)
+    assert obj.check() is True
 
 def test_check_command_search_branch_not_present(monkeypatch):
     pass
