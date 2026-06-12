@@ -112,12 +112,24 @@ def test_check_pipe_grep_branch(monkeypatch):
 
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
-            pass
+            return ('', 0)
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     assert obj.check() is True
 
 def test_check_pipe_grep_branch_not_found(monkeypatch):
-    pass
+    mod, obj = build_instance()
+
+    class FakeBSF:
+
+        @staticmethod
+        def command_search(arg):
+            return ('',)
+
+        @staticmethod
+        def pipe_grep_shell(form_arg, path, value):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    assert obj.check() is False
 
 def test_rollback_updates_status_when_check_fails(monkeypatch):
     pass
