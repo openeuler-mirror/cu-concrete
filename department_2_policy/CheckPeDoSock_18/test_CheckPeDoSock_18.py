@@ -9,6 +9,7 @@ import yaml
 import pytest
 import importlib.util
 
+# helper to load the module from its file location so we can monkeypatch its `bsf`
 def load_module():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
     module_path = os.path.join(base_dir, 'CheckPeDoSock_18.py')
@@ -16,6 +17,7 @@ def load_module():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'CheckPeDoSock_18.yaml')
 pkl_path = '/tmp/test_data_status_checkpedosock.pkl'
 file_path = '/tmp/test_pedosock_path'
@@ -25,6 +27,7 @@ backup_path = '/tmp/test_checkpedosock_bak'
 def prepare_files():
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/CheckPeDoSock_18.yaml')
+    # create the target path so file_permission can inspect it if needed
     with open(file_path, 'w') as f:
         f.write('')
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
@@ -33,6 +36,7 @@ def prepare_files():
     for fp in [pkl_path, '/tmp/CheckPeDoSock_18.yaml', file_path, backup_path]:
         if os.path.exists(fp):
             os.remove(fp)
+
 
 def build_instance():
     mod = load_module()
@@ -49,9 +53,22 @@ def build_instance():
             obj.config['query']['path'] = file_path
         obj.config['backup_path'] = backup_path
     else:
-        obj.config = {'dep': 2, 'id': 18, 'query': {'path': file_path}, 'change': {'value': '660'}, 'backup_path': backup_path, 'description': '确保 Docker 相关文件权限为 660'}
+        # default config for tests
+        obj.config = {
+            'dep': 2,
+            'id': 18,
+            'query': {
+                'path': file_path,
+            },
+            'change': {
+                'value': '660'
+            },
+            'backup_path': backup_path,
+            'description': '确保 Docker 相关文件权限为 660'
+        }
     obj.status_form = pd.read_pickle(pkl_path)
-    return (mod, obj)
+    return mod, obj
+
 
 def test_init():
     mod, obj = build_instance()
@@ -59,42 +76,47 @@ def test_init():
     assert obj.config['id'] == 18
     assert isinstance(obj.status_form, pd.DataFrame)
 
+
 def test_finalfix():
     _, obj = build_instance()
     obj.finalfix()
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['218', 'status'] == 2
 
+
 def test_fix_sets_mode_and_status(monkeypatch):
     mod, obj = build_instance()
     called = {'chmod': False}
-
     def fake_chmod(mode, path):
         called['chmod'] = True
     monkeypatch.setattr(mod.bsf, 'chmod_file', fake_chmod)
+    # simulate that after chmod the permission becomes the expected value
     monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('660', 0))
     obj.fix()
     assert called['chmod'] is True
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['218', 'status'] == 2
 
+
 def test_check_permission_is_expected(monkeypatch):
     mod, obj = build_instance()
     monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('660', 0))
     assert obj.check() is True
+
 
 def test_check_permission_not_expected(monkeypatch):
     mod, obj = build_instance()
     monkeypatch.setattr(mod.bsf, 'file_permission', lambda p: ('644', 0))
     assert obj.check() is False
 
+
 def test_rollback_updates_status_when_check_fails(monkeypatch):
     mod, obj = build_instance()
 
     class FakeBSF:
-
         @staticmethod
         def chown_file(owner, path):
+            # module calls chown_file in rollback (even though change is a mode); keep no-op
             return None
 
         @staticmethod
@@ -102,12 +124,16 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
             if len(args) == 1:
                 return ('644', 0)
             return None
+
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
+
     obj.status_form.loc['218', 'status'] = 1
     obj.status_form.to_pickle(pkl_path)
+
     obj.rollback()
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['218', 'status'] == 0
+
 
 def test_reset(monkeypatch):
     mod, obj = build_instance()
@@ -117,6 +143,7 @@ def test_reset(monkeypatch):
     obj.reset()
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['218', 'status'] == 2
+
 
 def test_get_des():
     _, obj = build_instance()
