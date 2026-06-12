@@ -125,9 +125,15 @@ def test_rollback_sets_status_to_zero_when_check_false(monkeypatch):
 
 def test_rollback_no_change_when_check_true(monkeypatch):
     mod, obj = build_instance()
+    obj.status_form.loc['223', 'status'] = 1
+    obj.status_form.to_pickle(pkl_path)
+    monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['test1']), 0))
+    obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['223', 'status'] == 1
 
 def test_reset_calls_rollback_then_fix():
-    pass
+    _, obj = build_instance()
 
 def test_get_des():
     pass
