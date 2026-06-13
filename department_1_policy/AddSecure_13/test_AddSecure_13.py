@@ -2,6 +2,7 @@ import os
 import pytest
 import pandas as pd
 from AddSecure_13 import AddSecure_13
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'AddSecure_13.yaml')
 pkl_path = '/tmp/test_data_status.pkl'
 sudoers_path = '/tmp/test_sudoers'
@@ -12,10 +13,13 @@ id_dsa = os.path.join(ssh_dir, 'id_dsa')
 
 @pytest.fixture(autouse=True)
 def prepare_files():
+    # 复制 yaml
     if os.path.exists(yaml_path):
         os.system(f'cp {yaml_path} /tmp/AddSecure_13.yaml')
+    # 构造 sudoers 文件
     with open(sudoers_path, 'w') as f:
         f.write('root    ALL=(ALL)    NOPASSWD: ALL\n')
+    # 构造 ssh 目录及文件
     os.makedirs(ssh_dir, exist_ok=True)
     with open(auth_keys, 'w') as f:
         f.write('ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArandomkey')
@@ -23,6 +27,7 @@ def prepare_files():
         f.write('FAKE_RSA_KEY')
     with open(id_dsa, 'w') as f:
         f.write('FAKE_DSA_KEY')
+    # 构造 data_status.pkl
     df = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
     df.to_pickle(pkl_path)
     yield
@@ -37,7 +42,28 @@ def build_instance():
     obj.config_file = '/tmp/AddSecure_13.yaml'
     obj.pkl_file = pkl_path
     obj.current_dir = '/tmp'
-    obj.config = {'dep': 1, 'id': 13, 'query': {'form': 'safe_account', 'path': sudoers_path, 'path2': auth_keys, 'path3': id_rsa, 'path4': id_dsa}, 'change': {'value1': 'root@userpass', 'value2': 'safe_account    ALL=(ALL)    NOPASSWD: ALL', 'value3': ['700', '644', '600'], 'path': '/tmp/test_safe_account', 'path1': ssh_dir, 'path2': auth_keys, 'path3': id_rsa, 'path4': id_dsa}, 'description': '添加用于安全管理的账户'}
+    obj.config = {
+        'dep': 1,
+        'id': 13,
+        'query': {
+            'form': 'safe_account',
+            'path': sudoers_path,
+            'path2': auth_keys,
+            'path3': id_rsa,
+            'path4': id_dsa
+        },
+        'change': {
+            'value1': 'root@userpass',
+            'value2': 'safe_account    ALL=(ALL)    NOPASSWD: ALL',
+            'value3': ['700', '644', '600'],
+            'path': '/tmp/test_safe_account',
+            'path1': ssh_dir,
+            'path2': auth_keys,
+            'path3': id_rsa,
+            'path4': id_dsa
+        },
+        'description': '添加用于安全管理的账户'
+    }
     obj.status_form = pd.read_pickle(pkl_path)
     return obj
 
