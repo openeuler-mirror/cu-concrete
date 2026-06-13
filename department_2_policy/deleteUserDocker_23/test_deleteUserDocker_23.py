@@ -134,6 +134,13 @@ def test_rollback_no_change_when_check_true(monkeypatch):
 
 def test_reset_calls_rollback_then_fix():
     _, obj = build_instance()
+    order = []
+    obj.rollback = lambda: order.append('rollback')
+    obj.fix = lambda: order.append('fix')
+    obj.reset()
+    assert order == ['rollback', 'fix']
 
 def test_get_des():
-    pass
+    _, obj = build_instance()
+    des = obj.get_des()
+    assert des == obj.config['description']
