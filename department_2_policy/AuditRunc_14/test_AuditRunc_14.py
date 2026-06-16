@@ -169,6 +169,34 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
     with open(obj.config['query']['path'][1], 'w') as f:
         f.write(obj.config['query']['form'])
 
+    def fake_remove(path):
+        pass
+
+    class FakeBSF:
+
+        @staticmethod
+        def remove_file(path):
+            pass
+
+        @staticmethod
+        def delete_audit_rule():
+            pass
+
+        @staticmethod
+        def reload_audit_rules():
+            pass
+
+        @staticmethod
+        def command_search(arg):
+            pass
+
+        @staticmethod
+        def pipe_grep_shell(form_arg, path, value):
+            pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    obj.status_form.loc['214', 'status'] = 1
+    obj.status_form.to_pickle(pkl_path)
+
 def test_reset(monkeypatch):
     pass
 
