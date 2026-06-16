@@ -9,6 +9,7 @@ import yaml
 import pytest
 import importlib.util
 
+# helper to load the module from its file location so we can monkeypatch its `bsf`
 def load_module():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
     module_path = os.path.join(base_dir, 'deleteUserDocker_23.py')
@@ -16,20 +17,19 @@ def load_module():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'deleteUserDocker_23.yaml')
 pkl_path = '/tmp/test_data_status_deleteuserdocker_new.pkl'
 file_path = '/tmp/test_delete_user_group_new'
 
+# GroupLike supports both .split(':')[3] usage and iteration over usernames
 class GroupLike:
-
     def __init__(self, users):
-        self.users = users
-
+        self.users = users  # list of usernames
     def __iter__(self):
         return iter(self.users)
-
     def split(self, sep):
-        return ['group', 'x', '1000', self.users]
+        return ['group', 'x', '1000', self.users]  # [3] is the users list
 
 @pytest.fixture(autouse=True)
 def prepare_files():
@@ -43,6 +43,7 @@ def prepare_files():
     for fp in [pkl_path, '/tmp/deleteUserDocker_23.yaml', file_path]:
         if os.path.exists(fp):
             os.remove(fp)
+
 
 def build_instance():
     mod = load_module()
@@ -58,9 +59,21 @@ def build_instance():
         if 'query' in obj.config and 'path' in obj.config['query']:
             obj.config['query']['path'] = file_path
     else:
-        obj.config = {'dep': 2, 'id': 23, 'query': {'path': file_path, 'form': ['liukuntest']}, 'change': {'value': ['test1', 'test2', 'test3']}, 'description': '从docker组里删除未被信任的用户,增加信任用户'}
+        obj.config = {
+            'dep': 2,
+            'id': 23,
+            'query': {
+                'path': file_path,
+                'form': ['liukuntest']
+            },
+            'change': {
+                'value': ['test1','test2','test3']
+            },
+            'description': '从docker组里删除未被信任的用户,增加信任用户'
+        }
     obj.status_form = pd.read_pickle(pkl_path)
-    return (mod, obj)
+    return mod, obj
+
 
 def test_init():
     mod, obj = build_instance()
@@ -68,11 +81,13 @@ def test_init():
     assert obj.config['id'] == 23
     assert isinstance(obj.status_form, pd.DataFrame)
 
+
 def test_finalfix():
     _, obj = build_instance()
     obj.finalfix()
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['223', 'status'] == 2
+
 
 def test_fix_removes_bad_users_adds_good_users_and_sets_status(monkeypatch):
     mod, obj = build_instance()
@@ -83,62 +98,95 @@ def test_fix_removes_bad_users_adds_good_users_and_sets_status(monkeypatch):
 
     def fake_append(group, user):
         calls['append'].append(user)
+
     monkeypatch.setattr(mod.bsf, 'remove_user_from_group', fake_remove)
     monkeypatch.setattr(mod.bsf, 'append_user_group', fake_append)
+    # simulate initial group with baduser
     monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['liukuntest', 'other']), 0))
+
     obj.fix()
+
     assert 'liukuntest' in calls['remove']
     assert 'test1' in calls['append']
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['223', 'status'] == 2
 
+
 def test_fix_creates_pkl_when_missing(monkeypatch):
     mod, obj = build_instance()
+
+    # remove pkl to simulate first run
     if os.path.exists(pkl_path):
         os.remove(pkl_path)
+
     monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['gooduser']), 0))
     monkeypatch.setattr(mod.bsf, 'remove_user_from_group', lambda u, g: None)
     monkeypatch.setattr(mod.bsf, 'append_user_group', lambda g, u: None)
+
     obj.fix()
+
     assert os.path.exists(pkl_path)
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['223', 'status'] == 2
 
+
 def test_check_true_when_no_bad_users(monkeypatch):
     mod, obj = build_instance()
+    # group has only good users
     monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['test1']), 0))
     assert obj.check() is True
 
+
 def test_check_false_when_has_bad_users(monkeypatch):
     mod, obj = build_instance()
+    # group has baduser
     monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['liukuntest']), 0))
     assert obj.check() is False
 
+
 def test_rollback_sets_status_to_zero_when_check_false(monkeypatch):
     mod, obj = build_instance()
+
+    # preset status to 1
     obj.status_form.loc['223', 'status'] = 1
     obj.status_form.to_pickle(pkl_path)
+
+    # simulate check returns False
     monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['liukuntest']), 0))
+
     obj.rollback()
+
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['223', 'status'] == 0
 
+
 def test_rollback_no_change_when_check_true(monkeypatch):
     mod, obj = build_instance()
+
+    # preset status to 1
     obj.status_form.loc['223', 'status'] = 1
     obj.status_form.to_pickle(pkl_path)
+
+    # simulate check returns True
     monkeypatch.setattr(mod.bsf, 'get_group_user', lambda p: (GroupLike(['test1']), 0))
+
     obj.rollback()
+
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['223', 'status'] == 1
+
 
 def test_reset_calls_rollback_then_fix():
     _, obj = build_instance()
     order = []
+
     obj.rollback = lambda: order.append('rollback')
     obj.fix = lambda: order.append('fix')
+
     obj.reset()
+
     assert order == ['rollback', 'fix']
+
 
 def test_get_des():
     _, obj = build_instance()
