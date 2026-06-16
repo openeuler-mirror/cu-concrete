@@ -158,13 +158,14 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
         f.write(obj.config['query']['form'])
 
     def fake_remove(path):
-        pass
+        if os.path.exists(path):
+            os.remove(path)
 
     class FakeBSF:
 
         @staticmethod
         def remove_file(path):
-            pass
+            fake_remove(path)
 
         @staticmethod
         def reload_audit_rules():
@@ -179,6 +180,10 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
             pass
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     obj.status_form.loc['210', 'status'] = 1
+    obj.status_form.to_pickle(pkl_path)
+    obj.rollback()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['210', 'status'] == 0
 
 def test_reset(monkeypatch):
     pass
