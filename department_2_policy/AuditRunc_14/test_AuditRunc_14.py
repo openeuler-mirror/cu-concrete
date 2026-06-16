@@ -156,14 +156,18 @@ def test_check_pipe_grep_branch_not_found(monkeypatch):
 
         @staticmethod
         def command_search(arg):
-            pass
+            return ('',)
 
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
-            pass
+            return ('', 2)
+    monkeypatch.setattr(mod, 'bsf', FakeBSF)
+    assert obj.check() is False
 
 def test_rollback_updates_status_when_check_fails(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    with open(obj.config['query']['path'][1], 'w') as f:
+        f.write(obj.config['query']['form'])
 
 def test_reset(monkeypatch):
     pass
