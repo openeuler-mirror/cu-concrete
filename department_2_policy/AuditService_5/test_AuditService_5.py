@@ -162,15 +162,27 @@ def test_check_pipe_grep_branch(monkeypatch):
 
         @staticmethod
         def command_search(arg):
+            return ('',)
+
+        @staticmethod
+        def pipe_grep_shell(form_arg, path, value):
+            return ('', 0)
+    monkeypatch.setattr(mod, 'bsf', FakeBSF4)
+    assert obj.check() is True
+
+def test_check_pipe_grep_branch_not_found(monkeypatch):
+    mod, obj = build_instance()
+
+    class FakeBSF5:
+
+        @staticmethod
+        def command_search(arg):
             pass
 
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
             pass
-    monkeypatch.setattr(mod, 'bsf', FakeBSF4)
-
-def test_check_pipe_grep_branch_not_found(monkeypatch):
-    pass
+    monkeypatch.setattr(mod, 'bsf', FakeBSF5)
 
 def test_reset(monkeypatch):
     pass
