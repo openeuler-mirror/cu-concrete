@@ -9,6 +9,7 @@ import yaml
 import pytest
 import importlib.util
 
+# helper to load the module from its file location so we can monkeypatch its `bsf`
 def load_module():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
     module_path = os.path.join(base_dir, 'AuditSocket_7.py')
@@ -16,6 +17,7 @@ def load_module():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
 yaml_path = os.path.join(os.path.dirname(__file__), 'AuditSocket_7.yaml')
 pkl_path = '/tmp/test_data_status_auditsocket.pkl'
 file_sock = '/tmp/test_socket_file'
@@ -36,6 +38,7 @@ def prepare_files():
     for fp in [pkl_path, '/tmp/AuditSocket_7.yaml', file_sock, rule_file, auditctl, backup_path]:
         if os.path.exists(fp):
             os.remove(fp)
+
 
 def build_instance():
     mod = load_module()
@@ -63,9 +66,23 @@ def build_instance():
             obj.config['query']['path'] = new_paths
         obj.config['backup_path'] = backup_path
     else:
-        obj.config = {'dep': 2, 'id': 7, 'query': {'path': [file_sock, rule_file, auditctl], 'form': '-w /var/run -k socket'}, 'change': {'set': 'auditctl', 'value': "'^[^#;]'"}, 'backup_path': backup_path, 'description': '确保 socket 事件被审计'}
+        obj.config = {
+            'dep': 2,
+            'id': 7,
+            'query': {
+                'path': [file_sock, rule_file, auditctl],
+                'form': '-w /var/run -k socket'
+            },
+            'change': {
+                'set': 'auditctl',
+                'value': "'^[^#;]'"
+            },
+            'backup_path': backup_path,
+            'description': '确保 socket 事件被审计'
+        }
     obj.status_form = pd.read_pickle(pkl_path)
-    return (mod, obj)
+    return mod, obj
+
 
 def test_init():
     mod, obj = build_instance()
@@ -73,14 +90,17 @@ def test_init():
     assert obj.config['id'] == 7
     assert isinstance(obj.status_form, pd.DataFrame)
 
+
 def test_finalfix():
     _, obj = build_instance()
     obj.finalfix()
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['27', 'status'] == 2
 
+
 def test_fix_writes_rule_and_sets_status(monkeypatch):
     mod, obj = build_instance()
+    # monkeypatch get_service_file to return our placeholder path, and reload to no-op
     monkeypatch.setattr(mod.bsf, 'get_service_file', lambda p: file_sock)
     monkeypatch.setattr(mod.bsf, 'reload_audit_rules', lambda *a, **k: None)
     obj.fix()
@@ -90,12 +110,12 @@ def test_fix_writes_rule_and_sets_status(monkeypatch):
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['27', 'status'] == 2
 
+
 def test_check_command_search_branch(monkeypatch):
     mod, obj = build_instance()
     form = obj.config['query']['form']
 
     class FakeBSF:
-
         @staticmethod
         def command_search(arg):
             return (form,)
@@ -103,15 +123,16 @@ def test_check_command_search_branch(monkeypatch):
         @staticmethod
         def search_audit_rule(path):
             return (None, 0)
+
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     assert obj.check() is True
+
 
 def test_check_command_search_branch_not_present(monkeypatch):
     mod, obj = build_instance()
     form = obj.config['query']['form']
 
     class FakeBSF:
-
         @staticmethod
         def command_search(arg):
             return (form,)
@@ -119,14 +140,15 @@ def test_check_command_search_branch_not_present(monkeypatch):
         @staticmethod
         def search_audit_rule(path):
             return (None, 1)
+
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     assert obj.check() is False
+
 
 def test_check_pipe_grep_branch(monkeypatch):
     mod, obj = build_instance()
 
     class FakeBSF:
-
         @staticmethod
         def command_search(arg):
             return ('',)
@@ -134,14 +156,15 @@ def test_check_pipe_grep_branch(monkeypatch):
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
             return ('', 0)
+
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     assert obj.check() is True
+
 
 def test_check_pipe_grep_branch_not_found(monkeypatch):
     mod, obj = build_instance()
 
     class FakeBSF:
-
         @staticmethod
         def command_search(arg):
             return ('',)
@@ -149,11 +172,14 @@ def test_check_pipe_grep_branch_not_found(monkeypatch):
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
             return ('', 2)
+
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     assert obj.check() is False
 
+
 def test_rollback_updates_status_when_check_fails(monkeypatch):
     mod, obj = build_instance()
+    # ensure the rule file exists so remove_file can remove it
     with open(obj.config['query']['path'][1], 'w') as f:
         f.write(obj.config['query']['form'])
 
@@ -162,7 +188,6 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
             os.remove(path)
 
     class FakeBSF:
-
         @staticmethod
         def remove_file(path):
             fake_remove(path)
@@ -178,12 +203,16 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
             return ('', 1)
+
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
+
     obj.status_form.loc['27', 'status'] = 1
     obj.status_form.to_pickle(pkl_path)
+
     obj.rollback()
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['27', 'status'] == 0
+
 
 def test_reset(monkeypatch):
     mod, obj = build_instance()
@@ -191,6 +220,7 @@ def test_reset(monkeypatch):
     obj.reset()
     status_df = pd.read_pickle(pkl_path)
     assert status_df.loc['27', 'status'] == 2
+
 
 def test_get_des():
     _, obj = build_instance()
