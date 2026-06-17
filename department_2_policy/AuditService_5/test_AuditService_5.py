@@ -188,6 +188,11 @@ def test_check_pipe_grep_branch_not_found(monkeypatch):
 def test_reset(monkeypatch):
     mod, obj = build_instance()
     monkeypatch.setattr(mod.bsf, 'reload_audit_rules', lambda *a, **k: None)
+    obj.reset()
+    status_df = pd.read_pickle(pkl_path)
+    assert status_df.loc['25', 'status'] == 2
 
 def test_get_des():
-    pass
+    _, obj = build_instance()
+    des = obj.get_des()
+    assert des == obj.config['description']
