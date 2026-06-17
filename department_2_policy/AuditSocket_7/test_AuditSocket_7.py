@@ -169,15 +169,15 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
 
         @staticmethod
         def reload_audit_rules():
-            pass
+            return None
 
         @staticmethod
         def command_search(arg):
-            pass
+            return ('',)
 
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
-            pass
+            return ('', 1)
     monkeypatch.setattr(mod, 'bsf', FakeBSF)
     obj.status_form.loc['27', 'status'] = 1
     obj.status_form.to_pickle(pkl_path)
@@ -186,7 +186,8 @@ def test_rollback_updates_status_when_check_fails(monkeypatch):
     assert status_df.loc['27', 'status'] == 0
 
 def test_reset(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'reload_audit_rules', lambda *a, **k: None)
 
 def test_get_des():
     pass
