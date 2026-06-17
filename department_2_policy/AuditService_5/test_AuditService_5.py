@@ -177,15 +177,17 @@ def test_check_pipe_grep_branch_not_found(monkeypatch):
 
         @staticmethod
         def command_search(arg):
-            pass
+            return ('',)
 
         @staticmethod
         def pipe_grep_shell(form_arg, path, value):
-            pass
+            return ('', 2)
     monkeypatch.setattr(mod, 'bsf', FakeBSF5)
+    assert obj.check() is False
 
 def test_reset(monkeypatch):
-    pass
+    mod, obj = build_instance()
+    monkeypatch.setattr(mod.bsf, 'reload_audit_rules', lambda *a, **k: None)
 
 def test_get_des():
     pass
