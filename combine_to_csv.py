@@ -49,5 +49,10 @@ def main():
         print('❌ No valid policy data found.')
         return
     fieldnames = ['timestamp', 'host', 'dep_id', 'status', 'module_name', 'module_path']
+    with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(records)
+    print(f"✅ Successfully exported {len(records)} rows to '{OUTPUT_CSV}'")
 if __name__ == '__main__':
     main()
