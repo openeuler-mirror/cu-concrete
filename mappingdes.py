@@ -74,6 +74,10 @@ def load_sec_class(department_id):
     base_path = os.path.dirname(os.path.abspath(__file__))
     department_folder = f'department_{department_id}_policy'
     department_path = os.path.join(base_path, department_folder)
+    department_data_pkl = os.path.join(department_path, 'data_status.pkl')
+    if not os.path.isdir(department_path):
+        raise FileNotFoundError(f'未找到部门策略文件夹：{department_path}')
+    fixinstance = {}
 
 def load_departments(department_ids):
     """
