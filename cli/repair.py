@@ -43,10 +43,15 @@ class Repairer:
         print('-' * 50)
         for item in available_items[0]:
             print(f'{item[0]} - {item[1]}')
+        print('-' * 50)
+        print(f'总共 {len(available_items[0])} 个可修复项')
 
     def repair_all(self):
         """执行所有已修复项"""
-        pass
+        self.logger.info('开始执行全部修复项')
+        print('正在扫描系统安全状态...')
+        path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        flag_path = os.path.join(path, 'flag.txt')
 
     def repair_items(self, item_ids):
         """修复指定ID的项"""
