@@ -44,10 +44,15 @@ class Hardener:
         print('-' * 50)
         for item in available_items[0]:
             print(f'{item[0]} - {item[1]}')
+        print('-' * 50)
+        print(f'总共 {len(available_items[0])} 个可加固项')
 
     def harden_all(self):
         """执行所有加固项"""
-        pass
+        self.logger.info('开始执行全部加固项')
+        print('正在扫描系统安全状态...')
+        path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        flag_path = os.path.join(path, 'flag.txt')
 
     def harden_items(self, item_ids):
         """执行指定ID的加固项"""
