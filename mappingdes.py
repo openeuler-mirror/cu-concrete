@@ -221,3 +221,31 @@ def load_departments_no_ui(department_ids):
     rbinstancee = {}
     resetinstance = {}
     entries = []
+    for dep in department_ids:
+        department_folder = f'department_{dep}_policy'
+        department_path = os.path.join(base_path, department_folder)
+        department_data_pkl = os.path.join(department_path, 'data_status.pkl')
+        if not os.path.isdir(department_path):
+            logging.warning(f'未找到部门策略文件夹：{department_path}')
+            continue
+        for folder in os.listdir(department_path):
+            folder_path = os.path.join(department_path, folder)
+            if folder in ['.git', '__pycache__']:
+                continue
+            if not os.path.isdir(folder_path):
+                continue
+            module_name = folder
+            module_path = os.path.join(folder_path, f'{module_name}.py')
+            if not os.path.isfile(module_path):
+                continue
+            entries.append((dep, module_name, module_path, department_data_pkl))
+    status_cache = {}
+    for _, _, _, pkl in entries:
+        if pkl not in status_cache:
+            try:
+                if os.path.exists(pkl):
+                    status_cache[pkl] = pd.read_pickle(pkl)
+                else:
+                    status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+            except Exception:
+                status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
