@@ -16,6 +16,8 @@ def extract_host(dirname: str) -> str | None:
     return m.group(1) if m else None
 
 def main():
-    pass
+    records = []
+    expected_cols = {'status', 'module_name', 'module_path'}
+    current_dir = os.path.dirname(os.path.abspath(__file__))
 if __name__ == '__main__':
     main()
