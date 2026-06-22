@@ -87,3 +87,18 @@ class checklist:
         pattern = re.compile('^department_\\d+_policy$')
         folder_list = [d for d in all_dir if pattern.match(d)]
         dept_ids = [int(d.split('_')[1]) for d in folder_list]
+        if dept_ids:
+            result = load_departments_no_ui(dept_ids)
+            fix_instance.update(result[0])
+            rb_instance.update(result[1])
+            reset_instance.update(result[2])
+            fix_instance = dict(sorted(fix_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
+            rb_instance = dict(sorted(rb_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
+            reset_instance = dict(sorted(reset_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
+        for index, key in enumerate(fix_instance.keys()):
+            fixinstanse.append(('{}_{}'.format(fix_instance[key].config['dep'], fix_instance[key].config['id']), '{}'.format(key), 'off'))
+        for index, key in enumerate(rb_instance.keys()):
+            rbinstance.append(('{}_{}'.format(rb_instance[key].config['dep'], rb_instance[key].config['id']), '{}'.format(key), 'off'))
+        for index, key in enumerate(reset_instance.keys()):
+            resetinstance.append(('{}_{}'.format(reset_instance[key].config['dep'], reset_instance[key].config['id']), '{}'.format(key), 'off'))
+        return [(fixinstanse, fix_instance), (rbinstance, rb_instance), (resetinstance, reset_instance)]
