@@ -69,6 +69,11 @@ class checklist:
             fixinstanse.append(('{}_{}'.format(fix_instance[key].config['dep'], fix_instance[key].config['id']), '{}'.format(key), 'off'))
         for index, key in enumerate(rb_instance.keys()):
             rbinstance.append(('{}_{}'.format(rb_instance[key].config['dep'], rb_instance[key].config['id']), '{}'.format(key), 'off'))
+        for index, key in enumerate(reset_instance.keys()):
+            resetinstance.append(('{}_{}'.format(reset_instance[key].config['dep'], reset_instance[key].config['id']), '{}'.format(key), 'off'))
+        return [(fixinstanse, fix_instance), (rbinstance, rb_instance), (resetinstance, reset_instance)]
 
     def sub_checklist_noui(self):
-        pass
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        fixinstanse = []
+        fix_instance = {}
