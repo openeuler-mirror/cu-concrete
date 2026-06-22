@@ -28,4 +28,15 @@ class resetlist:
         subprocess.run(['whiptail', '--msgbox', '修复完成！请重新启动机器', '10', '40'])
 
     def sub_resetlist(self, title, message_func, InstanceTuple):
-        pass
+        w = Whiptail(title=TITLE, backtitle=title, height=HEIGHT, width=WIDTH)
+        if len(InstanceTuple[0]) != 0:
+            choice = w.checklist(message_func, InstanceTuple[0])
+            key_dict = {'{}_{}'.format(str(v.config['dep']), str(v.config['id'])): v for v in InstanceTuple[1].values()}
+            reset_list = [x for x in choice[0]]
+            choice_list = [key_dict[i] for i in reset_list]
+            if choice[1] == 0:
+                self.show_progress('修复中，请稍候...', choice_list=choice_list)
+            else:
+                return 'exit'
+        else:
+            msgbox = w.msgbox('无可修复项')
