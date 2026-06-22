@@ -114,6 +114,9 @@ def load_departments(department_ids):
     base_path = os.path.dirname(os.path.abspath(__file__))
     global _module_cache, _cls_cache
     fixinstance = {}
+    rbinstancee = {}
+    resetinstance = {}
+    entries = []
 
 def load_departments_no_ui(department_ids):
     """
