@@ -46,6 +46,11 @@ class checklist:
 
     def sec_checklist(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
+        fixinstanse = []
+        fix_instance = {}
+        all_dir = [name for name in os.listdir(current_dir) if os.path.isdir(os.path.join(current_dir, name))]
+        rbinstance = []
+        rb_instance = {}
 
     def sub_checklist_noui(self):
         pass
