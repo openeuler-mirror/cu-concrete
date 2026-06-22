@@ -23,6 +23,10 @@ def load_check_class(department_id):
     fixinstance = {}
     rbinstancee = {}
     resetinstance = {}
+    cmd = ['whiptail', '--title', '正在加载策略...', '--gauge', '正在检测安全策略状态...', '10', '70', '0']
+    process = subprocess.Popen(cmd, stdin=subprocess.PIPE, text=True)
+    listfolder = [folder for folder in os.listdir(department_path) if folder not in ['.git', '__pycache__'] and os.path.isdir(os.path.join(department_path, folder))]
+    status = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
 
 def load_sec_class(department_id):
     """
