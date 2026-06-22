@@ -43,10 +43,15 @@ class Restorer:
         print('-' * 50)
         for item in available_items[0]:
             print(f'{item[0]} - {item[1]}')
+        print('-' * 50)
+        print(f'总共 {len(available_items[0])} 个可还原项')
 
     def restore_all(self):
         """还原所有已加固项"""
-        pass
+        self.logger.info('开始执行全部还原项')
+        print('正在扫描系统安全状态...')
+        path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        flag_path = os.path.join(path, 'flag.txt')
 
     def restore_items(self, item_ids):
         """还原指定ID的项"""
