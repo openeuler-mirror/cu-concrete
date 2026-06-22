@@ -151,6 +151,62 @@ def load_departments(department_ids):
                     status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
             except Exception:
                 status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    for i, (dep, module_name, module_path, pkl) in enumerate(entries):
+        try:
+            if module_name not in _cls_cache:
+                if module_name not in _module_cache:
+                    spec = importlib.util.spec_from_file_location(module_name, module_path)
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)
+                    _module_cache[module_name] = module
+                cls = getattr(_module_cache[module_name], module_name)
+                _cls_cache[module_name] = cls
+            else:
+                cls = _cls_cache[module_name]
+            instance = cls()
+            ok = False
+            try:
+                ok = instance.check()
+            except Exception:
+                logging.exception(f'调用 {module_name}.check() 时发生错误')
+                ok = False
+            if not ok:
+                fixinstance[instance.get_des()] = instance
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'status'] = 0
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_name'] = module_name
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_path'] = module_path
+            else:
+                rbinstancee[instance.get_des()] = instance
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'status'] = 2
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_name'] = module_name
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_path'] = module_path
+        except Exception:
+            logging.exception(f'加载/实例化模块 {module_name} 时发生错误')
+            try:
+                status_cache[pkl].loc[module_name, 'status'] = 1
+                status_cache[pkl].loc[module_name, 'module_name'] = module_name
+                status_cache[pkl].loc[module_name, 'module_path'] = module_path
+            except Exception:
+                logging.exception('更新 status_cache 失败')
+        finally:
+            if process and process.stdin:
+                try:
+                    percent = int((i + 1) / total * 100) if total else 100
+                    process.stdin.write(f'{percent}\n')
+                    process.stdin.flush()
+                except Exception:
+                    logging.debug('无法更新进度条，跳过')
+    for pkl, df in status_cache.items():
+        try:
+            df.to_pickle(pkl)
+        except Exception:
+            logging.exception(f'写入 {pkl} 失败')
+    if process:
+        try:
+            process.stdin.close()
+            process.wait()
+        except Exception:
+            pass
 
 def load_departments_no_ui(department_ids):
     """
