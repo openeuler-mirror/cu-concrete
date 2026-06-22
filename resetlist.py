@@ -14,6 +14,18 @@ class resetlist:
         """
         total = len(choice_list)
         cmd = ['whiptail', '--title', title, '--gauge', message, '10', '70', '0']
+        process = subprocess.Popen(cmd, stdin=subprocess.PIPE)
+        try:
+            for i in range(1, total + 1):
+                percent = int(i / total * 100)
+                choice_list[i - 1].reset()
+                process.stdin.write(f'{percent}\n'.encode())
+                process.stdin.flush()
+                time.sleep(0.05)
+        finally:
+            process.stdin.close()
+            process.wait()
+        subprocess.run(['whiptail', '--msgbox', '修复完成！请重新启动机器', '10', '40'])
 
     def sub_resetlist(self, title, message_func, InstanceTuple):
         pass
