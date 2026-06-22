@@ -76,10 +76,15 @@ class Hardener:
         print(f'发现 {len(available_items[0])} 个可加固项，开始执行...')
         self._execute_harden(available_items)
         self.logger.info('全部加固项执行完成')
+        print('加固完成！')
 
     def harden_items(self, item_ids):
         """执行指定ID的加固项"""
-        pass
+        self.logger.info(f'开始执行指定加固项: {item_ids}')
+        print('正在扫描系统安全状态...')
+        instance_tuple = self.checker.sec_checklist()
+        available_items = instance_tuple[0] if instance_tuple else []
+        target_item_ids = item_ids[1].split(',') if len(item_ids) > 1 else []
 
     def _execute_harden(self, items):
         """执行加固操作"""
