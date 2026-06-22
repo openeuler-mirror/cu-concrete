@@ -95,7 +95,21 @@ class Repairer:
             print('没有匹配的可修复项')
             self.logger.warning('没有匹配的可修复项')
             return
+        print(f'找到 {len(target_items[0])} 个匹配项，开始执行...')
+        self._execute_repair(target_items)
+        print('修复完成！')
 
     def _execute_repair(self, items):
         """执行修复操作"""
-        pass
+        choice_list = []
+        for desc, instance in items[1].items():
+            choice_list.append(instance)
+        for i, instance in enumerate(choice_list):
+            dep_id = f"{instance.config['dep']}_{instance.config['id']}"
+            description = instance.get_des()
+            print(f'[{i + 1}/{len(choice_list)}] 正在修复 [{dep_id}] {description}...')
+            try:
+                instance.reset()
+            except Exception as e:
+                self.logger.error(f'修复失败 [{dep_id}] {description}: {e}')
+                print(f'错误: {e}')
