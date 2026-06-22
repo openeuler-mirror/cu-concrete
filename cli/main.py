@@ -25,5 +25,45 @@ def main():
     restore_parser = subparsers.add_parser('restore', help='还原已加固项')
     restore_parser.add_argument('--all', action='store_true', help='还原所有已加固项')
     restore_parser.add_argument('--list', action='store_true', help='列出可还原项')
+    restore_parser.add_argument('items', nargs='*', help='指定要还原的项ID')
+    repair_parser = subparsers.add_parser('repair', help='执行系统修复')
+    repair_parser.add_argument('--all', action='store_true', help='执行所有修复项')
+    repair_parser.add_argument('--list', action='store_true', help='列出可修复项')
+    repair_parser.add_argument('items', nargs='*', help='指定要修复的项ID')
+    args = parser.parse_args()
+    log_level = logging.DEBUG if args.verbose else logging.INFO
+    logger = setup_logger(log_level)
+    if args.command == 'harden':
+        hardener = Hardener(logger)
+        if args.list:
+            hardener.list_items()
+        elif args.all:
+            hardener.harden_all()
+        elif args.items:
+            hardener.harden_items(args.items)
+        else:
+            hardener.list_items()
+    elif args.command == 'restore':
+        restorer = Restorer(logger)
+        if args.list:
+            restorer.list_items()
+        elif args.all:
+            restorer.restore_all()
+        elif args.items:
+            restorer.restore_items(args.items)
+        else:
+            restorer.list_items()
+    elif args.command == 'repair':
+        repairer = Repairer(logger)
+        if args.list:
+            repairer.list_items()
+        elif args.all:
+            repairer.repair_all()
+        elif args.items:
+            repairer.repair_items(args.items)
+        else:
+            repairer.list_items()
+    else:
+        parser.print_help()
 if __name__ == '__main__':
     main()
