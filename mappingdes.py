@@ -81,6 +81,29 @@ def load_sec_class(department_id):
     rbinstancee = {}
     resetinstance = {}
     start_time = time.time()
+    status = pd.read_pickle(department_data_pkl)
+    global _module_cache, _cls_cache
+    for index, value in status['status'].items():
+        module_name = status.loc[index, 'module_name']
+        module_path = status.loc[index, 'module_path']
+        if module_name not in _cls_cache:
+            if module_name not in _module_cache:
+                spec = importlib.util.spec_from_file_location(module_name, module_path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                _module_cache[module_name] = module
+            cls = getattr(_module_cache[module_name], module_name)
+            _cls_cache[module_name] = cls
+        else:
+            cls = _cls_cache[module_name]
+        instance = cls()
+        if value == 0:
+            fixinstance[instance.get_des()] = instance
+        elif value == 1:
+            resetinstance[instance.get_des()] = instance
+        else:
+            rbinstancee[instance.get_des()] = instance
+    return [fixinstance, rbinstancee, resetinstance]
 
 def load_departments(department_ids):
     """
