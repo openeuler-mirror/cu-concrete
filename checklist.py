@@ -51,6 +51,10 @@ class checklist:
         all_dir = [name for name in os.listdir(current_dir) if os.path.isdir(os.path.join(current_dir, name))]
         rbinstance = []
         rb_instance = {}
+        resetinstance = []
+        reset_instance = {}
+        folder_list = []
+        import re
 
     def sub_checklist_noui(self):
         pass
