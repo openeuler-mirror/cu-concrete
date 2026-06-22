@@ -20,6 +20,9 @@ def load_check_class(department_id):
     if not os.path.isdir(department_path):
         raise FileNotFoundError(f'未找到部门策略文件夹：{department_path}')
     global _module_cache, _cls_cache
+    fixinstance = {}
+    rbinstancee = {}
+    resetinstance = {}
 
 def load_sec_class(department_id):
     """
