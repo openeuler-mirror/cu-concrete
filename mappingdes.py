@@ -207,6 +207,7 @@ def load_departments(department_ids):
             process.wait()
         except Exception:
             pass
+    return [fixinstance, rbinstancee, resetinstance]
 
 def load_departments_no_ui(department_ids):
     """
@@ -214,4 +215,6 @@ def load_departments_no_ui(department_ids):
     department_ids: 可迭代的部门数字（例如 [1,2])
     返回 [fixinstance, rbinstancee, resetinstance] 三个字典，键为描述，值为实例
     """
-    pass
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    global _module_cache, _cls_cache
+    fixinstance = {}
