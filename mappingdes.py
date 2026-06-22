@@ -71,7 +71,9 @@ def load_sec_class(department_id):
     """
     根据部门ID和策略ID,自动查找并实例化对应的类
     """
-    pass
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    department_folder = f'department_{department_id}_policy'
+    department_path = os.path.join(base_path, department_folder)
 
 def load_departments(department_ids):
     """
