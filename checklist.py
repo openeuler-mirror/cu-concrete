@@ -24,6 +24,18 @@ class checklist:
         rb_instance = {}
         resetinstance = []
         reset_instance = {}
+        import re
+        pattern = re.compile('^department_\\d+_policy$')
+        folder_list = [d for d in all_dir if pattern.match(d)]
+        dept_ids = [int(d.split('_')[1]) for d in folder_list]
+        if dept_ids:
+            result = load_departments(dept_ids)
+            fix_instance.update(result[0])
+            rb_instance.update(result[1])
+            reset_instance.update(result[2])
+            fix_instance = dict(sorted(fix_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
+            rb_instance = dict(sorted(rb_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
+            reset_instance = dict(sorted(reset_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
 
     def sec_checklist(self):
         pass
