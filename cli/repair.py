@@ -74,10 +74,15 @@ class Repairer:
             return
         print(f'发现 {len(available_items[0])} 个可修复项，开始执行...')
         self._execute_repair(available_items)
+        self.logger.info('全部修复项执行完成')
+        print('修复完成！')
 
     def repair_items(self, item_ids):
         """修复指定ID的项"""
-        pass
+        self.logger.info(f'开始执行指定修复项: {item_ids}')
+        print('正在扫描系统安全状态...')
+        instance_tuple = self.checker.sec_checklist()
+        available_items = instance_tuple[2] if instance_tuple else []
 
     def _execute_repair(self, items):
         """执行修复操作"""
