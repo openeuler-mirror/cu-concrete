@@ -96,7 +96,21 @@ class Restorer:
             self.logger.warning('没有匹配的可还原项')
             return
         print(f'找到 {len(target_items[0])} 个匹配项，开始执行...')
+        self._execute_restore(target_items)
+        self.logger.info('指定还原项执行完成')
+        print('还原完成！')
 
     def _execute_restore(self, items):
         """执行还原操作"""
-        pass
+        choice_list = []
+        for desc, instance in items[1].items():
+            choice_list.append(instance)
+        for i, instance in enumerate(choice_list):
+            dep_id = f"{instance.config['dep']}_{instance.config['id']}"
+            description = instance.get_des()
+            print(f'[{i + 1}/{len(choice_list)}] 正在还原 [{dep_id}] {description}...')
+            try:
+                instance.rollback()
+            except Exception as e:
+                self.logger.error(f'还原失败 [{dep_id}] {description}: {e}')
+                print(f'错误: {e}')
