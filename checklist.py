@@ -36,9 +36,16 @@ class checklist:
             fix_instance = dict(sorted(fix_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
             rb_instance = dict(sorted(rb_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
             reset_instance = dict(sorted(reset_instance.items(), key=lambda item: (item[1].config['dep'], item[1].config['id'])))
+        for index, key in enumerate(fix_instance.keys()):
+            fixinstanse.append(('{}_{}'.format(fix_instance[key].config['dep'], fix_instance[key].config['id']), '{}'.format(key), 'off'))
+        for index, key in enumerate(rb_instance.keys()):
+            rbinstance.append(('{}_{}'.format(rb_instance[key].config['dep'], rb_instance[key].config['id']), '{}'.format(key), 'off'))
+        for index, key in enumerate(reset_instance.keys()):
+            resetinstance.append(('{}_{}'.format(reset_instance[key].config['dep'], reset_instance[key].config['id']), '{}'.format(key), 'off'))
+        return [(fixinstanse, fix_instance), (rbinstance, rb_instance), (resetinstance, reset_instance)]
 
     def sec_checklist(self):
-        pass
+        current_dir = os.path.dirname(os.path.abspath(__file__))
 
     def sub_checklist_noui(self):
         pass
