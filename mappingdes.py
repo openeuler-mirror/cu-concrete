@@ -63,6 +63,9 @@ def load_check_class(department_id):
         except AttributeError:
             raise AttributeError(f'模块 {module_name} 中未找到类 {module_name}')
     status.to_pickle(department_data_pkl)
+    process.stdin.close()
+    process.wait()
+    return [fixinstance, rbinstancee, resetinstance]
 
 def load_sec_class(department_id):
     """
