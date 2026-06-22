@@ -84,6 +84,18 @@ class Restorer:
         instance_tuple = self.checker.sec_checklist()
         available_items = instance_tuple[1] if instance_tuple else []
         target_item_ids = item_ids[1].split(',') if len(item_ids) > 1 else []
+        target_items_list = [item for item in available_items[0] if item[0] in target_item_ids]
+        target_instances = {}
+        for description, instance in available_items[1].items():
+            dep_id = '{}_{}'.format(instance.config['dep'], instance.config['id'])
+            if dep_id in target_item_ids:
+                target_instances[description] = instance
+        target_items = (target_items_list, target_instances)
+        if not target_items:
+            print('没有匹配的可还原项')
+            self.logger.warning('没有匹配的可还原项')
+            return
+        print(f'找到 {len(target_items[0])} 个匹配项，开始执行...')
 
     def _execute_restore(self, items):
         """执行还原操作"""
