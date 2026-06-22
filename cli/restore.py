@@ -75,10 +75,15 @@ class Restorer:
         print(f'发现 {len(available_items[0])} 个可还原项，开始执行...')
         self._execute_restore(available_items)
         self.logger.info('全部还原项执行完成')
+        print('还原完成！')
 
     def restore_items(self, item_ids):
         """还原指定ID的项"""
-        pass
+        self.logger.info(f'开始执行指定还原项: {item_ids}')
+        print('正在扫描系统安全状态...')
+        instance_tuple = self.checker.sec_checklist()
+        available_items = instance_tuple[1] if instance_tuple else []
+        target_item_ids = item_ids[1].split(',') if len(item_ids) > 1 else []
 
     def _execute_restore(self, items):
         """执行还原操作"""
