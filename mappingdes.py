@@ -249,3 +249,39 @@ def load_departments_no_ui(department_ids):
                     status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
             except Exception:
                 status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+    for i, (dep, module_name, module_path, pkl) in enumerate(entries):
+        try:
+            if module_name not in _cls_cache:
+                if module_name not in _module_cache:
+                    spec = importlib.util.spec_from_file_location(module_name, module_path)
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)
+                    _module_cache[module_name] = module
+                cls = getattr(_module_cache[module_name], module_name)
+                _cls_cache[module_name] = cls
+            else:
+                cls = _cls_cache[module_name]
+            instance = cls()
+            try:
+                ok = instance.check()
+            except Exception:
+                logging.exception(f'调用 {module_name}.check() 时发生错误')
+                ok = False
+            if not ok:
+                fixinstance[instance.get_des()] = instance
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'status'] = 0
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_name'] = module_name
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_path'] = module_path
+            else:
+                rbinstancee[instance.get_des()] = instance
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'status'] = 2
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_name'] = module_name
+                status_cache[pkl].loc[str(instance.config['dep']) + str(instance.config['id']), 'module_path'] = module_path
+        except Exception:
+            logging.exception(f'加载模块 {module_name} 时发生异常')
+    for pkl, df in status_cache.items():
+        try:
+            df.to_pickle(pkl)
+        except Exception:
+            logging.exception(f'保存状态文件 {pkl} 时发生异常')
+    return [fixinstance, rbinstancee, resetinstance]
