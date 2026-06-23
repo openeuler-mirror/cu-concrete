@@ -137,6 +137,20 @@ def load_departments(department_ids):
             entries.append((dep, module_name, module_path, department_data_pkl))
     total = len(entries)
     cmd = ['whiptail', '--title', '正在加载策略...', '--gauge', '正在检测安全策略状态...', '10', '70', '0']
+    try:
+        process = subprocess.Popen(cmd, stdin=subprocess.PIPE, text=True)
+    except Exception:
+        process = None
+    status_cache = {}
+    for _, _, _, pkl in entries:
+        if pkl not in status_cache:
+            try:
+                if os.path.exists(pkl):
+                    status_cache[pkl] = pd.read_pickle(pkl)
+                else:
+                    status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+            except Exception:
+                status_cache[pkl] = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
 
 def load_departments_no_ui(department_ids):
     """
