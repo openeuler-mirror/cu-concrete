@@ -82,3 +82,8 @@ class checklist:
         rb_instance = {}
         resetinstance = []
         reset_instance = {}
+        folder_list = []
+        import re
+        pattern = re.compile('^department_\\d+_policy$')
+        folder_list = [d for d in all_dir if pattern.match(d)]
+        dept_ids = [int(d.split('_')[1]) for d in folder_list]
