@@ -4,16 +4,24 @@
   gather_facts: no
   vars:
     cu_concrete_path: "/opt/cu-concrete"
+    # 支持从外部传入任务ID作为标识
+    external_task_id: "{{ lookup('env', 'CU_CONCRETE_TASK_ID') | default(omit) }}"
 
   tasks:
-    # === 第一步：在控制节点上生成唯一时间戳（只做一次）===
-    - name: Set fixed timestamped backup root path
+    # === 第一步：确定任务标识（任务ID优先，回退到时间戳）===
+    - name: Determine task identifier
       delegate_to: localhost
       run_once: true
       ansible.builtin.set_fact:
-        backup_root: "/backup/cu-concrete-{{ '%Y%m%d-%H%M%S' | strftime }}"
+        task_identifier: "{{ external_task_id | default(ansible_date_time.iso8601_basic_short, true) }}"
 
-    - name: Ensure timestamped backup root directory exists on control node
+    - name: Set backup root path with task identifier
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.set_fact:
+        backup_root: "/opt/cu-concrete/data/backup/cu-concrete-{{ task_identifier }}"
+
+    - name: Ensure backup root directory exists on control node
       delegate_to: localhost
       run_once: true
       ansible.builtin.file:
@@ -21,55 +29,79 @@
         state: directory
         mode: '0755'
 
+    - name: Display used task identifier
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.debug:
+        msg: "使用任务标识: {{ task_identifier }}，数据目录: {{ backup_root }}"
+
+    - name: Install cu-concrete package using raw yum command (idempotent)
+      ansible.builtin.shell: |
+        set -e
+        if ! rpm -q cu-concrete >/dev/null 2>&1; then
+          yum install -y cu-concrete
+        else
+          echo "cu-concrete already installed"
+        fi
+      become: yes
+      changed_when: "'already installed' not in result.stdout"
+      register: result
+
     # --- 后续所有任务都使用 {{ backup_root }} ---
     - name: Check if cu-concrete directory exists on remote host
       ansible.builtin.stat:
         path: "{{ cu_concrete_path }}"
       register: cu_dir_check
 
+    # 先执行 --list(全量检查)===
+    - name: Preview hardening actions (python3 main.py harden --list)
+      when: cu_dir_check.stat.exists
+      ansible.builtin.command:
+        cmd: python3 main.py harden --list
+        chdir: "{{ cu_concrete_path }}"
+      changed_when: false  # --list 是只读操作
+
     - name: Run hardening script (python3 main.py harden --all)
       when: cu_dir_check.stat.exists
       ansible.builtin.command:
-        cmd: python3 main.py harden --all
+        cmd: python3 main.py harden items 2_1,2_12
         chdir: "{{ cu_concrete_path }}"
       changed_when: true
 
-    - name: Create tar.gz with custom top-level dir name
+    - name: Create and fetch tar.gz, then extract locally (per-host workflow)
       when: cu_dir_check.stat.exists
-      ansible.builtin.shell:
-        cmd: |
-          cd /opt && \
-          tar -czf "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz" \
-              --transform "s|^cu-concrete|cu-concrete-{{ inventory_hostname }}|" \
-              cu-concrete
-        warn: false
-      args:
-        creates: "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz"
+      block:
+        - name: Create tar.gz with custom top-level dir name
+          ansible.builtin.shell:
+            cmd: |
+              cd /opt && \
+              tar -czf "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz" \
+                  --transform "s|^cu-concrete|cu-concrete-{{ inventory_hostname }}|" \
+                  cu-concrete
+            warn: false
+          args:
+            creates: "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz"
 
-    - name: Fetch the tar.gz archive to control node
-      when: cu_dir_check.stat.exists
-      ansible.builtin.fetch:
-        src: "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz"
-        dest: "{{ backup_root }}/cu-concrete-{{ inventory_hostname }}.tar.gz"
-        flat: yes
+        - name: Fetch the tar.gz archive to control node
+          ansible.builtin.fetch:
+            src: "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz"
+            dest: "{{ backup_root }}/cu-concrete-{{ inventory_hostname }}.tar.gz"
+            flat: yes
 
-    - name: Clean up temporary tar file on remote host
-      when: cu_dir_check.stat.exists
-      ansible.builtin.file:
-        path: "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz"
-        state: absent
+        - name: Extract this host's archive on control node
+          delegate_to: localhost
+          ansible.builtin.unarchive:
+            src: "{{ backup_root }}/cu-concrete-{{ inventory_hostname }}.tar.gz"
+            dest: "{{ backup_root }}"
+            remote_src: false
 
-    - name: Extract each host's archive directly into timestamped backup root
-      delegate_to: localhost
-      ansible.builtin.unarchive:
-        src: "{{ backup_root }}/cu-concrete-{{ item }}.tar.gz"
-        dest: "{{ backup_root }}"
-        remote_src: false
-      loop: "{{ groups['all'] }}"
+        - name: Remove fetched .tar.gz file from control node
+          delegate_to: localhost
+          ansible.builtin.file:
+            path: "{{ backup_root }}/cu-concrete-{{ inventory_hostname }}.tar.gz"
+            state: absent
 
-    - name: Remove fetched .tar.gz files from control node
-      delegate_to: localhost
-      ansible.builtin.file:
-        path: "{{ backup_root }}/cu-concrete-{{ item }}.tar.gz"
-        state: absent
-      loop: "{{ groups['all'] }}"
+        - name: Clean up temporary tar file on remote host
+          ansible.builtin.file:
+            path: "/tmp/cu-concrete-{{ inventory_hostname }}.tar.gz"
+            state: absent
