@@ -43,7 +43,7 @@ def base_shell(command, input=None, stdin=None, timeout=None):
     except Exception as e:
         print(f"命令执行异常: {e}")
         logging.error(f"Command failed: {command}, Error: {e}")
-        return ['', 'exception']
+        return ['', -1]
 
     #  调试输出
     # print(f"Command: {' '.join(command)}")
@@ -80,7 +80,7 @@ def base_pipe_shell(command, input=None, stdin=None, timeout=None):
     except Exception as e:
         print(f"命令执行异常: {e}")
         logging.error(f"Command failed: {command}, Error: {e}")
-        return ['', 'exception']
+        return ['', -1]
 
     #  调试输出
     # print(f"Command: {' '.join(command)}")
