@@ -50,3 +50,4 @@ class ApiResponse:
             'message': message,
             'data': data
         }
+        return Response(response_data, status=http_status)
