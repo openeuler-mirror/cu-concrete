@@ -1,0 +1,26 @@
+ {
+    "pool-1": {
+        "name": "云池1",
+        "ansible_inventory": "/opt/cu-concrete/data/fetch/fetch.ini",
+        "playbook_path": "/opt/cu-concrete/data/fetch/fetch.yml",
+        "list": [
+            '21','212'
+         ]
+    },
+    "pool-2": {
+        "name": "云池2",
+        "ansible_inventory": "/opt/cu-concrete/data/fetch/fetch.ini",
+        "playbook_path": "/opt/cu-concrete/data/fetch/fetch.yml",
+        "list": [
+            '21','212'
+         ]
+    },
+    "pool-3": {
+        "name": "云池3",
+        "ansible_inventory": "/opt/cu-concrete/data/fetch/fetch.ini",
+        "playbook_path": "/opt/cu-concrete/data/fetch/fetch.yml",
+        "list": [
+            '21','212'
+         ]
+    }
+ }
