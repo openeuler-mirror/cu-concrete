@@ -39,6 +39,17 @@ def pool_list(request):
             'id': pool_id,
             'name': pool_info['name']
         })
+    # 处理分页参数
+    try:
+        current_param = request.query_params.get('current', '1')
+        pageSize_param = request.query_params.get('pageSize', str(len(all_pools)))
+        # 验证并转换参数
+        current = int(current_param) if current_param.isdigit() and int(current_param) > 0 else 1
+        pageSize = int(pageSize_param) if pageSize_param.isdigit() and int(pageSize_param) > 0 else len(all_pools)
+    except (ValueError, TypeError):
+        # 如果参数转换失败，使用默认值
+        current = 1
+        pageSize = len(all_pools)
     # 构造基础响应数据
     response_data = {
         'list': all_pools
