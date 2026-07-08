@@ -68,3 +68,27 @@ def pool_list(request):
     except Exception as e:
         logger.error(f"获取云池列表时出错: {str(e)}")
         return ApiResponse.error(f'获取云池列表时出错: {str(e)}', 500)
+    
+# 根据pool名获取所有配置文件名
+def find_pool_configs(pool_name: str):
+    """
+    根据云池名获取所有配置文件
+    """
+    # 检查文件是否存在
+    if not os.path.exists(config_data_path):
+        return ApiResponse.error(f'配置文件 {config_data_path} 不存在', 404)
+    # 读取并解析JSON文件
+    with open(config_data_path, "r", encoding="utf-8") as f:
+        conf_data = json.load(f)
+    # 根据pool_name查找对应配置
+    if pool_name not in conf_data:
+        return ApiResponse.error(f'未找到名为 {pool_name} 的云池配置', 404)
+    # 获取对应pool的配置key列表
+    pool_configs = conf_data[pool_name]
+    config_file_list = list(pool_configs.keys())
+    print("提取的配置文件名列表：", config_file_list)
+    
+    # 临时返回原始列表
+    return CommonResponses.QUERY_SUCCESS({
+        'list': config_file_list
+    })
