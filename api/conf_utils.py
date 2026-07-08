@@ -163,11 +163,15 @@ def find_config_content(pool_name: str, file_name: str):
     except Exception as e:
         return ApiResponse.error(f'获取配置文件内容时出错: {str(e)}', 500)
     
-    # 获取级别配置信息
+# 获取级别配置信息
 def get_level_conf(harden_models: str):
     # 获取 conf_harden.json 文件路径
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     conf_file_path = os.path.join(base_dir, 'api', 'conf_harden.json')
+    
+    # 读取配置文件
+    with open(conf_file_path, 'r', encoding='utf-8') as f:
+        conf_data = json.load(f)
 
     return JsonResponse({
         'code': 200,
