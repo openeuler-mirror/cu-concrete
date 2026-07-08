@@ -74,47 +74,50 @@ def find_pool_configs(pool_name: str):
     """
     根据云池名获取所有配置文件
     """
-    # 检查文件是否存在
-    if not os.path.exists(config_data_path):
-        return ApiResponse.error(f'配置文件 {config_data_path} 不存在', 404)
-    # 读取并解析JSON文件
-    with open(config_data_path, "r", encoding="utf-8") as f:
-        conf_data = json.load(f)
-    # 根据pool_name查找对应配置
-    if pool_name not in conf_data:
-        return ApiResponse.error(f'未找到名为 {pool_name} 的云池配置', 404)
-    # 获取并返回对应pool的所有配置
-    pool_configs = conf_data[pool_name]
-    config_file_list = list(pool_configs.keys())
-    print("提取的配置文件名列表：", config_file_list)
-    
-    # 安全处理文件名，避免索引越界
-    formatted_configs = []
-    for filename in config_file_list:
-        # 安全分割文件名
-        parts = filename.split('_')
+    try:
+        # 检查文件是否存在
+        if not os.path.exists(config_data_path):
+            return ApiResponse.error(f'配置文件 {config_data_path} 不存在', 404)
+        # 读取并解析JSON文件
+        with open(config_data_path, "r", encoding="utf-8") as f:
+            conf_data = json.load(f)
+        # 根据pool_name查找对应配置
+        if pool_name not in conf_data:
+            return ApiResponse.error(f'未找到名为 {pool_name} 的云池配置', 404)
+        # 获取并返回对应pool的所有配置
+        pool_configs = conf_data[pool_name]
+        config_file_list = list(pool_configs.keys())
+        print("提取的配置文件名列表：", config_file_list)
         
-        # 确保至少有两个部分，否则使用整个文件名
-        if len(parts) >= 2:
-            # 取前两部分作为名称
-            name = '_'.join(parts[:2])
-        else:
-            # 如果只有一个部分或没有下划线，使用整个文件名
-            name = filename
+        # 安全处理文件名，避免索引越界
+        formatted_configs = []
+        for filename in config_file_list:
+            # 安全分割文件名
+            parts = filename.split('_')
             
-        # 获取生成时间，如果没有则使用"未知时间"
-        generate_time = pool_configs[filename].get("generateTime", "未知时间")
+            # 确保至少有两个部分，否则使用整个文件名
+            if len(parts) >= 2:
+                # 取前两部分作为名称
+                name = '_'.join(parts[:2])
+            else:
+                # 如果只有一个部分或没有下划线，使用整个文件名
+                name = filename
+                
+            # 获取生成时间，如果没有则使用"未知时间"
+            generate_time = pool_configs[filename].get("generateTime", "未知时间")
+            
+            formatted_configs.append({
+                'id': filename,
+                'name': name,
+                'description': f'生成于 {generate_time}'
+            })
         
-        formatted_configs.append({
-            'id': filename,
-            'name': name,
-            'description': f'生成于 {generate_time}'
+        # 返回标准分页格式
+        return CommonResponses.QUERY_SUCCESS({
+            'count': len(formatted_configs),
+            'pageIndex': 1,
+            'pageSize': len(formatted_configs),
+            'list': formatted_configs
         })
-    
-    # 返回标准分页格式
-    return CommonResponses.QUERY_SUCCESS({
-        'count': len(formatted_configs),
-        'pageIndex': 1,
-        'pageSize': len(formatted_configs),
-        'list': formatted_configs
-    })
+    except Exception as e:
+        print(e)
