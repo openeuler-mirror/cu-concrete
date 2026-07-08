@@ -301,70 +301,71 @@ def generate_config(params_json: dict):
     :param harden_items: 加固项列表，用于生成文件内容
     :return: 成功返回结果字典，失败返回异常信息
     """
-    # 初始化
-    # 将 JSON 字符串解析为字典
-    params = json.loads(params_json)
-    # 生成时间
-    generate_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    raw_str = f"{generate_time}_{uuid.uuid4()}"
-    unique_key = hashlib.md5(raw_str.encode()).hexdigest()[:16]
-    
-    # 定义输出目录
-    # output_dir = Path('/opt/cu-concrete/data/fetch')
-    output_dir = path.parent / "data/fetch" / params.get("pool_id")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    # 生成新的 inventory.ini 文件
-    ini_lines = ['[servers]']
-    for host in params.get("hosts"):
-        host_ip = host.get('ip', host.get('name', ''))
-        if host_ip:
-            ini_lines.append(host_ip)
-    ini_lines.append('')
-    ini_lines.append('[servers:vars]')
-    ini_lines.append('ansible_user=root')
-    ini_lines.append('ansible_port=22')
-    ini_lines.append('ansible_ssh_private_key_file=/root/.ssh/id_rsa')
-    ini_content = '\n'.join(ini_lines)
-    # 写入新的 inventory.ini 文件 唯一生成文件
-    ini_file_name = f'inventory_{unique_key}.ini'
-    ini_file_path = output_dir / ini_file_name
-    with open(ini_file_path, 'w', encoding='utf-8') as f:
-        f.write(ini_content)
-    
-    # 读取源 playbook_template.yml 文件作为模板
-    with open(playbook_template_path, 'r', encoding='utf-8') as f:
-        yml_content = f.read()
-    # harden_items 已经是 dep_id 格式 (如 "1_3", "2_4")
-    # 直接拼接成 items 参数
-    harden_items_str = ','.join(params.get("harden_items"))
-    # 使用正则替换 items 后面的加固项列表
-    # 匹配 "python3 main.py harden items " 后面的加固项列表
-    pattern = r'(python3 main\.py harden items )([\d_,]+)'
-    def replace_items(match):
-        return match.group(1) + harden_items_str
-    yml_content = re.sub(pattern, replace_items, yml_content)
-    
-    # 写入新的 playbook.yml 文件 唯一生成文件
-    yml_file_name = f'playbook_{unique_key}.yml'
-    yml_file_path = output_dir / yml_file_name
-    with open(yml_file_path, 'w', encoding='utf-8') as f:
-        f.write(yml_content)
-    
-    # 读取生成的文件内容返回给前端, 文件获取后删除
-    with open(ini_file_path, 'r', encoding='utf-8') as f:
-        ini_content_display = f.read()
-    os.remove(ini_file_path)
-    with open(yml_file_path, 'r', encoding='utf-8') as f:
-        yml_content_display = f.read()
-    os.remove(yml_file_path)
-    
-    # 返回给前端
-    return CommonResponses.OPERATION_SUCCESS({
-        'ini_file': str(ini_file_path),
-        'yml_file': str(yml_file_path),
-        'ini_content': ini_content_display,
-        'yml_content': yml_content_display,
-        'hosts_count': len(params.get("hosts")),
-        'harden_items': harden_items_str
-    }, message='配置文件生成并保存成功')
+    try:
+        # 初始化
+        # 将 JSON 字符串解析为字典
+        params = json.loads(params_json)
+        # 生成时间
+        generate_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        raw_str = f"{generate_time}_{uuid.uuid4()}"
+        unique_key = hashlib.md5(raw_str.encode()).hexdigest()[:16]
+        
+        # 定义输出目录
+        # output_dir = Path('/opt/cu-concrete/data/fetch')
+        output_dir = path.parent / "data/fetch" / params.get("pool_id")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 生成新的 inventory.ini 文件
+        ini_lines = ['[servers]']
+        for host in params.get("hosts"):
+            host_ip = host.get('ip', host.get('name', ''))
+            if host_ip:
+                ini_lines.append(host_ip)
+        ini_lines.append('')
+        ini_lines.append('[servers:vars]')
+        ini_lines.append('ansible_user=root')
+        ini_lines.append('ansible_port=22')
+        ini_lines.append('ansible_ssh_private_key_file=/root/.ssh/id_rsa')
+        ini_content = '\n'.join(ini_lines)
+        # 写入新的 inventory.ini 文件 唯一生成文件
+        ini_file_name = f'inventory_{unique_key}.ini'
+        ini_file_path = output_dir / ini_file_name
+        with open(ini_file_path, 'w', encoding='utf-8') as f:
+            f.write(ini_content)
+        
+        # 读取源 playbook_template.yml 文件作为模板
+        with open(playbook_template_path, 'r', encoding='utf-8') as f:
+            yml_content = f.read()
+        # harden_items 已经是 dep_id 格式 (如 "1_3", "2_4")
+        # 直接拼接成 items 参数
+        harden_items_str = ','.join(params.get("harden_items"))
+        # 使用正则替换 items 后面的加固项列表
+        # 匹配 "python3 main.py harden items " 后面的加固项列表
+        pattern = r'(python3 main\.py harden items )([\d_,]+)'
+        def replace_items(match):
+            return match.group(1) + harden_items_str
+        yml_content = re.sub(pattern, replace_items, yml_content)
+        
+        # 写入新的 playbook.yml 文件 唯一生成文件
+        yml_file_name = f'playbook_{unique_key}.yml'
+        yml_file_path = output_dir / yml_file_name
+        with open(yml_file_path, 'w', encoding='utf-8') as f:
+            f.write(yml_content)
+        
+        # 读取生成的文件内容返回给前端, 文件获取后删除
+        with open(ini_file_path, 'r', encoding='utf-8') as f:
+            ini_content_display = f.read()
+        os.remove(ini_file_path)
+        with open(yml_file_path, 'r', encoding='utf-8') as f:
+            yml_content_display = f.read()
+        os.remove(yml_file_path)
+        
+        # 返回给前端
+        return CommonResponses.OPERATION_SUCCESS({
+            'ini_file': str(ini_file_path),
+            'yml_file': str(yml_file_path),
+            'ini_content': ini_content_display,
+            'yml_content': yml_content_display,
+            'hosts_count': len(params.get("hosts")),
+            'harden_items': harden_items_str
+        }, message='配置文件生成并保存成功')
