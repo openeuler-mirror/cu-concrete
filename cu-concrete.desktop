@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=cu-concrete
+Name[zh_CN]=多机加固平台
+Terminal=True
+Icon=/usr/share/cu-concrete/cu-concrete-logo.svg
+Exec=gnome-terminal -- bash -c "pkexec cu-concrete; read -p '按回车关闭'"
