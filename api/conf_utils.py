@@ -406,4 +406,31 @@ def save_generated_config(params_json: dict):
         # 返回错误
         return CommonResponses.OPERATION_FAILED('配置文件名已存在, 请更换名称！')
 
+    #4、将ini和yml内容写入文件中
+    # 生成新的 inventory.ini 文件 - 修复hosts处理逻辑
+    ini_lines = ['[servers]']
+    for host in params.get("hosts"):
+        # 修复2：处理host可能是字符串或字典的情况
+        if isinstance(host, dict):
+            host_ip = host.get('ip', host.get('name', ''))
+        else:
+            host_ip = host  # 直接使用字符串作为IP
+        if host_ip:
+            ini_lines.append(host_ip)
+    ini_lines.append('')
+    ini_lines.append('[servers:vars]')
+    ini_lines.append('ansible_user=root')
+    ini_lines.append('ansible_port=22')
+    ini_lines.append('ansible_ssh_private_key_file=/root/.ssh/id_rsa')
+    ini_content = '\n'.join(ini_lines)
+    ini_file_name = f'inventory_{unique_key}.ini'
+    ini_file_path = output_dir / ini_file_name
+    with open(ini_file_path, 'w', encoding='utf-8') as f:
+        f.write(params.get("ini_content"))
+    # 写入新的 playbook.yml 文件 唯一生成文件
+    yml_file_name = params.get("config_name")
+    yml_file_path = output_dir / yml_file_name
+    with open(yml_file_path, 'w', encoding='utf-8') as f:
+        f.write(params.get("yml_content"))
+
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件保存成功')
