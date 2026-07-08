@@ -29,3 +29,24 @@ class ApiResponse:
             'data': data
         }
         return Response(response_data, status=status.HTTP_200_OK)
+    
+    # 错误响应
+    @staticmethod
+    def error(message="操作失败", code=500, data=None, http_status=status.HTTP_500_INTERNAL_SERVER_ERROR):
+        """
+        返回错误响应
+        
+        Args:
+            message: 错误消息
+            code: 错误码
+            data: 额外的错误数据
+            http_status: HTTP状态码
+            
+        Returns:
+            Response: 标准错误响应格式
+        """
+        response_data = {
+            'code': code,
+            'message': message,
+            'data': data
+        }
