@@ -369,3 +369,7 @@ def generate_config(params_json: dict):
             'hosts_count': len(params.get("hosts")),
             'harden_items': harden_items_str
         }, message='配置文件生成并保存成功')
+        
+    except Exception as e:
+        logger.error(f"配置生成异常：: {str(e)}", exc_info=True)
+        return ApiResponse.error(f'配置生成异常：: {str(e)}', 500)
