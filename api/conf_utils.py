@@ -225,9 +225,22 @@ def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_conten
             
     with open(exec_file_path, 'w', encoding='utf-8') as f:
         f.write(yml_content)
-
+    
+    # 更新生成时间
+    conf_data[pool_id][file_name]["generateTime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # 保存更新后的配置数据库
+    with open(config_data_path, "w", encoding="utf-8") as f:
+        json.dump(conf_data, f, ensure_ascii=False, indent=4)
+        
+    logger.info(f"配置文件已更新: 云池={pool_id}, 配置={file_name}")
+        
+    # 返回成功响应
     return JsonResponse({
         'code': 200,
         'message': '配置保存成功',
-        'data': {}
+        'data': {
+            'pool_name': pool_id,
+            'config_name': file_name
+        }
     })
