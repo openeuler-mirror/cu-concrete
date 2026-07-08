@@ -141,7 +141,11 @@ def find_config_content(pool_name: str, file_name: str):
     if file_name not in pool_data:
         return ApiResponse.error(f"云池 {pool_name} 中未找到配置文件：{file_name}", 404)
     file_data = pool_data[file_name]
+    # 获取 serverConfigPath 和 execFilePath 字段
+    server_config_path = file_data.get("serverConfigPath")
+    exec_file_path = file_data.get("execFilePath")
 
     return CommonResponses.OPERATION_SUCCESS({
-        "data": file_data
+        "server_config_path": server_config_path,
+        "exec_file_path": exec_file_path
     })
