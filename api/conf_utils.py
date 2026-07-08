@@ -252,36 +252,41 @@ def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_conten
     
 # 删除配置内容
 def delete_conf(pool_id: str, config_name: str):
-    # 检查配置文件是否存在
-    if not os.path.exists(config_data_path):
-        return ApiResponse.error(f'配置数据库 {config_data_path} 不存在', 404)
-    
-    # 读取配置数据库
-    with open(config_data_path, "r", encoding="utf-8") as f:
-        conf_data = json.load(f)
-    
-    # 检查云池是否存在
-    if pool_id not in conf_data:
-        return ApiResponse.error(f'未找到云池 {pool_id} 的配置记录', 404)
-    
-    # 检查配置文件是否存在
-    if config_name not in conf_data[pool_id]:
-        return ApiResponse.error(f'云池 {pool_id} 中未找到配置文件 {config_name}', 404)
-    
-    # 从配置数据库中移除记录
-    del conf_data[pool_id][config_name]
-    
-    # 如果云池下没有配置了，可以考虑移除整个云池记录
-    # if not conf_data[pool_id]:
-    #     del conf_data[pool_id]
-    
-    # 保存更新后的配置数据库
-    with open(config_data_path, "w", encoding="utf-8") as f:
-        json.dump(conf_data, f, ensure_ascii=False, indent=4)
-    
-    logger.info(f"配置文件已删除: 云池={pool_id}, 配置={config_name}")
-    
-    return CommonResponses.OPERATION_SUCCESS({
-        'pool_id': pool_id,
-        'config_name': config_name
-    }, message='配置已成功删除')
+    try:
+        # 检查配置文件是否存在
+        if not os.path.exists(config_data_path):
+            return ApiResponse.error(f'配置数据库 {config_data_path} 不存在', 404)
+        
+        # 读取配置数据库
+        with open(config_data_path, "r", encoding="utf-8") as f:
+            conf_data = json.load(f)
+        
+        # 检查云池是否存在
+        if pool_id not in conf_data:
+            return ApiResponse.error(f'未找到云池 {pool_id} 的配置记录', 404)
+        
+        # 检查配置文件是否存在
+        if config_name not in conf_data[pool_id]:
+            return ApiResponse.error(f'云池 {pool_id} 中未找到配置文件 {config_name}', 404)
+        
+        # 从配置数据库中移除记录
+        del conf_data[pool_id][config_name]
+        
+        # 如果云池下没有配置了，可以考虑移除整个云池记录
+        # if not conf_data[pool_id]:
+        #     del conf_data[pool_id]
+        
+        # 保存更新后的配置数据库
+        with open(config_data_path, "w", encoding="utf-8") as f:
+            json.dump(conf_data, f, ensure_ascii=False, indent=4)
+        
+        logger.info(f"配置文件已删除: 云池={pool_id}, 配置={config_name}")
+        
+        return CommonResponses.OPERATION_SUCCESS({
+            'pool_id': pool_id,
+            'config_name': config_name
+        }, message='配置已成功删除')
+        
+    except Exception as e:
+        logger.error(f"删除配置时出错: {str(e)}", exc_info=True)
+        return ApiResponse.error(f'删除配置时出错: {str(e)}', 500)
