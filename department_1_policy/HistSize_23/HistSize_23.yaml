@@ -6,6 +6,6 @@ query:
     path: '/etc/profile'
     form: '^export HISTSIZE='
 change:
-    value: 'export HISTSIZE=10'
+    value: 'export HISTSIZE=5'
 description: "控制当前bash会话中保留的命令"
-#控制当前bash会话中的命令保留为10个
+#控制当前bash会话中的命令保留为5个
