@@ -400,4 +400,10 @@ def save_generated_config(params_json: dict):
     else : 
         data = {}
 
+    #3、检查配置文件名是否已存在，若存在，则返回错误
+    # 修复1：先检查云池是否存在，避免KeyError
+    if params.get("pool_id") in data and params.get("config_name") in data[params.get("pool_id")]:
+        # 返回错误
+        return CommonResponses.OPERATION_FAILED('配置文件名已存在, 请更换名称！')
+
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件保存成功')
