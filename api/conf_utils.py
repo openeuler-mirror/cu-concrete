@@ -89,7 +89,7 @@ def find_pool_configs(pool_name: str):
         config_file_list = list(pool_configs.keys())
         print("提取的配置文件名列表：", config_file_list)
         
-        # 安全处理文件名，避免索引越界
+        # 修复1：安全处理文件名，避免索引越界
         formatted_configs = []
         for filename in config_file_list:
             # 安全分割文件名
@@ -112,12 +112,14 @@ def find_pool_configs(pool_name: str):
                 'description': f'生成于 {generate_time}'
             })
         
-        # 返回标准分页格式
+        # 修复2：返回标准分页格式
         return CommonResponses.QUERY_SUCCESS({
             'count': len(formatted_configs),
             'pageIndex': 1,
             'pageSize': len(formatted_configs),
             'list': formatted_configs
         })
+    # 异常处理
     except Exception as e:
-        print(e)
+        logger.error(f"获取配置列表时出错: {str(e)}", exc_info=True)
+        return ApiResponse.error(f'获取所有配置文件时出错: {str(e)}', 500)
