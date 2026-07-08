@@ -350,5 +350,13 @@ def generate_config(params_json: dict):
     yml_file_path = output_dir / yml_file_name
     with open(yml_file_path, 'w', encoding='utf-8') as f:
         f.write(yml_content)
+    
+    # 读取生成的文件内容返回给前端, 文件获取后删除
+    with open(ini_file_path, 'r', encoding='utf-8') as f:
+        ini_content_display = f.read()
+    os.remove(ini_file_path)
+    with open(yml_file_path, 'r', encoding='utf-8') as f:
+        yml_content_display = f.read()
+    os.remove(yml_file_path)
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件生成并保存成功')
