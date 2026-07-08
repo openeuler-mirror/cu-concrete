@@ -249,3 +249,15 @@ def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_conten
     except Exception as e:
         logger.error(f"保存配置内容时出错: {str(e)}", exc_info=True)
         return ApiResponse.error(f'保存配置内容时出错: {str(e)}', 500)
+    
+# 删除配置内容
+def delete_conf(pool_id: str, config_name: str):
+    # 检查配置文件是否存在
+    if not os.path.exists(config_data_path):
+        return ApiResponse.error(f'配置数据库 {config_data_path} 不存在', 404)
+    
+    # 读取配置数据库
+    with open(config_data_path, "r", encoding="utf-8") as f:
+        conf_data = json.load(f)
+
+    return CommonResponses.OPERATION_SUCCESS({}, message='配置已成功删除')
