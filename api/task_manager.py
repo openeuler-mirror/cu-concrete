@@ -28,3 +28,10 @@ def find_policy_yaml(project_root: str, policy_id: str) -> str | None:
                     if yaml_file.exists():
                         return str(yaml_file)
     return None
+
+# 数据存储目录配置
+DATA_DIR = Path("/opt/cu-concrete/data")
+TASKS_FILE = DATA_DIR / "tasks.json"
+LOGS_DIR = DATA_DIR / "logs"
+RESULTS_DIR = DATA_DIR / "results"
+BACKUP_ROOT = DATA_DIR / "backup"
