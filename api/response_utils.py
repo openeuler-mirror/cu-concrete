@@ -111,3 +111,11 @@ class ApiResponse:
             data=data, 
             http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+        
+# 预定义的常用响应
+class CommonResponses:
+    """常用的预定义响应"""
+    
+    # 查询相关
+    QUERY_SUCCESS = lambda data=None, message="查询成功": ApiResponse.success(data, message)
+    QUERY_FAILED = lambda msg="查询失败": ApiResponse.error(msg, 500)
