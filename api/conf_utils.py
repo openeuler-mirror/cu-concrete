@@ -68,7 +68,7 @@ def pool_list(request):
     except Exception as e:
         logger.error(f"获取云池列表时出错: {str(e)}")
         return ApiResponse.error(f'获取云池列表时出错: {str(e)}', 500)
-    
+
 # 根据pool名获取所有配置文件名
 def find_pool_configs(pool_name: str):
     """
@@ -123,7 +123,7 @@ def find_pool_configs(pool_name: str):
     except Exception as e:
         logger.error(f"获取配置列表时出错: {str(e)}", exc_info=True)
         return ApiResponse.error(f'获取所有配置文件时出错: {str(e)}', 500)
-    
+
 # 根据pool名和配置名获取配置文件内容
 def find_config_content(pool_name: str, file_name: str):
     try:
@@ -162,7 +162,7 @@ def find_config_content(pool_name: str, file_name: str):
         })
     except Exception as e:
         return ApiResponse.error(f'获取配置文件内容时出错: {str(e)}', 500)
-    
+
 # 获取级别配置信息
 def get_level_conf(harden_models: str):
     try:
@@ -187,7 +187,7 @@ def get_level_conf(harden_models: str):
     except Exception as e:
         logger.exception("获取加固模型失败")
         return ApiResponse.error(f'获取级别配置信息时出错: {str(e)}', 500)
-    
+
 # 保存修改后的配置内容到指定文件
 def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_content: str):
     """
@@ -249,7 +249,7 @@ def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_conten
     except Exception as e:
         logger.error(f"保存配置内容时出错: {str(e)}", exc_info=True)
         return ApiResponse.error(f'保存配置内容时出错: {str(e)}', 500)
-    
+
 # 删除配置内容
 def delete_conf(pool_id: str, config_name: str):
     try:
@@ -290,7 +290,8 @@ def delete_conf(pool_id: str, config_name: str):
     except Exception as e:
         logger.error(f"删除配置时出错: {str(e)}", exc_info=True)
         return ApiResponse.error(f'删除配置时出错: {str(e)}', 500)
-    
+
+
 # 生成配置文件
 def generate_config(params_json: dict):
     """
@@ -373,7 +374,8 @@ def generate_config(params_json: dict):
     except Exception as e:
         logger.error(f"配置生成异常：: {str(e)}", exc_info=True)
         return ApiResponse.error(f'配置生成异常：: {str(e)}', 500)
-    
+
+
 # 保存新生成的配置文件
 def save_generated_config(params_json: dict):
     '''
