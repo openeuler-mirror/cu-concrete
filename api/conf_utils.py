@@ -373,3 +373,24 @@ def generate_config(params_json: dict):
     except Exception as e:
         logger.error(f"配置生成异常：: {str(e)}", exc_info=True)
         return ApiResponse.error(f'配置生成异常：: {str(e)}', 500)
+    
+# 保存新生成的配置文件
+def save_generated_config(params_json: dict):
+    '''
+    保存新生成的配置文件
+    conf_data需要的参数:
+        云池名、配置文件名、生成人姓名、加固模式、ini配置文件路径、yml配置文件路径、保存生成的配置文件时间
+    '''
+    #1、初始化
+    # 将 JSON 字符串解析为字典
+    params = json.loads(params_json)
+    print(params.get("hosts"))
+    # 生成时间
+    generate_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    raw_str = f"{generate_time}_{uuid.uuid4()}"
+    unique_key = hashlib.md5(raw_str.encode()).hexdigest()[:16]
+    # 定义输出目录
+    output_dir = path.parent / "data/fetch" / params.get("pool_id")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    return CommonResponses.OPERATION_SUCCESS({}, message='配置文件保存成功')
