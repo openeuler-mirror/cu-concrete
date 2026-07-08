@@ -207,6 +207,17 @@ def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_conten
     # 读取配置数据库
     with open(config_data_path, "r", encoding="utf-8") as f:
         conf_data = json.load(f)
+    
+    # 获取文件路径
+    file_data = conf_data[pool_id][file_name]
+    server_config_path = file_data.get("serverConfigPath")
+    exec_file_path = file_data.get("execFilePath")
+    
+    # 验证路径是否存在
+    if not server_config_path or not os.path.exists(server_config_path):
+        return ApiResponse.error(f'INI配置文件路径无效: {server_config_path}', 400)
+    if not exec_file_path or not os.path.exists(exec_file_path):
+        return ApiResponse.error(f'YML配置文件路径无效: {exec_file_path}', 400)
 
     return JsonResponse({
         'code': 200,
