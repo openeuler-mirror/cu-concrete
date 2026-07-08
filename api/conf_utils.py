@@ -358,5 +358,13 @@ def generate_config(params_json: dict):
     with open(yml_file_path, 'r', encoding='utf-8') as f:
         yml_content_display = f.read()
     os.remove(yml_file_path)
-
-    return CommonResponses.OPERATION_SUCCESS({}, message='配置文件生成并保存成功')
+    
+    # 返回给前端
+    return CommonResponses.OPERATION_SUCCESS({
+        'ini_file': str(ini_file_path),
+        'yml_file': str(yml_file_path),
+        'ini_content': ini_content_display,
+        'yml_content': yml_content_display,
+        'hosts_count': len(params.get("hosts")),
+        'harden_items': harden_items_str
+    }, message='配置文件生成并保存成功')
