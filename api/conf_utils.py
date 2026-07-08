@@ -443,5 +443,13 @@ def save_generated_config(params_json: dict):
         "generatePersonName": params.get("generate_person_name"),
         "generateTime": generate_time
     }
+    
+    #6、将new_record存入数据库中
+    if params.get("pool_id") not in data:
+        data[params.get("pool_id")] = {}
+    data[params.get("pool_id")][yml_file_name] = new_record
+
+    with open(config_data_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件保存成功')
