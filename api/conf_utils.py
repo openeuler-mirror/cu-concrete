@@ -392,5 +392,12 @@ def save_generated_config(params_json: dict):
     # 定义输出目录
     output_dir = path.parent / "data/fetch" / params.get("pool_id")
     output_dir.mkdir(parents=True, exist_ok=True)
+    
+    #2、打开conf_data数据库
+    if os.path.exists(config_data_path):
+        with open(config_data_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    else : 
+        data = {}
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件保存成功')
