@@ -290,3 +290,23 @@ def delete_conf(pool_id: str, config_name: str):
     except Exception as e:
         logger.error(f"删除配置时出错: {str(e)}", exc_info=True)
         return ApiResponse.error(f'删除配置时出错: {str(e)}', 500)
+    
+# 生成配置文件
+def generate_config(params_json: dict):
+    """
+    3、生成配置文件并做持久化归档
+    :param generate_mode: 生成模式（对应 harden-model）
+    :param pool_name: 云池名（如 pool-1 / pool-2）
+    :param servers: 机器IP列表
+    :param harden_items: 加固项列表，用于生成文件内容
+    :return: 成功返回结果字典，失败返回异常信息
+    """
+    # 初始化
+    # 将 JSON 字符串解析为字典
+    params = json.loads(params_json)
+    # 生成时间
+    generate_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    raw_str = f"{generate_time}_{uuid.uuid4()}"
+    unique_key = hashlib.md5(raw_str.encode()).hexdigest()[:16]
+
+    return CommonResponses.OPERATION_SUCCESS({}, message='配置文件生成并保存成功')
