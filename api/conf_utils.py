@@ -451,5 +451,15 @@ def save_generated_config(params_json: dict):
 
     with open(config_data_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-
-    return CommonResponses.OPERATION_SUCCESS({}, message='配置文件保存成功')
+    
+    #7、返回前端成功
+    # 直接拼接成 items 参数
+    harden_items_str = ','.join(params.get("harden_items"))
+    
+    return CommonResponses.OPERATION_SUCCESS({
+        'ini_file': str(ini_file_path),
+        'yml_file': str(yml_file_path),
+        'hosts_count': len(params.get("hosts")),
+        'harden_items': params.get("harden_items"),
+        "harden_items_str": harden_items_str
+    }, message='配置文件保存成功')
