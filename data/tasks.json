@@ -1,0 +1,43 @@
+{
+  "tasks": {
+    "20260403-2b16948f": {
+      "task_id": "20260403-2b16948f",
+      "pool_id": "pool-1",
+      "pool_name": "云池1",
+      "status": "failed",
+      "created_at": "2026-04-03T07:58:28.678299",
+      "completed_at": "2026-04-03T07:58:34.414287",
+      "error_message": "ansible-playbook 执行失败 (exit code 4)",
+      "result_file": null,
+      "total_hosts": 0,
+      "timestamp": null,
+      "policy_names": [
+        "21",
+        "212",
+        "29",
+        "12"
+      ],
+      "script_name": "fetch.yml"
+    },
+    "20260403-7e2535b4": {
+      "task_id": "20260403-7e2535b4",
+      "pool_id": "pool-1",
+      "pool_name": "云池1",
+      "status": "failed",
+      "created_at": "2026-04-03T07:59:45.768069",
+      "completed_at": "2026-04-03T07:59:50.385071",
+      "error_message": "ansible-playbook 执行失败 (exit code 4)",
+      "result_file": null,
+      "total_hosts": 0,
+      "timestamp": null,
+      "policy_names": [
+        "21",
+        "212",
+        "29",
+        "12"
+      ],
+      "script_name": "fetch.yml"
+    }
+  },
+  "updated_at": "2026-04-08T07:12:18.938571"
+}
