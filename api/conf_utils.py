@@ -172,9 +172,14 @@ def get_level_conf(harden_models: str):
     # 读取配置文件
     with open(conf_file_path, 'r', encoding='utf-8') as f:
         conf_data = json.load(f)
-
+    
+    # 获取对应的加固项列表
+    harden_items = conf_data['harden-models'].get(harden_models, [])
+    
     return JsonResponse({
         'code': 200,
         'message': 'success',
-        'data': {}
+        'data': {
+            'harden_items': harden_items
+        }
     })
