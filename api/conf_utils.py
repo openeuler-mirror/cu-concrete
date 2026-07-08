@@ -126,35 +126,39 @@ def find_pool_configs(pool_name: str):
     
 # 根据pool名和配置名获取配置文件内容
 def find_config_content(pool_name: str, file_name: str):
-    # 检查文件是否存在
-    if not os.path.exists(config_data_path):
-        return ApiResponse.error(f"配置文件 {config_data_path} 不存在", 404)
-    # 读取并解析JSON
-    with open(config_data_path, "r", encoding="utf-8") as f:
-        conf_data = json.load(f)
-    # 检查pool是否存在
-    if pool_name not in conf_data:
-        return ApiResponse.error(f"未找到云池：{pool_name}", 404)
-    pool_data = conf_data[pool_name]
-    
-    # 检查配置文件是否存在
-    if file_name not in pool_data:
-        return ApiResponse.error(f"云池 {pool_name} 中未找到配置文件：{file_name}", 404)
-    file_data = pool_data[file_name]
-    # 获取 serverConfigPath 和 execFilePath 字段
-    server_config_path = file_data.get("serverConfigPath")
-    exec_file_path = file_data.get("execFilePath")
-    
-    # 目前根据文件名获取到了文件路径字段 例：exec_file_path = data/fetch/pool-1/playbook_XXX.yml
-    # 读取生成的文件内容返回给前端
-    with open(server_config_path, 'r', encoding='utf-8') as f:
-        ini_content_display = f.read()
-    with open(exec_file_path, 'r', encoding='utf-8') as f:
-        yml_content_display = f.read()
-
-    return CommonResponses.OPERATION_SUCCESS({
-        'ini_file': str(server_config_path),
-        'yml_file': str(exec_file_path),
-        'ini_content': ini_content_display,
-        'yml_content': yml_content_display,
-    })
+    try:
+        # 检查文件是否存在
+        if not os.path.exists(config_data_path):
+            return ApiResponse.error(f"配置文件 {config_data_path} 不存在", 404)
+        # 读取并解析JSON
+        with open(config_data_path, "r", encoding="utf-8") as f:
+            conf_data = json.load(f)
+        # 检查pool是否存在
+        if pool_name not in conf_data:
+            return ApiResponse.error(f"未找到云池：{pool_name}", 404)
+        pool_data = conf_data[pool_name]
+        
+        # 检查配置文件是否存在
+        if file_name not in pool_data:
+            return ApiResponse.error(f"云池 {pool_name} 中未找到配置文件：{file_name}", 404)
+        file_data = pool_data[file_name]
+        # 获取 serverConfigPath 和 execFilePath 字段
+        server_config_path = file_data.get("serverConfigPath")
+        exec_file_path = file_data.get("execFilePath")
+        
+        # 目前根据文件名获取到了文件路径字段 例：exec_file_path = data/fetch/pool-1/playbook_XXX.yml
+        # 读取生成的文件内容返回给前端
+        with open(server_config_path, 'r', encoding='utf-8') as f:
+            ini_content_display = f.read()
+        with open(exec_file_path, 'r', encoding='utf-8') as f:
+            yml_content_display = f.read()
+            
+        # 返回前端
+        return CommonResponses.OPERATION_SUCCESS({
+            'ini_file': str(server_config_path),
+            'yml_file': str(exec_file_path),
+            'ini_content': ini_content_display,
+            'yml_content': yml_content_display,
+        })
+    except Exception as e:
+        print(e)
