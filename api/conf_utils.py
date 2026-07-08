@@ -26,3 +26,6 @@ with open(config_path, 'r', encoding='utf-8') as f:
 config_data_path = path / "conf_data.json"
 # 模板配件文件
 playbook_template_path = path.parent / "data/fetch/playbook_template.yml"
+
+from rest_framework.response import Response
+from rest_framework import status

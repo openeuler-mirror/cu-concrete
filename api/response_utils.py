@@ -119,3 +119,7 @@ class CommonResponses:
     # 查询相关
     QUERY_SUCCESS = lambda data=None, message="查询成功": ApiResponse.success(data, message)
     QUERY_FAILED = lambda msg="查询失败": ApiResponse.error(msg, 500)
+    
+    # 操作相关
+    OPERATION_SUCCESS = lambda data=None, message="操作成功": ApiResponse.success(data, message)
+    OPERATION_FAILED = lambda msg="操作失败": ApiResponse.error(msg, 500)
