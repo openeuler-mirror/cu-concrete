@@ -32,34 +32,39 @@ from rest_framework import status
 
 # 查找云池列表
 def pool_list(request):
-    # 获取所有云池数据
-    all_pools = []
-    for pool_id, pool_info in CLOUD_POOLS.items():
-        all_pools.append({
-            'id': pool_id,
-            'name': pool_info['name']
-        })
-    # 处理分页参数
     try:
-        current_param = request.query_params.get('current', '1')
-        pageSize_param = request.query_params.get('pageSize', str(len(all_pools)))
-        # 验证并转换参数
-        current = int(current_param) if current_param.isdigit() and int(current_param) > 0 else 1
-        pageSize = int(pageSize_param) if pageSize_param.isdigit() and int(pageSize_param) > 0 else len(all_pools)
-    except (ValueError, TypeError):
-        # 如果参数转换失败，使用默认值
-        current = 1
-        pageSize = len(all_pools)
-    # 分页处理
-    total_count = len(all_pools)
-    start_index = (current - 1) * pageSize
-    end_index = start_index + pageSize
-    paginated_pools = all_pools[start_index:end_index]
-    # 构造响应数据
-    response_data = {
-        'count': total_count,
-        'pageIndex': current,
-        'pageSize': pageSize,
-        'list': paginated_pools
-    }
-    return CommonResponses.QUERY_SUCCESS(response_data)
+        # 获取所有云池数据
+        all_pools = []
+        for pool_id, pool_info in CLOUD_POOLS.items():
+            all_pools.append({
+                'id': pool_id,
+                'name': pool_info['name']
+            })
+        # 处理分页参数
+        try:
+            current_param = request.query_params.get('current', '1')
+            pageSize_param = request.query_params.get('pageSize', str(len(all_pools)))
+            # 验证并转换参数
+            current = int(current_param) if current_param.isdigit() and int(current_param) > 0 else 1
+            pageSize = int(pageSize_param) if pageSize_param.isdigit() and int(pageSize_param) > 0 else len(all_pools)
+        except (ValueError, TypeError):
+            # 如果参数转换失败，使用默认值
+            current = 1
+            pageSize = len(all_pools)
+        # 分页处理
+        total_count = len(all_pools)
+        start_index = (current - 1) * pageSize
+        end_index = start_index + pageSize
+        paginated_pools = all_pools[start_index:end_index]
+        # 构造响应数据
+        response_data = {
+            'count': total_count,
+            'pageIndex': current,
+            'pageSize': pageSize,
+            'list': paginated_pools
+        }
+        return CommonResponses.QUERY_SUCCESS(response_data)
+    # 异常处理
+    except Exception as e:
+        logger.error(f"获取云池列表时出错: {str(e)}")
+        return ApiResponse.error(f'获取云池列表时出错: {str(e)}', 500)
