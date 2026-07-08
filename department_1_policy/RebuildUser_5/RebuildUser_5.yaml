@@ -10,13 +10,13 @@ query:
 change:
   value:
     - "PASS_MAX_DAYS	90"
-    - "PASS_MIN_LEN	   8"
+    - "PASS_MIN_LEN	  8"
     - "PASS_MIN_DAYS	1"
     - "PASS_WARN_AGE	7"
 recovery:
     value:
     -  "PASS_MAX_DAYS	99999"
-    -  "PASS_MIN_LEN	   5"
+    -  "PASS_MIN_LEN	5"
     -  "PASS_MIN_DAYS	0"
     -  "PASS_WARN_AGE	7"
 description: '用户密码长度和有效期相关设定'
