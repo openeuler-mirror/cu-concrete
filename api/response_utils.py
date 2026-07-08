@@ -91,3 +91,23 @@ class ApiResponse:
             data=data, 
             http_status=status.HTTP_404_NOT_FOUND
         )
+        
+    # 服务器内部错误
+    @staticmethod
+    def server_error(message="服务器内部错误", data=None):
+        """
+        返回500错误响应
+        
+        Args:
+            message: 错误消息
+            data: 额外的错误数据
+            
+        Returns:
+            Response: 500错误响应
+        """
+        return ApiResponse.error(
+            message=message, 
+            code=500, 
+            data=data, 
+            http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
