@@ -83,12 +83,34 @@ def find_pool_configs(pool_name: str):
     # 根据pool_name查找对应配置
     if pool_name not in conf_data:
         return ApiResponse.error(f'未找到名为 {pool_name} 的云池配置', 404)
-    # 获取对应pool的配置key列表
+    # 获取并返回对应pool的所有配置
     pool_configs = conf_data[pool_name]
     config_file_list = list(pool_configs.keys())
     print("提取的配置文件名列表：", config_file_list)
     
-    # 临时返回原始列表
+    # 安全处理文件名，避免索引越界
+    formatted_configs = []
+    for filename in config_file_list:
+        # 安全分割文件名
+        parts = filename.split('_')
+        
+        # 确保至少有两个部分，否则使用整个文件名
+        if len(parts) >= 2:
+            # 取前两部分作为名称
+            name = '_'.join(parts[:2])
+        else:
+            # 如果只有一个部分或没有下划线，使用整个文件名
+            name = filename
+            
+        # 获取生成时间，如果没有则使用"未知时间"
+        generate_time = pool_configs[filename].get("generateTime", "未知时间")
+        
+        formatted_configs.append({
+            'id': filename,
+            'name': name,
+            'description': f'生成于 {generate_time}'
+        })
+    
     return CommonResponses.QUERY_SUCCESS({
-        'list': config_file_list
+        'list': formatted_configs
     })
