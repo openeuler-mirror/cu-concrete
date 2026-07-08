@@ -15,3 +15,16 @@ from collections import defaultdict
 import logging
 
 logger = logging.getLogger(__name__)
+
+def find_policy_yaml(project_root: str, policy_id: str) -> str | None:
+    """根据策略ID查找对应的 YAML 配置文件路径"""
+    # 在 department_*_policy 目录下查找
+    for dept_dir in Path(project_root).glob("department_*_policy"):
+        if dept_dir.is_dir():
+            # 查找匹配的策略目录
+            for policy_dir in dept_dir.glob(f"{policy_id}"):
+                if policy_dir.is_dir():
+                    yaml_file = policy_dir / f"{policy_id}.yaml"
+                    if yaml_file.exists():
+                        return str(yaml_file)
+    return None
