@@ -13,3 +13,16 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 import logging
+# 设置日志
+logger = logging.getLogger(__name__)
+# 导入统一响应工具
+from .response_utils import ApiResponse, CommonResponses
+# 导入配置文件
+path= Path(__file__).parent
+config_path = path / "config.yaml"
+with open(config_path, 'r', encoding='utf-8') as f:
+    CLOUD_POOLS = yaml.load(f,Loader=yaml.Loader)
+# 导入配置数据库路径
+config_data_path = path / "conf_data.json"
+# 模板配件文件
+playbook_template_path = path.parent / "data/fetch/playbook_template.yml"
