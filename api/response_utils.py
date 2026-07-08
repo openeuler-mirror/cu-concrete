@@ -28,3 +28,4 @@ class ApiResponse:
             'message': message,
             'data': data
         }
+        return Response(response_data, status=status.HTTP_200_OK)
