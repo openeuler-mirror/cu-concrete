@@ -274,5 +274,14 @@ def delete_conf(pool_id: str, config_name: str):
     # 如果云池下没有配置了，可以考虑移除整个云池记录
     # if not conf_data[pool_id]:
     #     del conf_data[pool_id]
-
-    return CommonResponses.OPERATION_SUCCESS({}, message='配置已成功删除')
+    
+    # 保存更新后的配置数据库
+    with open(config_data_path, "w", encoding="utf-8") as f:
+        json.dump(conf_data, f, ensure_ascii=False, indent=4)
+    
+    logger.info(f"配置文件已删除: 云池={pool_id}, 配置={config_name}")
+    
+    return CommonResponses.OPERATION_SUCCESS({
+        'pool_id': pool_id,
+        'config_name': config_name
+    }, message='配置已成功删除')
