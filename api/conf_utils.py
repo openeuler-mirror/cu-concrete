@@ -29,3 +29,18 @@ playbook_template_path = path.parent / "data/fetch/playbook_template.yml"
 
 from rest_framework.response import Response
 from rest_framework import status
+
+# 查找云池列表
+def pool_list(request):
+    # 获取所有云池数据
+    all_pools = []
+    for pool_id, pool_info in CLOUD_POOLS.items():
+        all_pools.append({
+            'id': pool_id,
+            'name': pool_info['name']
+        })
+    # 构造基础响应数据
+    response_data = {
+        'list': all_pools
+    }
+    return CommonResponses.QUERY_SUCCESS(response_data)
