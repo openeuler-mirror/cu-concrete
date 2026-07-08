@@ -10,12 +10,26 @@ BuildArch:      noarch
 
 # 工具依赖（构建时不需要编译，但需要一些脚本解释器）
 BuildRequires:  python3, util-linux, bash
-Requires:       python3-pyyaml,python3-devel,python3-whiptail-dialogs
+# 运行时依赖
+Requires:       python3
+Requires:       python3-devel
+Requires:       python3-django-cors-headers
+Requires:       python3-django-rest-framework
+Requires:       python3-drf-yasg
+Requires:       python3-pyyaml
+Requires:       python3-whiptail-dialogs
+Requires:       python3-pip
+Requires:       openssh
+Requires:       openssh-clients
+Requires:       ansible
+Requires:       python3-pandas
+Requires:       uvicorn
+
 %description
-Cu-concrete is an automated system security hardening utility that enhances 
-operating system security by modifying system configurations such as user accounts, 
+Cu-concrete is an automated system security hardening utility that enhances
+operating system security by modifying system configurations such as user accounts,
 services, network settings, file permissions, and audit policies.
-It supports compliance with CIS,等级保护, and other security standards.
+It supports compliance with CIS, 等级保护, and other security standards.
 
 %prep
 %setup -q -n %{name}-%{version} -c
