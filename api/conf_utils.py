@@ -308,5 +308,10 @@ def generate_config(params_json: dict):
     generate_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     raw_str = f"{generate_time}_{uuid.uuid4()}"
     unique_key = hashlib.md5(raw_str.encode()).hexdigest()[:16]
+    
+    # 定义输出目录
+    # output_dir = Path('/opt/cu-concrete/data/fetch')
+    output_dir = path.parent / "data/fetch" / params.get("pool_id")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件生成并保存成功')
