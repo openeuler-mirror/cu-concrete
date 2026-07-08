@@ -331,5 +331,24 @@ def generate_config(params_json: dict):
     ini_file_path = output_dir / ini_file_name
     with open(ini_file_path, 'w', encoding='utf-8') as f:
         f.write(ini_content)
+    
+    # 读取源 playbook_template.yml 文件作为模板
+    with open(playbook_template_path, 'r', encoding='utf-8') as f:
+        yml_content = f.read()
+    # harden_items 已经是 dep_id 格式 (如 "1_3", "2_4")
+    # 直接拼接成 items 参数
+    harden_items_str = ','.join(params.get("harden_items"))
+    # 使用正则替换 items 后面的加固项列表
+    # 匹配 "python3 main.py harden items " 后面的加固项列表
+    pattern = r'(python3 main\.py harden items )([\d_,]+)'
+    def replace_items(match):
+        return match.group(1) + harden_items_str
+    yml_content = re.sub(pattern, replace_items, yml_content)
+    
+    # 写入新的 playbook.yml 文件 唯一生成文件
+    yml_file_name = f'playbook_{unique_key}.yml'
+    yml_file_path = output_dir / yml_file_name
+    with open(yml_file_path, 'w', encoding='utf-8') as f:
+        f.write(yml_content)
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件生成并保存成功')
