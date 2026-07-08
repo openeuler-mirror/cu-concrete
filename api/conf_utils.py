@@ -144,8 +144,17 @@ def find_config_content(pool_name: str, file_name: str):
     # 获取 serverConfigPath 和 execFilePath 字段
     server_config_path = file_data.get("serverConfigPath")
     exec_file_path = file_data.get("execFilePath")
+    
+    # 目前根据文件名获取到了文件路径字段 例：exec_file_path = data/fetch/pool-1/playbook_XXX.yml
+    # 读取生成的文件内容返回给前端
+    with open(server_config_path, 'r', encoding='utf-8') as f:
+        ini_content_display = f.read()
+    with open(exec_file_path, 'r', encoding='utf-8') as f:
+        yml_content_display = f.read()
 
     return CommonResponses.OPERATION_SUCCESS({
-        "server_config_path": server_config_path,
-        "exec_file_path": exec_file_path
+        'ini_file': str(server_config_path),
+        'yml_file': str(exec_file_path),
+        'ini_content': ini_content_display,
+        'yml_content': yml_content_display,
     })
