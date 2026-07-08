@@ -161,4 +161,4 @@ def find_config_content(pool_name: str, file_name: str):
             'yml_content': yml_content_display,
         })
     except Exception as e:
-        print(e)
+        return ApiResponse.error(f'获取配置文件内容时出错: {str(e)}', 500)
