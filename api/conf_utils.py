@@ -218,6 +218,13 @@ def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_conten
         return ApiResponse.error(f'INI配置文件路径无效: {server_config_path}', 400)
     if not exec_file_path or not os.path.exists(exec_file_path):
         return ApiResponse.error(f'YML配置文件路径无效: {exec_file_path}', 400)
+    
+    # 写入新内容
+    with open(server_config_path, 'w', encoding='utf-8') as f:
+        f.write(ini_content)
+            
+    with open(exec_file_path, 'w', encoding='utf-8') as f:
+        f.write(yml_content)
 
     return JsonResponse({
         'code': 200,
