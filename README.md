@@ -26,21 +26,14 @@ cd cu-concrete
 python cu-concrete-cli.py --help
 ```
 
-### 方法二：pip安装（推荐，生产环境）
+### 方法二：yum安装（推荐，生产环境）
 
 ```bash
-# 克隆项目
-git clone <repository-url>
-cd cu-concrete
-
-# 以可编辑模式安装（开发用途）
-pip install -e .
-
-# 或者直接安装（生产用途）
-pip install .
+# 下载项目
+yum install cu-concrete
 
 # 安装完成后可在任意位置运行
-cu-concrete --help
+cu-concrete 
 ```
 
 ## 使用说明
@@ -71,10 +64,6 @@ cu-concrete restore --list
 
 # 还原所有项目
 cu-concrete restore --all
-
-# 查看操作日志
-cu-concrete log -n 20
-
 
 #远程拉取策略
 
