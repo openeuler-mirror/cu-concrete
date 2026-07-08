@@ -313,5 +313,23 @@ def generate_config(params_json: dict):
     # output_dir = Path('/opt/cu-concrete/data/fetch')
     output_dir = path.parent / "data/fetch" / params.get("pool_id")
     output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # 生成新的 inventory.ini 文件
+    ini_lines = ['[servers]']
+    for host in params.get("hosts"):
+        host_ip = host.get('ip', host.get('name', ''))
+        if host_ip:
+            ini_lines.append(host_ip)
+    ini_lines.append('')
+    ini_lines.append('[servers:vars]')
+    ini_lines.append('ansible_user=root')
+    ini_lines.append('ansible_port=22')
+    ini_lines.append('ansible_ssh_private_key_file=/root/.ssh/id_rsa')
+    ini_content = '\n'.join(ini_lines)
+    # 写入新的 inventory.ini 文件 唯一生成文件
+    ini_file_name = f'inventory_{unique_key}.ini'
+    ini_file_path = output_dir / ini_file_name
+    with open(ini_file_path, 'w', encoding='utf-8') as f:
+        f.write(ini_content)
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件生成并保存成功')
