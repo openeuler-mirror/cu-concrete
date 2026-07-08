@@ -259,5 +259,13 @@ def delete_conf(pool_id: str, config_name: str):
     # 读取配置数据库
     with open(config_data_path, "r", encoding="utf-8") as f:
         conf_data = json.load(f)
+    
+    # 检查云池是否存在
+    if pool_id not in conf_data:
+        return ApiResponse.error(f'未找到云池 {pool_id} 的配置记录', 404)
+    
+    # 检查配置文件是否存在
+    if config_name not in conf_data[pool_id]:
+        return ApiResponse.error(f'云池 {pool_id} 中未找到配置文件 {config_name}', 404)
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置已成功删除')
