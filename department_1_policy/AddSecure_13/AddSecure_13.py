@@ -106,7 +106,8 @@ class AddSecure_13(base_fix):
             base_shell(['chattr','+i','/etc/shadow'])
             base_shell(['chattr','+i','/etc/group'])
         else:
-             cmd=['userdel','-f',self.config['query']['form']]
+            cmd=['userdel','-f',self.config['query']['form']]
+            base_shell(cmd)
         bsf.remove_line(self.config['change']['value2'],self.config['query']['path'])
         cmd2=['rm','-rf',self.config['change']['path']]
         base_shell(cmd2)
