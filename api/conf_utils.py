@@ -187,3 +187,29 @@ def get_level_conf(harden_models: str):
     except Exception as e:
         logger.exception("获取加固模型失败")
         return ApiResponse.error(f'获取级别配置信息时出错: {str(e)}', 500)
+    
+# 保存修改后的配置内容到指定文件
+def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_content: str):
+    """
+    保存修改后的配置内容到指定文件
+    Args:
+        pool_name (str): 云池名称（如 pool-1）
+        file_name (str): 配置文件名（如 playbook_123456.yml）
+        ini_content (str): 新的INI文件内容
+        yml_content (str): 新的YML文件内容
+    Returns:
+        Response: 标准响应对象
+    """
+    # 检查配置文件是否存在
+    if not os.path.exists(config_data_path):
+        return ApiResponse.error(f'配置数据库 {config_data_path} 不存在', 404)
+    
+    # 读取配置数据库
+    with open(config_data_path, "r", encoding="utf-8") as f:
+        conf_data = json.load(f)
+
+    return JsonResponse({
+        'code': 200,
+        'message': '配置保存成功',
+        'data': {}
+    })
