@@ -6,7 +6,7 @@ import Panda as pd
 import datetime
 import yaml
 import os
-BACKUP_ROOT = Path("/backup")
+BACKUP_ROOT = Path("/opt/cu-concrete/data/backup")
 now = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 OUTPUT_CSV = f"主机安全加固扫描_{now}.csv"
 # 状态码映射表
