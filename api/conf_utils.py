@@ -200,47 +200,52 @@ def save_conf_content(pool_id: str, file_name: str, ini_content: str, yml_conten
     Returns:
         Response: 标准响应对象
     """
-    # 检查配置文件是否存在
-    if not os.path.exists(config_data_path):
-        return ApiResponse.error(f'配置数据库 {config_data_path} 不存在', 404)
-    
-    # 读取配置数据库
-    with open(config_data_path, "r", encoding="utf-8") as f:
-        conf_data = json.load(f)
-    
-    # 获取文件路径
-    file_data = conf_data[pool_id][file_name]
-    server_config_path = file_data.get("serverConfigPath")
-    exec_file_path = file_data.get("execFilePath")
-    
-    # 验证路径是否存在
-    if not server_config_path or not os.path.exists(server_config_path):
-        return ApiResponse.error(f'INI配置文件路径无效: {server_config_path}', 400)
-    if not exec_file_path or not os.path.exists(exec_file_path):
-        return ApiResponse.error(f'YML配置文件路径无效: {exec_file_path}', 400)
-    
-    # 写入新内容
-    with open(server_config_path, 'w', encoding='utf-8') as f:
-        f.write(ini_content)
+    try:
+        # 检查配置文件是否存在
+        if not os.path.exists(config_data_path):
+            return ApiResponse.error(f'配置数据库 {config_data_path} 不存在', 404)
+        
+        # 读取配置数据库
+        with open(config_data_path, "r", encoding="utf-8") as f:
+            conf_data = json.load(f)
+        
+        # 获取文件路径
+        file_data = conf_data[pool_id][file_name]
+        server_config_path = file_data.get("serverConfigPath")
+        exec_file_path = file_data.get("execFilePath")
+        
+        # 验证路径是否存在
+        if not server_config_path or not os.path.exists(server_config_path):
+            return ApiResponse.error(f'INI配置文件路径无效: {server_config_path}', 400)
+        if not exec_file_path or not os.path.exists(exec_file_path):
+            return ApiResponse.error(f'YML配置文件路径无效: {exec_file_path}', 400)
+        
+        # 写入新内容
+        with open(server_config_path, 'w', encoding='utf-8') as f:
+            f.write(ini_content)
             
-    with open(exec_file_path, 'w', encoding='utf-8') as f:
-        f.write(yml_content)
-    
-    # 更新生成时间
-    conf_data[pool_id][file_name]["generateTime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # 保存更新后的配置数据库
-    with open(config_data_path, "w", encoding="utf-8") as f:
-        json.dump(conf_data, f, ensure_ascii=False, indent=4)
+        with open(exec_file_path, 'w', encoding='utf-8') as f:
+            f.write(yml_content)
         
-    logger.info(f"配置文件已更新: 云池={pool_id}, 配置={file_name}")
+        # 更新生成时间
+        conf_data[pool_id][file_name]["generateTime"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
-    # 返回成功响应
-    return JsonResponse({
-        'code': 200,
-        'message': '配置保存成功',
-        'data': {
-            'pool_name': pool_id,
-            'config_name': file_name
-        }
-    })
+        # 保存更新后的配置数据库
+        with open(config_data_path, "w", encoding="utf-8") as f:
+            json.dump(conf_data, f, ensure_ascii=False, indent=4)
+        
+        logger.info(f"配置文件已更新: 云池={pool_id}, 配置={file_name}")
+        
+        # 返回成功响应
+        return JsonResponse({
+            'code': 200,
+            'message': '配置保存成功',
+            'data': {
+                'pool_name': pool_id,
+                'config_name': file_name
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"保存配置内容时出错: {str(e)}", exc_info=True)
+        return ApiResponse.error(f'保存配置内容时出错: {str(e)}', 500)
