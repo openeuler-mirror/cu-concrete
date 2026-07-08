@@ -35,3 +35,6 @@ TASKS_FILE = DATA_DIR / "tasks.json"
 LOGS_DIR = DATA_DIR / "logs"
 RESULTS_DIR = DATA_DIR / "results"
 BACKUP_ROOT = DATA_DIR / "backup"
+
+# 文件写入锁，防止多线程同时操作文件
+_file_write_lock = threading.Lock()
