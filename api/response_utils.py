@@ -71,3 +71,23 @@ class ApiResponse:
             data=data, 
             http_status=status.HTTP_400_BAD_REQUEST
         )
+        
+    # 未找到
+    @staticmethod
+    def not_found(message="资源未找到", data=None):
+        """
+        返回404错误响应
+        
+        Args:
+            message: 错误消息
+            data: 额外的错误数据
+            
+        Returns:
+            Response: 404错误响应
+        """
+        return ApiResponse.error(
+            message=message, 
+            code=404, 
+            data=data, 
+            http_status=status.HTTP_404_NOT_FOUND
+        )
