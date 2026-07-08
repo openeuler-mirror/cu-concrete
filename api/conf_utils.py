@@ -381,85 +381,92 @@ def save_generated_config(params_json: dict):
     conf_data需要的参数:
         云池名、配置文件名、生成人姓名、加固模式、ini配置文件路径、yml配置文件路径、保存生成的配置文件时间
     '''
-    #1、初始化
-    # 将 JSON 字符串解析为字典
-    params = json.loads(params_json)
-    print(params.get("hosts"))
-    # 生成时间
-    generate_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    raw_str = f"{generate_time}_{uuid.uuid4()}"
-    unique_key = hashlib.md5(raw_str.encode()).hexdigest()[:16]
-    # 定义输出目录
-    output_dir = path.parent / "data/fetch" / params.get("pool_id")
-    output_dir.mkdir(parents=True, exist_ok=True)
     
-    #2、打开conf_data数据库
-    if os.path.exists(config_data_path):
-        with open(config_data_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    else : 
-        data = {}
+    try:
+        #1、初始化
+        # 将 JSON 字符串解析为字典
+        params = json.loads(params_json)
+        print(params.get("hosts"))
+        # 生成时间
+        generate_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        raw_str = f"{generate_time}_{uuid.uuid4()}"
+        unique_key = hashlib.md5(raw_str.encode()).hexdigest()[:16]
+        # 定义输出目录
+        output_dir = path.parent / "data/fetch" / params.get("pool_id")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        #2、打开conf_data数据库
+        if os.path.exists(config_data_path):
+            with open(config_data_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        else : 
+            data = {}
 
-    #3、检查配置文件名是否已存在，若存在，则返回错误
-    # 修复1：先检查云池是否存在，避免KeyError
-    if params.get("pool_id") in data and params.get("config_name") in data[params.get("pool_id")]:
-        # 返回错误
-        return CommonResponses.OPERATION_FAILED('配置文件名已存在, 请更换名称！')
+        #3、检查配置文件名是否已存在，若存在，则返回错误
+        # 修复1：先检查云池是否存在，避免KeyError
+        if params.get("pool_id") in data and params.get("config_name") in data[params.get("pool_id")]:
+            # 返回错误
+            return CommonResponses.OPERATION_FAILED('配置文件名已存在, 请更换名称！')
 
-    #4、将ini和yml内容写入文件中
-    # 生成新的 inventory.ini 文件 - 修复hosts处理逻辑
-    ini_lines = ['[servers]']
-    for host in params.get("hosts"):
-        # 修复2：处理host可能是字符串或字典的情况
-        if isinstance(host, dict):
-            host_ip = host.get('ip', host.get('name', ''))
-        else:
-            host_ip = host  # 直接使用字符串作为IP
-        if host_ip:
-            ini_lines.append(host_ip)
-    ini_lines.append('')
-    ini_lines.append('[servers:vars]')
-    ini_lines.append('ansible_user=root')
-    ini_lines.append('ansible_port=22')
-    ini_lines.append('ansible_ssh_private_key_file=/root/.ssh/id_rsa')
-    ini_content = '\n'.join(ini_lines)
-    ini_file_name = f'inventory_{unique_key}.ini'
-    ini_file_path = output_dir / ini_file_name
-    with open(ini_file_path, 'w', encoding='utf-8') as f:
-        f.write(params.get("ini_content"))
-    # 写入新的 playbook.yml 文件 唯一生成文件
-    yml_file_name = params.get("config_name")
-    yml_file_path = output_dir / yml_file_name
-    with open(yml_file_path, 'w', encoding='utf-8') as f:
-        f.write(params.get("yml_content"))
-    
-    #5、获取参数new_record - 修复文件路径问题
-    new_record = {
-        "harden-model": params.get("harden_model"),
-        "hosts": params.get("hosts"),
-        # 修复3：使用生成的文件路径，而不是params中的不存在的字段
-        "serverConfigPath": str(ini_file_path),
-        "execFilePath": str(yml_file_path),
-        "generatePersonName": params.get("generate_person_name"),
-        "generateTime": generate_time
-    }
-    
-    #6、将new_record存入数据库中
-    if params.get("pool_id") not in data:
-        data[params.get("pool_id")] = {}
-    data[params.get("pool_id")][yml_file_name] = new_record
+        #4、将ini和yml内容写入文件中
+        # 生成新的 inventory.ini 文件 - 修复hosts处理逻辑
+        ini_lines = ['[servers]']
+        for host in params.get("hosts"):
+            # 修复2：处理host可能是字符串或字典的情况
+            if isinstance(host, dict):
+                host_ip = host.get('ip', host.get('name', ''))
+            else:
+                host_ip = host  # 直接使用字符串作为IP
+            if host_ip:
+                ini_lines.append(host_ip)
+        ini_lines.append('')
+        ini_lines.append('[servers:vars]')
+        ini_lines.append('ansible_user=root')
+        ini_lines.append('ansible_port=22')
+        ini_lines.append('ansible_ssh_private_key_file=/root/.ssh/id_rsa')
+        ini_content = '\n'.join(ini_lines)
+        ini_file_name = f'inventory_{unique_key}.ini'
+        ini_file_path = output_dir / ini_file_name
+        with open(ini_file_path, 'w', encoding='utf-8') as f:
+            f.write(params.get("ini_content"))
+        # 写入新的 playbook.yml 文件 唯一生成文件
+        yml_file_name = params.get("config_name")
+        yml_file_path = output_dir / yml_file_name
+        with open(yml_file_path, 'w', encoding='utf-8') as f:
+            f.write(params.get("yml_content"))
+        
+        #5、获取参数new_record - 修复文件路径问题
+        new_record = {
+            "harden-model": params.get("harden_model"),
+            "hosts": params.get("hosts"),
+            # 修复3：使用生成的文件路径，而不是params中的不存在的字段
+            "serverConfigPath": str(ini_file_path),
+            "execFilePath": str(yml_file_path),
+            "generatePersonName": params.get("generate_person_name"),
+            "generateTime": generate_time
+        }
+        
+        #6、将new_record存入数据库中
+        if params.get("pool_id") not in data:
+            data[params.get("pool_id")] = {}
+        data[params.get("pool_id")][yml_file_name] = new_record
 
-    with open(config_data_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-    
-    #7、返回前端成功
-    # 直接拼接成 items 参数
-    harden_items_str = ','.join(params.get("harden_items"))
-    
-    return CommonResponses.OPERATION_SUCCESS({
-        'ini_file': str(ini_file_path),
-        'yml_file': str(yml_file_path),
-        'hosts_count': len(params.get("hosts")),
-        'harden_items': params.get("harden_items"),
-        "harden_items_str": harden_items_str
-    }, message='配置文件保存成功')
+        with open(config_data_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        
+        #7、返回前端成功
+        # 直接拼接成 items 参数
+        harden_items_str = ','.join(params.get("harden_items"))
+        
+        return CommonResponses.OPERATION_SUCCESS({
+            'ini_file': str(ini_file_path),
+            'yml_file': str(yml_file_path),
+            'hosts_count': len(params.get("hosts")),
+            'harden_items': params.get("harden_items"),
+            "harden_items_str": harden_items_str
+        }, message='配置文件保存成功')
+        
+    except Exception as e:
+        # 保持现有的错误处理
+        logger.error(f"配置保存异常：{str(e)}", exc_info=True)
+        return ApiResponse.error(f'配置保存异常：{str(e)}', 500)
