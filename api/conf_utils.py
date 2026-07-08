@@ -185,4 +185,5 @@ def get_level_conf(harden_models: str):
             }
         })
     except Exception as e:
-        print(e)
+        logger.exception("获取加固模型失败")
+        return ApiResponse.error(f'获取级别配置信息时出错: {str(e)}', 500)
