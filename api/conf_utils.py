@@ -432,5 +432,16 @@ def save_generated_config(params_json: dict):
     yml_file_path = output_dir / yml_file_name
     with open(yml_file_path, 'w', encoding='utf-8') as f:
         f.write(params.get("yml_content"))
+    
+    #5、获取参数new_record - 修复文件路径问题
+    new_record = {
+        "harden-model": params.get("harden_model"),
+        "hosts": params.get("hosts"),
+        # 修复3：使用生成的文件路径，而不是params中的不存在的字段
+        "serverConfigPath": str(ini_file_path),
+        "execFilePath": str(yml_file_path),
+        "generatePersonName": params.get("generate_person_name"),
+        "generateTime": generate_time
+    }
 
     return CommonResponses.OPERATION_SUCCESS({}, message='配置文件保存成功')
