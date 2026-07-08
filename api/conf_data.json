@@ -1,0 +1,17 @@
+{
+    "pool-1": {
+        "playbook1.yml": {
+            "harden-model": "harden-company-model",
+            "servers": [
+                "示例IP地址01",
+                "示例IP地址02"
+            ],
+            "serverConfigPath": "data/fetch/fetch.ini",
+            "execFilePath": "data/fetch/fetch.yml",
+            "generateTime": "2026-04-22 18:58:57"
+        }
+    },
+    "pool-2": {
+
+    }
+}
