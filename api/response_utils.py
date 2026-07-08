@@ -51,3 +51,23 @@ class ApiResponse:
             'data': data
         }
         return Response(response_data, status=http_status)
+    
+   # 参数错误
+    @staticmethod
+    def bad_request(message="请求参数错误", data=None):
+        """
+        返回400错误响应
+        
+        Args:
+            message: 错误消息
+            data: 额外的错误数据
+            
+        Returns:
+            Response: 400错误响应
+        """
+        return ApiResponse.error(
+            message=message, 
+            code=400, 
+            data=data, 
+            http_status=status.HTTP_400_BAD_REQUEST
+        )
