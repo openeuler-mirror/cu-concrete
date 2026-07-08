@@ -111,6 +111,10 @@ def find_pool_configs(pool_name: str):
             'description': f'生成于 {generate_time}'
         })
     
+    # 返回标准分页格式
     return CommonResponses.QUERY_SUCCESS({
+        'count': len(formatted_configs),
+        'pageIndex': 1,
+        'pageSize': len(formatted_configs),
         'list': formatted_configs
     })
