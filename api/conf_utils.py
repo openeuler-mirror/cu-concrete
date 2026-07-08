@@ -50,8 +50,16 @@ def pool_list(request):
         # 如果参数转换失败，使用默认值
         current = 1
         pageSize = len(all_pools)
-    # 构造基础响应数据
+    # 分页处理
+    total_count = len(all_pools)
+    start_index = (current - 1) * pageSize
+    end_index = start_index + pageSize
+    paginated_pools = all_pools[start_index:end_index]
+    # 构造响应数据
     response_data = {
-        'list': all_pools
+        'count': total_count,
+        'pageIndex': current,
+        'pageSize': pageSize,
+        'list': paginated_pools
     }
     return CommonResponses.QUERY_SUCCESS(response_data)
