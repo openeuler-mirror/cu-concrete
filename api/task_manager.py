@@ -65,8 +65,12 @@ _task_timestamps_lock = threading.Lock()
 def _load_tasks_from_file():
     """从文件加载任务数据"""
     global _tasks
-    if TASKS_FILE.exists():
-        with open(TASKS_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            _tasks = data.get('tasks', {})
-        logger.info(f"从文件加载了 {len(_tasks)} 个任务")
+    try:
+        if TASKS_FILE.exists():
+            with open(TASKS_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                _tasks = data.get('tasks', {})
+            logger.info(f"从文件加载了 {len(_tasks)} 个任务")
+    except Exception as e:
+        logger.error(f"加载任务文件失败: {e}")
+        _tasks = {}
