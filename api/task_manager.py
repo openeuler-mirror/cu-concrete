@@ -61,3 +61,12 @@ MAX_LOG_LINES = 1000
 # 任务时间戳映射（任务ID -> 时间戳目录名）
 _task_timestamps: Dict[str, str] = {}
 _task_timestamps_lock = threading.Lock()
+
+def _load_tasks_from_file():
+    """从文件加载任务数据"""
+    global _tasks
+    if TASKS_FILE.exists():
+        with open(TASKS_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            _tasks = data.get('tasks', {})
+        logger.info(f"从文件加载了 {len(_tasks)} 个任务")
