@@ -127,3 +127,7 @@ class CommonResponses:
     # 文件相关
     FILE_NOT_FOUND = lambda msg="文件不存在": ApiResponse.not_found(msg)
     FILE_ACCESS_DENIED = lambda msg="无权访问文件": ApiResponse.error(msg, 403, http_status=status.HTTP_403_FORBIDDEN)
+    
+    # 参数相关
+    MISSING_PARAMETER = lambda param: ApiResponse.bad_request(f"缺少必要参数: {param}")
+    INVALID_PARAMETER = lambda param: ApiResponse.bad_request(f"无效参数: {param}")
