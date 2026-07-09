@@ -123,3 +123,7 @@ class CommonResponses:
     # 操作相关
     OPERATION_SUCCESS = lambda data=None, message="操作成功": ApiResponse.success(data, message)
     OPERATION_FAILED = lambda msg="操作失败": ApiResponse.error(msg, 500)
+
+    # 文件相关
+    FILE_NOT_FOUND = lambda msg="文件不存在": ApiResponse.not_found(msg)
+    FILE_ACCESS_DENIED = lambda msg="无权访问文件": ApiResponse.error(msg, 403, http_status=status.HTTP_403_FORBIDDEN)
