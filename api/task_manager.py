@@ -44,3 +44,7 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 BACKUP_ROOT.mkdir(parents=True, exist_ok=True)
+
+# 内存中的任务存储（运行时状态，服务重启后从文件恢复）
+_tasks: Dict[str, dict] = {}
+_tasks_lock = threading.Lock()
