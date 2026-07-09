@@ -48,3 +48,7 @@ BACKUP_ROOT.mkdir(parents=True, exist_ok=True)
 # 内存中的任务存储（运行时状态，服务重启后从文件恢复）
 _tasks: Dict[str, dict] = {}
 _tasks_lock = threading.Lock()
+
+# 云池运行状态互斥（同一云池内串行，不同云池并行）
+_running_pools: set = set()
+_running_pools_lock = threading.Lock()
