@@ -38,3 +38,9 @@ BACKUP_ROOT = DATA_DIR / "backup"
 
 # 文件写入锁，防止多线程同时操作文件
 _file_write_lock = threading.Lock()
+
+# 确保数据目录存在
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+BACKUP_ROOT.mkdir(parents=True, exist_ok=True)
