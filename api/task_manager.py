@@ -52,3 +52,8 @@ _tasks_lock = threading.Lock()
 # 云池运行状态互斥（同一云池内串行，不同云池并行）
 _running_pools: set = set()
 _running_pools_lock = threading.Lock()
+
+# 日志存储（每个任务的最大日志行数）
+_task_logs: Dict[str, list] = {}
+_task_logs_lock = threading.Lock()
+MAX_LOG_LINES = 1000
