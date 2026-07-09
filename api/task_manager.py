@@ -77,14 +77,17 @@ def _load_tasks_from_file():
         
 def _save_tasks_to_file():
     """保存任务数据到文件（线程安全）"""
-    with _file_write_lock:  # 获取文件写入锁
-        with _tasks_lock:  # 同时保护内存数据
-            data = {
-                'tasks': _tasks,
-                'updated_at': datetime.datetime.now().isoformat()
-            }
-            # 先写入临时文件，再重命名，确保原子性
-            temp_file = TASKS_FILE.with_suffix('.tmp')
-            with open(temp_file, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-            temp_file.replace(TASKS_FILE)
+    try:
+        with _file_write_lock:  # 获取文件写入锁
+            with _tasks_lock:  # 同时保护内存数据
+                data = {
+                    'tasks': _tasks,
+                    'updated_at': datetime.datetime.now().isoformat()
+                }
+                # 先写入临时文件，再重命名，确保原子性
+                temp_file = TASKS_FILE.with_suffix('.tmp')
+                with open(temp_file, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
+                temp_file.replace(TASKS_FILE)
+    except Exception as e:
+        logger.error(f"保存任务文件失败: {e}")
