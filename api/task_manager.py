@@ -57,3 +57,7 @@ _running_pools_lock = threading.Lock()
 _task_logs: Dict[str, list] = {}
 _task_logs_lock = threading.Lock()
 MAX_LOG_LINES = 1000
+
+# 任务时间戳映射（任务ID -> 时间戳目录名）
+_task_timestamps: Dict[str, str] = {}
+_task_timestamps_lock = threading.Lock()
