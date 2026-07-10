@@ -131,3 +131,6 @@ class CommonResponses:
     # 参数相关
     MISSING_PARAMETER = lambda param: ApiResponse.bad_request(f"缺少必要参数: {param}")
     INVALID_PARAMETER = lambda param: ApiResponse.bad_request(f"无效参数: {param}")
+    
+    # 冲突/并发相关
+    CONFLICT = lambda msg="操作冲突": ApiResponse.error(msg, 409, http_status=status.HTTP_409_CONFLICT)
