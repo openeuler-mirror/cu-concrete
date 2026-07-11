@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CU-Concrete 安全加固平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667EEA 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c9d0ef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title .icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667EEA 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        select,
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: #c9d0ef;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 5px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .result-box pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-running {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #c9d0ef;
+        }
+
+        .task-item:hover {
+            background: #e9ecef;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .task-id {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .task-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .log-content {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #c9d0ef;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .pool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .pool-card {
+            background: linear-gradient(135deg, #667EEA 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .pool-card:hover {
+            transform: scale(1.05);
+        }
+
+        .pool-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .pool-card p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #c9d0ef;
+            border-bottom-color: #c9d0ef;
+        }
+
+        .tab:hover {
+            color: #c9d0ef;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 加固项复选框样式 */
+        .harden-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s;
+        }
+
+        .harden-item:hover {
+            background: #f0f0f0;
+        }
+
+        .harden-item.selected {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .harden-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .harden-item-info {
+            flex: 1;
+        }
+
+        .harden-item-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .harden-item-desc {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .harden-category {
+            font-size: 11px;
+            color: #c9d0ef;
+            background: #f0f0ff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        /* 调整playbook页面的网格布局 */
+        #playbook .grid {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            transition: grid-template-columns 0.3s ease;
+        }
+
+        #playbook.grid-narrow-selected .grid {
+            grid-template-columns: minmax(400px, 1fr) 250px 550px;
+            transition: grid-template-columns 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 CU-Concrete 安全加固平台</h1>
+            <p>自动化安全策略执行与管理系统</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('pools')">☁️ 云池管理</div>
+            <div class="tab" onclick="switchTab('tasks')">📋 任务管理</div>
+            <div class="tab" onclick="switchTab('results')">📊 执行结果</div>
+            <div class="tab" onclick="switchTab('playbook')">📝 配置生成</div>
+            <div class="tab" onclick="switchTab('playbook_manage')">📝 配置管理</div>
+        </div>
+
+        <!-- 云池管理 -->
+        <div id="pools" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">☁️</div>
+                        云池列表
+                    </div>
+                    <div id="poolList">
+                        <div class="loading"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">▶️</div>
+                        执行加固任务
+                    </div>
+                    <div class="form-group">
+                        <label>选择云池</label>
+                        <select id="executePoolId">
+                            <option value="">请先获取云池列表</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="executePlaybook()">
+                            ▶️ 执行加固
+                        </button>
+                        <button class="btn btn-secondary" onclick="loadPools()">
+                            🔄 刷新列表
+                        </button>
+                    </div>
+                    <div id="executeResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任务管理 -->
+        <div id="tasks" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">📋</div>
+                        任务列表
+                    </div>
+                    <div class="btn-group" style="margin-bottom: 15px;">
+                        <button class="btn btn-primary" onclick="loadTasks()">
+                            🔄 刷新任务
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearTasks()">
+                            🗑️ 清空显示
+                        </button>
+                    </div>
+                    <div id="taskList">
+                        <p style="color: #999; text-align: center;">点击"刷新任务"加载任务列表</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">🔍</div>
+                        任务详情与日志
+                    </div>
+                    <div class="form-group">
+                        <label>任务ID</label>
+                        <input type="text" id="taskIdInput" placeholder="输入任务ID">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="getTaskDetail()">
+                            📋 查看详情
+                        </button>
+                        <button class="btn btn-success" onclick="getTaskLogs()">
+                            📄 查看日志
+                        </button>
+                    </div>
+                    <div id="taskDetail"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 执行结果 -->
+        <div id="results" class="tab-content">
+            <div class="card">
+                <div class="card-title">
+                    <div class="icon">📊</div>
+                    查询执行结果
+                </div>
+                <div class="grid" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>任务ID</label>
+                        <input type="text" id="resultFile" placeholder="输入任务ID（如: 20240311-abc123）">
+                    </div>
+                    <div class="form-group">
+                        <label>每页条数</label>
+                        <input type="number" id="pageSize" value="10" min="1" max="100">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="getResults()">
+                        🔍 查询结果
+                    </button>
+                </div>
+                <div id="resultsContainer"></div>
+            </div>
+        </div>
+
+        <!-- 配置生成 -->
+        <div id="playbook" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">☁️</div>
+                        选择云池和IP
+                    </div>
+
+                    <!-- 云池选择 -->
+                    <div class="form-group">
+                        <label>选择云池</label>
+                        <select id="playbookPoolId" onchange="loadPoolHosts()">
+                            <option value="">请选择云池</option>
+                        </select>
+                    </div>
+
+                    <!-- IP列表 -->
+                    <div id="hostSection" style="display: none;">
+                        <div class="form-group">
+                            <label>选择机器IP</label>
+                            <div class="btn-group" style="margin-top: 5px;">
+                                <button class="btn btn-secondary" onclick="toggleSelectAllHosts()">
+                                    <span id="hostSelectStatus">全选</span> 机器
+                                </button>
+                            </div>
+                            <div id="hostList"
+                                style="max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px;">
+                                <p style="color: #999;">请先选择云池</p>
+                            </div>
+                            
+                        </div>
+
+                        <!-- 加固项选择 -->
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>选择加固项</label>
+                            <div class="btn-group" style="margin-top: 5px;">
+                                <button class="btn btn-secondary" onclick="toggleSelectAllHardenItems()">
+                                    <span id="hardenSelectStatus">全选</span> 加固项
+                                </button>
+                                <button class="btn btn-secondary" onclick="selectCompanyLevel()">
+                                    公司级
+                                </button>
+                                <button class="btn btn-secondary" onclick="selectDepartmentLevel()">
+                                    部门级
+                                </button>
+                            </div>
+                            <div id="hardenItemList"
+                                style="max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px;">
+                                <div class="loading"></div> 正在加载加固项列表...
+                            </div>
+                        </div>
+
+                        <div class="btn-group" style="margin-top: 15px;">
+                            <button class="btn btn-primary" onclick="generateConfig()">
+                                📄 生成配置
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetPlaybookForm()">
+                                🔄 重置
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="playbookResult"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">📋</div>
+                        已选信息
+                    </div>
+                        <div id="selectedInfo">
+                            <p style="color: #999;">请选择云池和IP</p>
+                        </div>
+                    <!-- 需要在此处添加以下代码 -->
+                    <!-- 生成人输入区域 - 默认隐藏 -->
+                    <div class="form-group" id="generatorSection" style="display: none; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                        <label>请输入配置生成人姓名</label>
+                        <input type="text" id="generatorInput" placeholder="请输入配置生成人姓名" 
+                            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 5px;">
+                        <!-- 新增：配置名称输入框 -->
+                        <div style="margin-top: 10px;">
+                            <label>请输入配置名称</label>
+                            <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 4px; overflow: hidden;">
+                                <input type="text" id="configNameInput" placeholder="请输入配置名" 
+                                    style="flex: 1; padding: 8px; border: none; outline: none;">
+                                <span style="padding: 8px 12px; background: #f5f5f5; font-weight: 500;">.yml</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-primary" id="saveConfigBtn">保存生成配置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="generatedFilesCard" style="display: none;">
+                    <div class="card-title">
+                        <div class="icon">📄</div>
+                        生成的配置文件
+                    </div>
+                    <div id="generatedFilesContent">
+                        <div style="margin-bottom: 15px;">
+                            <strong style="color: #333;">inventory.ini</strong>
+                            <pre id="generatedIniContent"
+                                style="background: #f5f5f5; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin-top: 8px;"></pre>
+                        </div>
+                        <div>
+                            <strong style="color: #333;">playbook.yml</strong>
+                            <pre id="generatedYmlContent"
+                                style="background: #f5f5f5; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin-top: 8px;"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 配置管理 -->
+        <div id="playbook_manage" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">📁</div>
+                        选择云池和配置
+                    </div>
+
+                    <!-- 选择云池下拉框 -->
+                    <div class="form-group">
+                        <label>选择云池</label>
+                        <select id="managePoolId" onchange="loadPlaybookConfigs(this.value)">
+                            <option value="">请选择云池</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>选择Playbook配置</label>
+                        <select id="managePlaybookId" disabled onchange="loadPlaybookDetail()">
+                            <option value="">请先选择云池</option>
+                        </select>
+                    </div>
+
+                    <!-- 配置模板列表内容 -->
+                    <!-- <div id="templateList" style="min-height: 300px;">
+                        <p style="color: #999; text-align: center;">配置模板列表将显示在此处</p>
+                    </div> -->
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="icon">⚙️</div>
+                        配置详情与编辑
+                    </div>
+
+                    <!-- 配置内容编辑 -->
+                    <div id="templateEditor" style="min-height: 300px;">
+                        <p style="color: #999; text-align: center;">选中的模板详情将显示在此处</p>
+                    </div>
+                    <!-- 在#playbook_manage标签内的编辑操作按钮区域 -->
+                    <div id="editActions" class="btn-group" style="margin-top: 15px; display: none;">
+                        <button class="btn btn-secondary" onclick="resetEditState()">
+                            🚫 重置
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteConfig()">
+                            🗑️ 删除配置
+                        </button>
+                        <button class="btn btn-primary" onclick="saveConfigChanges()">
+                            💾 保存修改
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE_URL = '';
+
+        // 当前分页状态
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentResultFile = '';
+        // 添加全局变量用于防抖
+        let showMessageTimeout;
+
+        // Playbook生成器状态
+        let playbookState = {
+            pools: [],
+            hosts: [],
+            playbooks: [],
+            selectedHosts: [],
+            selectedHardenItems: [],  // 存储选中的加固项索引
+            hardenItems: [],  // 从API动态获取
+            hardenMode: 'none'  // 修改为'none'，初始状态为未选择
+        };
+
+        // 全局变量存储预加载的加固项列表
+        let companyLevelItems = [];  // 存储公司级加固项ID列表
+        let departmentLevelItems = [];  // 存储部门级加固项ID列表
+
+        function showSelectionMessage() {
+            clearTimeout(showMessageTimeout);
+            showMessageTimeout = setTimeout(() => {
+                showMessage('playbookResult', `已选中 ${playbookState.selectedHardenItems.length} 个加固项`, 'success');
+            }, 200);
+        }
+
+        // 切换标签页
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // 显示消息
+        function showMessage(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        }
+
+        // 统一的API请求函数
+        async function apiRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    ...options
+                });
+
+                // 修复5：处理非JSON响应
+                const contentType = response.headers.get('content-type');
+                let data;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    const text = await response.text();
+                    console.error("非JSON响应:", text);
+                    data = {
+                        code: response.status,
+                        message: `服务器返回错误: ${response.status} ${response.statusText}`,
+                        rawResponse: text.substring(0, 200) + (text.length > 200 ? '...' : '')
+                    };
+                }
+
+                return data;
+            } catch (error) {
+                console.error("网络请求失败:", error);
+                return {
+                    code: 500,
+                    message: '请求失败: ' + error.message,
+                    data: null
+                };
+            }
+        }
+
+        // 加载云池列表
+        async function loadPools() {
+            const container = document.getElementById('poolList');
+            container.innerHTML = '<div class="loading"></div>';
+
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/pool-list/`);
+
+            if (data.code === 200) {
+                const pools = data.data.list;
+
+                // 更新第一个tab的下拉框
+                const poolSelect = document.getElementById('executePoolId');
+                poolSelect.innerHTML = pools.map(pool =>
+                    `<option value="${pool.id}">${pool.name} (${pool.id})</option>`
+                ).join('');
+
+                // 显示云池卡片
+                container.innerHTML = `
+                    <div class="pool-grid">
+                        ${pools.map(pool => `
+                            <div class="pool-card" onclick="selectPool('${pool.id}')">
+                                <h4>${pool.name}</h4>
+                                <p>ID: ${pool.id}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<p style="color: red;">加载失败: ${data.message}</p>`;
+            }
+        }
+
+        // 选择云池
+        function selectPool(poolId) {
+            document.getElementById('executePoolId').value = poolId;
+            showMessage('executeResult', `已选择云池: ${poolId}`, 'info');
+        }
+
+        // 执行加固任务
+        async function executePlaybook() {
+            const poolId = document.getElementById('executePoolId').value;
+
+            if (!poolId) {
+                showMessage('executeResult', '请先选择云池', 'error');
+                return;
+            }
+
+            const resultDiv = document.getElementById('executeResult');
+            resultDiv.innerHTML = '<div class="loading"></div> 正在提交任务...';
+
+            // 修改为 URL 查询参数方式
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/execute-playbook/?pool_id=${encodeURIComponent(poolId)}`, {
+                method: 'POST'
+            });
+
+            if (data.code === 200) {
+                showMessage('executeResult', `
+                    <strong>任务已提交!</strong><br>
+                    任务ID: ${data.data.task_id}
+                `, 'success');
+            } else {
+                showMessage('executeResult', `提交失败: ${data.message}`, 'error');
+            }
+        }
+
+        // 加载任务列表
+        async function loadTasks() {
+            const container = document.getElementById('taskList');
+            container.innerHTML = '<div class="loading"></div> 正在加载...';
+
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/tasks/?current=1&pageSize=20`);
+
+            if (data.code === 200) {
+                const tasks = data.data.list;
+
+                if (tasks.length === 0) {
+                    container.innerHTML = '<p style="color: #999; text-align: center;">暂无任务</p>';
+                    return;
+                }
+
+                container.innerHTML = tasks.map(task => {
+                    let statusClass = 'status-pending';
+                    if (task.status === 'running') statusClass = 'status-running';
+                    else if (task.status === 'completed') statusClass = 'status-success';
+                    else if (task.status === 'failed') statusClass = 'status-failed';
+
+                    return `
+                        <div class="task-item" onclick="document.getElementById('taskIdInput').value='${task.task_id}'">
+                            <div class="task-header">
+                                <span class="task-id">${task.task_id}</span>
+                                <span class="status-badge ${statusClass}">${task.status}</span>
+                            </div>
+                            <div>云池: ${task.pool_name} (${task.pool_id})</div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = `<p style="color: red;">加载失败: ${data.message}</p>`;
+            }
+        }
+
+        // 清空任务显示
+        function clearTasks() {
+            document.getElementById('taskList').innerHTML = '<p style="color: #999; text-align: center;">点击"刷新任务"加载任务列表</p>';
+            document.getElementById('taskDetail').innerHTML = '';
+        }
+
+        // 获取任务详情
+        async function getTaskDetail() {
+            const taskId = document.getElementById('taskIdInput').value.trim();
+
+            if (!taskId) {
+                showMessage('taskDetail', '请输入任务ID', 'error');
+                return;
+            }
+
+            const container = document.getElementById('taskDetail');
+            container.innerHTML = '<div class="loading"></div> 正在查询...';
+
+            // 修改为 URL 查询参数方式
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/task-detail/?task_id=${encodeURIComponent(taskId)}`);
+
+            if (data.code === 200) {
+                const task = data.data;
+                let statusClass = 'status-pending';
+                if (task.status === 'running') statusClass = 'status-running';
+                else if (task.status === 'completed') statusClass = 'status-success';
+                else if (task.status === 'failed') statusClass = 'status-failed';
+
+                container.innerHTML = `
+                    <div class="result-box">
+                        <h4>任务信息</h4>
+                        <p><strong>任务ID:</strong> ${task.task_id}</p>
+                        <p><strong>云池:</strong> ${task.pool_name} (${task.pool_id})</p>
+                        <p><strong>状态:</strong> <span class="status-badge ${statusClass}">${task.status}</span></p>
+                        <p><strong>创建时间:</strong> ${task.created_at}</p>
+                        ${task.result_file ? `<p><strong>结果文件:</strong> ${task.result_file}</p>` : ''}
+                        ${task.error_message ? `<p style="color: red;"><strong>错误:</strong> ${task.error_message}</p>` : ''}
+                    </div>
+                `;
+            } else {
+                showMessage('taskDetail', `查询失败: ${data.message}`, 'error');
+            }
+        }
+
+        // 获取任务日志
+        async function getTaskLogs() {
+            const taskId = document.getElementById('taskIdInput').value.trim();
+
+            if (!taskId) {
+                showMessage('taskDetail', '请输入任务ID', 'error');
+                return;
+            }
+
+            const container = document.getElementById('taskDetail');
+            container.innerHTML = '<div class="loading"></div> 正在加载日志...';
+
+            // 修改为 URL 查询参数方式
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/task-logs/?task_id=${encodeURIComponent(taskId)}`);
+
+            if (data.code === 200) {
+                container.innerHTML = `
+                    <h4 style="margin-bottom: 10px;">任务日志)</h4>
+                    <div class="log-content">${data.data.content || '暂无日志'}</div>
+                `;
+            } else {
+                showMessage('taskDetail', `加载日志失败: ${data.message}`, 'error');
+            }
+        }
+
+        // 获取执行结果
+        async function getResults(page = 1) {
+            const taskId = document.getElementById('resultFile').value.trim();
+            const pageSize = parseInt(document.getElementById('pageSize').value) || 10;
+
+            if (!taskId) {
+                showMessage('resultsContainer', '请输入任务ID', 'error');
+                return;
+            }
+
+            currentResultFile = taskId;
+            currentPage = page;
+
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '<div class="loading"></div> 正在查询...';
+
+            const data = await apiRequest(
+                `${API_BASE_URL}/cu-concrete/get-results/?task_id=${encodeURIComponent(taskId)}&current=${page}&pageSize=${pageSize}`
+            );
+
+            if (data.code === 200) {
+                const results = data.data;
+                totalPages = Math.ceil(results.count / results.pageSize);
+
+                if (results.list.length === 0) {
+                    container.innerHTML = '<p style="color: #999; text-align: center;">暂无数据</p>';
+                    return;
+                }
+
+                // 获取表头
+                const headers = Object.keys(results.list[0]);
+
+                container.innerHTML = `
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    ${headers.map(h => `<th>${h}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${results.list.map(row => `
+                                    <tr>
+                                        ${headers.map(h => {
+                    let value = row[h] || '';
+                    if (h === 'status') {
+                        let statusClass = '';
+                        if (value === '已加固') statusClass = 'status-success';
+                        else if (value === '加固失败') statusClass = 'status-failed';
+                        else if (value === '未加固') statusClass = 'status-pending';
+                        if (statusClass) {
+                            return `<td><span class="status-badge ${statusClass}">${value}</span></td>`;
+                        }
+                    }
+                    return `<td>${value}</td>`;
+                }).join('')}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <button class="btn btn-secondary" onclick="getResults(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>
+                            ← 上一页
+                        </button>
+                        <span class="pagination-info">
+                            第 ${results.pageIndex} 页 / 共 ${totalPages} 页 (共 ${results.count} 条)
+                        </span>
+                        <button class="btn btn-secondary" onclick="getResults(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>
+                            下一页 →
+                        </button>
+                    </div>
+                `;
+            } else {
+                showMessage('resultsContainer', `查询失败: ${data.message}`, 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadPools();
+            loadPlaybookPools();
+            loadManagePools();
+            
+            // 先预加载公司级和部门级列表
+            preloadCompanyAndDepartmentItems().then(() => {
+                // 预加载完成后加载加固项列表
+                loadHardenItems();
+            });
+            
+            // 添加实时提示功能
+            const generatorInput = document.getElementById('generatorInput');
+            const configNameInput = document.getElementById('configNameInput');
+
+            if (generatorInput && configNameInput) {
+                // 生成人输入框提示
+                generatorInput.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        this.placeholder = '请填写生成人姓名（必填）';
+                        this.style.borderColor = '#dc3545';
+                        
+                        setTimeout(() => {
+                            this.placeholder = '请输入配置生成人姓名';
+                            this.style.borderColor = '#e0e0e0';
+                        }, 3000);
+                    }
+                });
+                
+                // 配置名称输入框提示
+                configNameInput.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        this.placeholder = '请填写配置名称（必填）';
+                        this.parentElement.style.borderColor = '#dc3545';
+                        
+                        setTimeout(() => {
+                            this.placeholder = '请输入配置名';
+                            this.parentElement.style.borderColor = '#e0e0e0';
+                        }, 3000);
+                    }
+                });
+            }
+            // 为保存配置按钮添加点击事件
+            const saveConfigBtn = document.getElementById('saveConfigBtn');
+            if (saveConfigBtn) {
+                saveConfigBtn.addEventListener('click', saveGeneratedConfig);
+            }
+        });
+
+        // ==================== Playbook功能 ====================
+
+        // 从API加载加固项列表
+        async function loadHardenItems() {
+            const container = document.getElementById('hardenItemList');
+            container.innerHTML = '<div class="loading"></div> 正在加载加固项列表...';
+
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/harden-items/`);
+
+            if (data.code === 200) {
+                playbookState.hardenItems = data.data.list;
+
+                if (playbookState.hardenItems.length === 0) {
+                    container.innerHTML = '<p style="color: #999;">暂无可用加固项</p>';
+                    return;
+                }
+
+                container.innerHTML = playbookState.hardenItems.map((item, index) => `
+                    <div class="harden-item" onclick="toggleHardenItem(${index})" id="harden-item-${index}" style="margin-bottom: 5px;">
+                        <input type="checkbox" onchange="toggleHardenItem(${index}, event)" style="cursor: pointer;">
+                        <div class="harden-item-info" style="flex: 1;">
+                            <div class="harden-item-name">${item.name}</div>
+                            <div class="harden-item-desc">${item.description || '无描述'}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // 延迟更新加固模式，确保预加载完成
+                setTimeout(() => {
+                    updateHardenMode();
+                    updateSelectedInfo();
+                    updateSelectButtonStates();
+                }, 500);
+            } else {
+                container.innerHTML = `<p style="color: red;">加载失败: ${data.message}</p>`;
+                playbookState.hardenItems = [];
+            }
+            updateSelectButtonStates();
+        }
+
+        // 切换加固项选择
+        function toggleHardenItem(index, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            // 检查索引是否有效
+            if (index < 0 || index >= playbookState.hardenItems.length) {
+                console.error("无效的加固项索引:", index);
+                return;
+            }
+            
+            const idx = playbookState.selectedHardenItems.indexOf(index);
+            const element = document.getElementById(`harden-item-${index}`);
+            if (!element) {
+                console.error("加固项元素不存在:", index);
+                return;
+            }
+            
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            if (!checkbox) {
+                console.error("加固项复选框不存在:", index);
+                return;
+            }
+
+            if (idx === -1) {
+                playbookState.selectedHardenItems.push(index);
+                element.classList.add('selected');
+                checkbox.checked = true;
+            } else {
+                const removeIdx = playbookState.selectedHardenItems.indexOf(index);
+                if (removeIdx !== -1) {
+                    playbookState.selectedHardenItems.splice(removeIdx, 1);
+                }
+                element.classList.remove('selected');
+                checkbox.checked = false;
+            }
+            
+            // 修复顺序：先更新模式，再更新UI
+            updateHardenMode();           // 先更新模式状态
+            showSelectionMessage();       // 显示选中消息
+            updateSelectedInfo();         // 再更新UI
+        }
+
+        // 全选/取消全选加固项
+        function toggleSelectAllHardenItems() {
+            // 检查是否有加固项
+            if (playbookState.hardenItems.length === 0) {
+                showMessage('playbookResult', '暂无可选的加固项', 'info');
+                return;
+            }
+            
+            if (playbookState.selectedHardenItems.length === 0) {
+                // 全选 - 当前没有选择任何项
+                playbookState.selectedHardenItems = playbookState.hardenItems.map((_, index) => index);
+                playbookState.hardenItems.forEach((_, index) => {
+                    const element = document.getElementById(`harden-item-${index}`);
+                    if (element) {
+                        element.classList.add('selected');
+                        element.querySelector('input[type="checkbox"]').checked = true;
+                    }
+                });
+            } else {
+                // 取消全选 - 当前已有选择（无论部分还是全部）
+                playbookState.selectedHardenItems = [];
+                playbookState.hardenItems.forEach((_, index) => {
+                    const element = document.getElementById(`harden-item-${index}`);
+                    if (element) {
+                        element.classList.remove('selected');
+                        element.querySelector('input[type="checkbox"]').checked = false;
+                    }
+                });
+            }
+            
+            // 修复顺序：先更新模式，再更新UI
+            updateHardenMode();           // 先更新模式状态
+            showSelectionMessage();       // 显示选中消息
+            updateSelectButtonStates();   // 更新按钮状态
+            updateSelectedInfo();         // 再更新UI
+        }
+
+        // 选择公司级加固项
+        async function selectCompanyLevel() {
+            // 检查公司级加固项列表是否已加载
+            if (!Array.isArray(companyLevelItems) || companyLevelItems.length === 0) {
+                showMessage('playbookResult', '公司级加固项列表尚未加载完成，请稍后再试', 'error');
+                return;
+            }
+            
+            console.log("选择公司级加固项");
+            
+            // 1. 清空当前选择
+            playbookState.selectedHardenItems = [];
+            playbookState.hardenItems.forEach((_, index) => {
+                const element = document.getElementById(`harden-item-${index}`);
+                if (element) {
+                    element.classList.remove('selected');
+                    element.querySelector('input[type="checkbox"]').checked = false;
+                }
+            });
+            
+            // 3. 使用预加载的数据
+            playbookState.hardenItems.forEach((item, index) => {
+                const itemId = `${item.dep}_${item.item_id}`;
+                if (companyLevelItems.includes(itemId)) {
+                    playbookState.selectedHardenItems.push(index);
+                    
+                    // 更新UI
+                    const element = document.getElementById(`harden-item-${index}`);
+                    if (element) {
+                        element.classList.add('selected');
+                        element.querySelector('input[type="checkbox"]').checked = true;
+                    }
+                }
+            });
+            
+            // 修复顺序：先更新模式，再更新UI
+            updateHardenMode();           // 先更新模式状态
+            // 显示成功消息
+            showMessage('playbookResult', `已选中 ${playbookState.selectedHardenItems.length} 个加固项`, 'success');
+            
+            // 更新界面状态
+            updateSelectedInfo();         // 再更新UI
+            updateSelectButtonStates();
+        }
+
+        // 选择部门级加固项
+        async function selectDepartmentLevel() {
+            // 检查部门级加固项列表是否已加载
+            if (!Array.isArray(departmentLevelItems) || departmentLevelItems.length === 0) {
+                showMessage('playbookResult', '部门级加固项列表尚未加载完成，请稍后再试', 'error');
+                return;
+            }
+            
+            console.log("选择部门级加固项");
+            
+            // 1. 清空当前选择
+            playbookState.selectedHardenItems = [];
+            playbookState.hardenItems.forEach((_, index) => {
+                const element = document.getElementById(`harden-item-${index}`);
+                if (element) {
+                    element.classList.remove('selected');
+                    element.querySelector('input[type="checkbox"]').checked = false;
+                }
+            });
+            
+            // 3. 使用预加载的数据
+            playbookState.hardenItems.forEach((item, index) => {
+                const itemId = `${item.dep}_${item.item_id}`;
+                if (departmentLevelItems.includes(itemId)) {
+                    playbookState.selectedHardenItems.push(index);
+                    
+                    // 更新UI
+                    const element = document.getElementById(`harden-item-${index}`);
+                    if (element) {
+                        element.classList.add('selected');
+                        element.querySelector('input[type="checkbox"]').checked = true;
+                    }
+                }
+            });
+            
+            // 修复顺序：先更新模式，再更新UI
+            updateHardenMode();           // 先更新模式状态
+            // 显示成功消息
+            showMessage('playbookResult', `已选中 ${playbookState.selectedHardenItems.length} 个加固项`, 'success');
+            
+            // 更新界面状态
+            updateSelectedInfo();         // 再更新UI
+            updateSelectButtonStates();
+        }
+
+        // 加载配置生成器的云池列表
+        async function loadPlaybookPools() {
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/pool-list/`);
+            if (data.code === 200) {
+                playbookState.pools = data.data.list;
+                const select = document.getElementById('playbookPoolId');
+                select.innerHTML = '<option value="">请选择云池</option>' +
+                    playbookState.pools.map(pool =>
+                        `<option value="${pool.id}">${pool.name} (${pool.id})</option>`
+                    ).join('');
+            }
+        }
+
+        // 加载配置管理的云池列表
+        async function loadManagePools() {
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/pool-list/`);
+            if (data.code === 200) {
+                const select = document.getElementById('managePoolId');
+                select.innerHTML = '<option value="">请选择云池</option>' +
+                data.data.list.map(pool => 
+                    `<option value="${pool.id}">${pool.name} (${pool.id})</option>`
+                ).join('');
+                
+                // 如果已经有选中的云池，加载对应的配置
+                const selectedPoolId = select.value;
+                if (selectedPoolId) {
+                    loadPlaybookConfigs(selectedPoolId);
+                }
+            }
+        }
+
+        // 预先加载公司级和部门级加固项列表
+        async function preloadCompanyAndDepartmentItems() {
+            try {
+                const companyData = await apiRequest(`${API_BASE_URL}/cu-concrete/get-conf-level/?harden_models=harden-company-model`);
+                if (companyData.code === 200) {
+                    companyLevelItems = companyData.data.harden_items;
+                }
+                
+                const departmentData = await apiRequest(`${API_BASE_URL}/cu-concrete/get-conf-level/?harden_models=harden-department-model`);
+                if (departmentData.code === 200) {
+                    departmentLevelItems = departmentData.data.harden_items;
+                }
+                
+                return { 
+                    companyLevelItems: companyLevelItems, 
+                    departmentLevelItems: departmentLevelItems 
+                };
+            } catch (error) {
+                console.error("预加载加固项列表失败:", error);
+                return { 
+                    companyLevelItems: [], 
+                    departmentLevelItems: [] 
+                };
+            }
+        }
+
+        // 比较两个数组是否相等（不考虑顺序）
+        function updateHardenMode() {
+            try{
+                // 获取当前选择的加固项ID列表
+                const selectedIds = playbookState.selectedHardenItems.map(idx => {
+                    const item = playbookState.hardenItems[idx];
+                    return item ? `${item.dep}_${item.item_id}` : null;
+                }).filter(id => id !== null);
+
+                console.log("当前选择的加固项ID:", selectedIds);
+                console.log("公司级加固项列表:", companyLevelItems);
+                console.log("部门级加固项列表:", departmentLevelItems);
+                
+                // 确保公司级和部门级列表是有效数组
+                const validCompanyLevelItems = Array.isArray(companyLevelItems) ? companyLevelItems : [];
+                const validDepartmentLevelItems = Array.isArray(departmentLevelItems) ? departmentLevelItems : [];
+                
+                // 检查是否等于公司级列表
+                if (selectedIds.length > 0 && 
+                    validCompanyLevelItems.length > 0 && 
+                    areArraysEqual(selectedIds, validCompanyLevelItems)) {
+                    playbookState.hardenMode = 'harden-company-model';
+                } 
+                // 检查是否等于部门级列表
+                else if (selectedIds.length > 0 && 
+                        validDepartmentLevelItems.length > 0 && 
+                        areArraysEqual(selectedIds, validDepartmentLevelItems)) {
+                    playbookState.hardenMode = 'harden-department-model';
+                } 
+                // 检查是否为空
+                else if (selectedIds.length === 0) {
+                    playbookState.hardenMode = 'none';
+                }
+                // 其他情况为自定义模式
+                else {
+                    playbookState.hardenMode = 'custom';
+                }
+                console.log("确定的加固模式:", playbookState.hardenMode);
+            } catch (error) {
+                console.error("更新加固模式时出错:", error);
+                playbookState.hardenMode = 'custom';
+            }
+        }
+
+        // 加载云池的机器列表
+        async function loadPoolHosts() {
+            const poolId = document.getElementById('playbookPoolId').value;
+            console.log('选择的云池ID:', poolId);
+
+            if (!poolId) {
+                document.getElementById('hostSection').style.display = 'none';
+                return;
+            }
+
+            const container = document.getElementById('hostList');
+            container.innerHTML = '<div class="loading"></div> 正在加载机器列表...';
+            document.getElementById('hostSection').style.display = 'block';
+
+            const url = `${API_BASE_URL}/cu-concrete/pool-hosts/?pool_id=${encodeURIComponent(poolId)}`;
+            console.log('请求URL:', url);
+
+            const data = await apiRequest(url);
+            console.log('API响应:', data);
+
+            if (data.code === 200) {
+                playbookState.hosts = data.data.list || [];
+                playbookState.selectedHosts = [];
+
+                console.log('获取到的机器数量:', playbookState.hosts.length);
+
+                if (playbookState.hosts.length === 0) {
+                    container.innerHTML = '<p style="color: #999;">该云池暂无机器</p>';
+                    updateSelectedInfo();
+                    return;
+                }
+
+                container.innerHTML = playbookState.hosts.map((host, index) => `
+                    <div class="host-item" onclick="toggleHostSelection(${index})" id="host-${index}" style="padding: 10px 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 4px; margin-bottom: 6px; border: 1px solid #e0e0e0; transition: all 0.2s;">
+                        <input type="checkbox" onchange="toggleHostSelection(${index}, event)" 
+                            ${playbookState.selectedHosts.includes(index) ? 'checked' : ''} style="cursor: pointer;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; color: #333;">${host.name || host.ip || host}</div>
+                            ${host.ip && host.name ? `<div style="font-size: 12px; color: #666;">IP: ${host.ip}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                updateSelectedInfo();
+            } else {
+                container.innerHTML = `<p style="color: red;">加载失败: ${data.message}</p>`;
+                console.error('加载机器列表失败:', data);
+            }
+            updateSelectButtonStates();
+        }
+
+        // 切换机器选择
+        function toggleHostSelection(index, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+
+            const idx = playbookState.selectedHosts.indexOf(index);
+            const element = document.getElementById(`host-${index}`);
+            const checkbox = element.querySelector('input[type="checkbox"]');
+
+            if (idx === -1) {
+                playbookState.selectedHosts.push(index);
+                element.style.background = '#d4edda';
+                element.style.borderColor = '#28a745';
+                checkbox.checked = true;
+            } else {
+                playbookState.selectedHosts.splice(idx, 1);
+                element.style.background = '';
+                element.style.borderColor = '#e0e0e0';
+                checkbox.checked = false;
+            }
+
+            updateSelectedInfo();
+        }
+
+        // 更新全选按钮状态
+        function updateSelectButtonStates() {
+            // 更新主机选择按钮
+            const hostSelectBtn = document.getElementById('hostSelectStatus');
+            if (hostSelectBtn) {
+                if (playbookState.selectedHosts.length === 0) {
+                    hostSelectBtn.textContent = '全选';
+                } else if (playbookState.selectedHosts.length === playbookState.hosts.length) {
+                    hostSelectBtn.textContent = '取消全选';
+                } else {
+                    hostSelectBtn.textContent = '部分选择';
+                }
+            }
+
+            // 更新加固项选择按钮
+            const hardenSelectBtn = document.getElementById('hardenSelectStatus');
+            if (hardenSelectBtn) {
+                if (playbookState.selectedHardenItems.length === 0) {
+                    hardenSelectBtn.textContent = '全选';
+                } else if (playbookState.selectedHardenItems.length === playbookState.hardenItems.length) {
+                    hardenSelectBtn.textContent = '取消全选';
+                } else {
+                    hardenSelectBtn.textContent = '部分选择';
+                }
+            }
+        }
+
+        // 全选/取消全选机器
+        function toggleSelectAllHosts() {
+            if (playbookState.selectedHosts.length === playbookState.hosts.length) {
+                // 取消全选
+                playbookState.selectedHosts = [];
+                playbookState.hosts.forEach((_, index) => {
+                    const element = document.getElementById(`host-${index}`);
+                    if (element) {
+                        element.style.background = '';
+                        element.style.borderColor = '#e0e0e0';
+                        element.querySelector('input[type="checkbox"]').checked = false;
+                    }
+                });
+            } else {
+                // 全选
+                playbookState.selectedHosts = playbookState.hosts.map((_, index) => index);
+                playbookState.hosts.forEach((_, index) => {
+                    const element = document.getElementById(`host-${index}`);
+                    if (element) {
+                        element.style.background = '#d4edda';
+                        element.style.borderColor = '#28a745';
+                        element.querySelector('input[type="checkbox"]').checked = true;
+                    }
+                });
+            }
+            updateSelectedInfo();
+            updateSelectButtonStates(); // 更新按钮状态
+        }
+
+        // 更新已选信息显示
+        function updateSelectedInfo() {
+            const poolId = document.getElementById('playbookPoolId').value;
+            const hostCount = playbookState.selectedHosts.length;
+            const hardenCount = playbookState.selectedHardenItems.length;
+            const hardenItems = playbookState.hardenItems;
+            
+            // 获取加固模式文本
+            let hardenModeText = '未知模式';
+            let hardenModeClass = 'status-pending';
+
+            switch (playbookState.hardenMode) {
+                case 'harden-company-model':
+                    hardenModeText = '公司级模式';
+                    hardenModeClass = 'status-success';
+                    break;
+                case 'harden-department-model':
+                    hardenModeText = '部门级模式';
+                    hardenModeClass = 'status-success';
+                    break;
+                case 'custom':
+                    hardenModeText = '自定义模式';
+                    hardenModeClass = 'status-pending';
+                    break;
+                case 'none':
+                    hardenModeText = '未选择加固模式';
+                    hardenModeClass = 'status-pending';
+                    break;
+                default:
+                    hardenModeText = `未知模式 (${playbookState.hardenMode})`;
+                    hardenModeClass = 'status-failed';
+                    console.error('未知的加固模式:', playbookState.hardenMode);
+            }
+
+            if (!poolId) {
+                document.getElementById('selectedInfo').innerHTML = '<p style="color: #999;">请选择云池和IP</p>';
+                return;
+            }
+
+            const selectedHostNames = playbookState.selectedHosts.map(idx => {
+                const host = playbookState.hosts[idx];
+                return host.name || host.ip || host;
+            });
+
+            const selectedHardenNames = playbookState.selectedHardenItems.map(idx => hardenItems[idx]?.name || '');
+            const hardenInfoHtml = `
+                <div style="margin-bottom: 15px;">
+                    <strong>已选加固项:</strong> ${hardenCount} 项
+                    ${hardenCount > 0 ? `
+                    <div style="margin-top: 8px; max-height: 150px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                        ${selectedHardenNames.map(name => `<div style="padding: 3px 0; color: #333; font-size: 13px;">• ${name}</div>`).join('')}
+                    </div>
+                    ` : '<p style="color: #999; margin-top: 5px;">未选择加固项</p>'}
+                </div>`;
+
+            document.getElementById('selectedInfo').innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <strong>已选云池:</strong> ${poolId}
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>已选机器数:</strong> ${hostCount} 台
+                    ${hostCount > 0 ? `
+                    <div style="margin-top: 8px; max-height: 100px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                        ${selectedHostNames.map(name => `<div style="padding: 3px 0; color: #333; font-size: 13px;">• ${name}</div>`).join('')}
+                    </div>
+                    ` : ''}
+                </div>
+                ${hardenInfoHtml}
+                <div style="margin-top: 10px; padding: 8px; background: #f8f9fa; border-radius: 4px;">
+                    <strong>当前加固模式:</strong> 
+                    <span class="status-badge ${hardenModeClass}">${hardenModeText}</span>
+                </div>
+            `;
+        }
+
+        // 执行加固
+        async function executePlaybookOnHosts() {
+            const poolId = document.getElementById('playbookPoolId').value;
+
+            if (!poolId) {
+                showMessage('playbookResult', '请先选择云池', 'error');
+                return;
+            }
+
+            if (playbookState.selectedHosts.length === 0) {
+                showMessage('playbookResult', '请至少选择一台机器', 'error');
+                return;
+            }
+
+            // 检查是否选择了加固项
+            if (playbookState.selectedHardenItems.length === 0) {
+                showMessage('playbookResult', '请至少选择一个加固项', 'error');
+                return;
+            }
+
+            const resultDiv = document.getElementById('playbookResult');
+            resultDiv.innerHTML = '<div class="loading"></div> 正在提交任务...';
+
+            const selectedHostData = playbookState.selectedHosts.map(idx => playbookState.hosts[idx]);
+
+            // 准备加固项参数
+            const selectedHardenIds = playbookState.selectedHardenItems.map(idx => playbookState.hardenItems[idx]?.id);
+
+            // 构建请求参数
+            const requestParams = new URLSearchParams();
+            requestParams.append('pool_id', poolId);
+            requestParams.append('harden_items', JSON.stringify(selectedHardenIds));
+
+            // 这里调用执行接口
+            const data = await apiRequest(
+                `${API_BASE_URL}/cu-concrete/execute-playbook/?${requestParams.toString()}`,
+                { method: 'POST' }
+            );
+
+            if (data.code === 200) {
+                showMessage('playbookResult', `
+                    <strong>任务已提交!</strong><br>
+                    任务ID: ${data.data.task_id}<br>
+                    目标机器: ${selectedHostData.length} 台<br>
+                    加固项: ${playbookState.selectedHardenItems.length} 项
+                `, 'success');
+            } else {
+                showMessage('playbookResult', `提交失败: ${data.message}`, 'error');
+            }
+        }
+
+        // 生成配置文件
+        async function generateConfig() {
+            const poolId = document.getElementById('playbookPoolId').value;
+
+            if (!poolId) {
+                showMessage('playbookResult', '请先选择云池', 'error');
+                return;
+            }
+
+            if (playbookState.selectedHosts.length === 0) {
+                showMessage('playbookResult', '请至少选择一台机器', 'error');
+                return;
+            }
+
+            // 检查是否选择了加固项
+            if (playbookState.selectedHardenItems.length === 0) {
+                showMessage('playbookResult', '请至少选择一个加固项', 'error');
+                return;
+            }
+
+            const resultDiv = document.getElementById('playbookResult');
+            resultDiv.innerHTML = '<div class="loading"></div> 正在生成配置文件...';
+
+            const selectedHostData = playbookState.selectedHosts.map(idx => playbookState.hosts[idx]);
+
+            // 准备加固项参数，格式为 dep_id
+            const selectedHardenIds = playbookState.selectedHardenItems.map(idx => {
+                const item = playbookState.hardenItems[idx];
+                return `${item?.dep}_${item?.item_id}`;
+            });
+
+            // 确定harden_model值
+            let hardenModel = playbookState.hardenMode;
+            if (hardenModel === 'custom') {
+                hardenModel = 'custom-model';  // 与后端约定的值
+            }
+            
+            //alert(`请确认选择的云池为 ${poolId}，
+            //选择的机器为 ${selectedHostData.map(host => host.name || host.ip || host).join(', ')}，
+            //选择的加固项为 ${playbookState.selectedHardenItems.map(idx => playbookState.hardenItems[idx]?.name || '')}
+            //加固模式: ${hardenModel}`); // 添加加固模式信息
+
+            // 调用生成配置接口
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/generate-config/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    pool_id: poolId,
+                    hosts: selectedHostData,
+                    harden_items: selectedHardenIds,
+                    harden_model: hardenModel  // 添加harden_model参数
+                })
+            });
+
+            if (data.code === 200) {
+            // 在右侧显示生成的文件内容
+            document.getElementById('generatedIniContent').textContent = data.data.ini_content;
+            document.getElementById('generatedYmlContent').textContent = data.data.yml_content;
+            document.getElementById('generatedFilesCard').style.display = 'block';
+
+            // 添加新类以改变布局 - 关键修改点
+            document.getElementById('playbook').classList.add('grid-narrow-selected');
+
+            // ========= 添加以下代码 =========
+            // 显示生成人输入区域
+            document.getElementById('generatorSection').style.display = 'block';
+            // ========= 添加结束 =========
+
+            showMessage('playbookResult', `
+                <strong>配置文件生成成功!</strong><br>
+                云池: ${poolId}<br>
+                机器数: ${data.data.hosts_count} 台<br>
+                加固项: ${data.data.harden_items}<br><br>
+                <strong>文件路径:</strong><br>
+                • ${data.data.ini_file}<br>
+                • ${data.data.yml_file}
+            `, 'success');
+            } else {
+                showMessage('playbookResult', `生成失败: ${data.message}`, 'error');
+            }
+        }
+
+        // 重置表单
+        function resetPlaybookForm() {
+            document.getElementById('playbookPoolId').value = '';
+            document.getElementById('hostSection').style.display = 'none';
+            document.getElementById('playbookResult').innerHTML = '';
+            document.getElementById('generatedFilesCard').style.display = 'none';
+            document.getElementById('generatedIniContent').textContent = '';
+            document.getElementById('generatedYmlContent').textContent = '';
+            playbookState.selectedHosts = [];
+            playbookState.hosts = [];
+            playbookState.selectedHardenItems = [];
+            playbookState.hardenMode = 'none';  // 重置加固模式
+
+            // 重置加固项选择状态
+            playbookState.hardenItems.forEach((_, index) => {
+                const element = document.getElementById(`harden-item-${index}`);
+                if (element) {
+                    element.classList.remove('selected');
+                    element.querySelector('input[type="checkbox"]').checked = false;
+                }
+            });
+            
+            // 重置后更新加固模式
+            updateHardenMode();
+
+            document.getElementById('playbook').classList.remove('grid-narrow-selected');
+
+            // 隐藏生成人输入区域并清空输入
+            const generatorSection = document.getElementById('generatorSection');
+            if (generatorSection) {
+                generatorSection.style.display = 'none';
+                const generatorInput = document.getElementById('generatorInput');
+                const configNameInput = document.getElementById('configNameInput');
+                
+                if (generatorInput) {
+                    generatorInput.value = '';
+                }
+                
+                if (configNameInput) {
+                    configNameInput.value = '';
+                }
+            }
+            
+            // 确保UI状态正确更新
+            updateSelectedInfo();
+            updateSelectButtonStates();
+        }
+
+        // ==================== 配置管理功能 ====================
+
+        // 加载云池对应的Playbook配置列表
+        async function loadPlaybookConfigs(poolId) {
+            if (!poolId) {
+                // 重置下拉框
+                const playbookSelect = document.getElementById('managePlaybookId');
+                playbookSelect.innerHTML = '<option value="">请先选择云池</option>';
+                playbookSelect.disabled = true;
+                return;
+            }
+
+            const playbookSelect = document.getElementById('managePlaybookId');
+            playbookSelect.innerHTML = '<option value="" disabled>加载中...</option>';
+            playbookSelect.disabled = true;
+
+            // 调用API获取配置列表
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/from-pool-get-configs/?pool_id=${encodeURIComponent(poolId)}`);
+
+            if (data.code === 200) {
+                const configs = data.data.list || [];
+                
+                if (configs.length === 0) {
+                    playbookSelect.innerHTML = '<option value="" disabled>该云池暂无配置</option>';
+                    playbookSelect.disabled = true;
+                    return;
+                }
+
+                // 生成下拉选项 - 添加默认提示项
+                const options = configs.map(config => 
+                    `<option value="${config.id}">${config.name} (${config.description})</option>`
+                ).join('');
+                
+                // 关键修改：添加"请选择Playbook配置"作为第一个选项
+                playbookSelect.innerHTML = `
+                    <option value="" selected disabled>请选择Playbook配置</option>
+                    ${options}
+                `;
+                
+                playbookSelect.disabled = false;
+            } else {
+                playbookSelect.innerHTML = `<option value="" disabled>加载失败: ${data.message}</option>`;
+                playbookSelect.disabled = true;
+            }
+        }
+
+        // 加载Playbook配置详情（可编辑模式）
+        async function loadPlaybookDetail() {
+            const poolId = document.getElementById('managePoolId').value;
+            const configId = document.getElementById('managePlaybookId').value;
+            
+            if (!poolId || !configId) {
+                document.getElementById('templateEditor').innerHTML = '<p style="color: #999; text-align: center;">请选择云池和配置</p>';
+                document.getElementById('editActions').style.display = 'none';
+                return;
+            }
+            
+            // 获取云池名称和配置名称
+            const poolName = document.querySelector(`#managePoolId option[value="${poolId}"]`).textContent.split(' (')[0];
+            const configName = document.querySelector(`#managePlaybookId option[value="${configId}"]`).textContent.split(' (')[0];
+            
+            const editor = document.getElementById('templateEditor');
+            editor.innerHTML = '<div class="loading"></div> 正在加载配置详情...';
+
+            try {
+                const baseUrl = API_BASE_URL || window.location.origin;
+                const data = await apiRequest(
+                    `${baseUrl}/cu-concrete/from-file-get-config/?pool_id=${encodeURIComponent(poolId)}&config_name=${encodeURIComponent(configId)}`
+                );
+                
+                if (data && (data.code === 200 || data.status === 'success')) {
+                    const config = data.data || data;
+                    
+                    // 保存原始内容用于取消编辑 - 添加名称信息
+                    window.currentConfig = {
+                        id: configId,
+                        poolId: poolId,
+                        poolName: poolName,    // 存储云池名称
+                        configName: configName, // 存储配置名称
+                        ini_content: config.ini_content,
+                        yml_content: config.yml_content
+                    };
+                    
+                    // 修改：保留INI编辑区域，移除INI预览部分
+                    editor.innerHTML = `
+                        <div class="form-group">
+                            <label>INI 配置内容（可编辑）</label>
+                            <textarea id="iniEditor" class="config-editor" 
+                                style="width: 100%; height: 150px; font-family: monospace; padding: 10px; border-radius: 6px; border: 1px solid #ddd; resize: vertical;">${escapeHtml(config.ini_content)}</textarea>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>YML 配置内容（可编辑）</label>
+                            <textarea id="ymlEditor" class="config-editor" 
+                                style="width: 100%; height: 300px; font-family: monospace; padding: 10px; border-radius: 6px; border: 1px solid #ddd; resize: vertical;">${escapeHtml(config.yml_content)}</textarea>
+                        </div>
+                    `;
+                    
+                    document.getElementById('editActions').style.display = 'flex';
+                } else {
+                    const errorMessage = data?.message || data?.error || '未知错误';
+                    editor.innerHTML = `
+                        <div class="alert alert-error">
+                            <strong>加载失败:</strong><br>
+                            ${errorMessage}
+                        </div>
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">错误详情: ${JSON.stringify(data)}</p>
+                    `;
+                    document.getElementById('editActions').style.display = 'none';
+                }
+            } catch (error) {
+                console.error("加载配置详情时出错:", error);
+                editor.innerHTML = `
+                    <div class="alert alert-error">
+                        <strong>请求异常:</strong><br>
+                        ${error.message}
+                    </div>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">可能原因: API地址错误、网络问题或CORS限制</p>
+                `;
+                document.getElementById('editActions').style.display = 'none';
+            }
+        }
+
+        // 辅助函数：转义HTML特殊字符
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 编辑配置占位函数
+        function editPlaybookConfig(configId) {
+            alert(`编辑配置: ${configId}`);
+            // 实际实现中应打开编辑界面
+        }
+
+        // 删除配置占位函数
+        function deletePlaybookConfig(configId) {
+            if (confirm('确定要删除此配置吗？')) {
+                alert(`删除配置: ${configId}`);
+                // 实际实现中应调用删除API
+                loadPlaybookConfigs(document.getElementById('managePoolId').value);
+            }
+        }
+
+        // 保存配置修改
+        async function saveConfigChanges() {
+            const poolId = window.currentConfig.poolId;
+            const configId = window.currentConfig.id;
+            const iniContent = document.getElementById('iniEditor').value;
+            const ymlContent = document.getElementById('ymlEditor').value;
+            
+            // 获取云池名称（从下拉框文本中提取，格式为 "name (id)"）
+            const poolName = document.querySelector(`#managePoolId option[value="${poolId}"]`).textContent.split(' (')[0];
+            
+            // 获取配置名称（从下拉框文本中提取，格式为 "name (description)"）
+            const configName = document.querySelector(`#managePlaybookId option[value="${configId}"]`).textContent.split(' (')[0];
+            
+            const editor = document.getElementById('templateEditor');
+            editor.innerHTML = '<div class="loading"></div> 正在保存配置...';
+            
+            // 调用API保存修改 - 修改URL为save-conf-content
+            const data = await apiRequest(
+                `${API_BASE_URL}/cu-concrete/save-conf-content/`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        pool_id: poolId,       // 发送云池名
+                        config_name: configId,    // 发送配置名
+                        ini_content: iniContent,
+                        yml_content: ymlContent
+                    })
+                }
+            );
+            
+            if (data.code === 200) {
+                editor.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>保存成功!</strong><br>
+                        配置已成功保存
+                    </div>
+                `;
+                
+                // 5秒后恢复编辑状态
+                setTimeout(() => {
+                    loadPlaybookDetail();
+                }, 5000);
+            } else {
+                editor.innerHTML = `
+                    <div class="alert alert-error">
+                        <strong>保存失败:</strong><br>
+                        ${data.message || '未知错误'}
+                    </div>
+                `;
+            }
+        }
+
+        // 删除配置
+        async function deleteConfig() {
+            const poolId = window.currentConfig.poolId;
+            const configId = window.currentConfig.id;
+            
+            if (!confirm(`确定要删除配置 "${configId}" 吗？此操作不可恢复！`)) {
+                return;
+            }
+            
+            const editor = document.getElementById('templateEditor');
+            editor.innerHTML = '<div class="loading"></div> 正在删除配置...';
+            
+            const data = await apiRequest(
+                `${API_BASE_URL}/cu-concrete/delete-config/`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        pool_id: poolId,
+                        config_name: configId
+                    })
+                }
+            );
+            
+            if (data.code === 200) {
+                editor.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>删除成功!</strong><br>
+                        配置已成功删除
+                    </div>
+                `;
+                
+                // 2秒后重置状态
+                setTimeout(() => {
+                    resetEditState();
+                    loadPlaybookConfigs(poolId);
+                }, 2000);
+            } else {
+                editor.innerHTML = `
+                    <div class="alert alert-error">
+                        <strong>删除失败:</strong><br>
+                        ${data.message || '未知错误'}
+                    </div>
+                `;
+            }
+        }
+
+        // 重置编辑状态到初始状态
+        function resetEditState() {
+            // 1. 重置templateEditor区域为初始提示
+            document.getElementById('templateEditor').innerHTML = `
+                <p style="color: #999; text-align: center;">选中的模板详情将显示在此处</p>
+            `;
+            
+            // 2. 重置选择框
+            document.getElementById('managePoolId').value = '';
+            document.getElementById('managePlaybookId').value = '';
+            
+            // 3. 隐藏编辑操作按钮
+            document.getElementById('editActions').style.display = 'none';
+            
+            // 4. 清除当前配置缓存
+            window.currentConfig = null;
+            
+            // 5. 重置模板列表
+            const templateList = document.getElementById('templateList');
+            templateList.innerHTML = '<p style="color: #999; text-align: center;">配置模板列表将显示在此处</p>';
+            
+            // 6. 重置Playbook配置下拉框状态
+            const playbookSelect = document.getElementById('managePlaybookId');
+            playbookSelect.innerHTML = '<option value="">请先选择云池</option>';
+            playbookSelect.disabled = true;
+            
+            // 7. 显示成功提示
+            showMessage('templateEditor', '已重置到初始状态', 'info');
+            
+            // 8. 可选：重新加载云池列表（如果需要）
+            loadManagePools();
+        }
+
+        // 比较两个数组是否相等（不考虑顺序）
+        function areArraysEqual(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            const sortedArr1 = [...arr1].sort();
+            const sortedArr2 = [...arr2].sort();
+            return sortedArr1.every((value, index) => value === sortedArr2[index]);
+        }
+
+        // 保存生成的配置
+        async function saveGeneratedConfig() {
+            // 1. 防抖检查
+            if (window.saveConfigInProgress) {
+                showMessage('playbookResult', '保存操作已在进行中，请稍后再试', 'error');
+                return;
+            }
+            window.saveConfigInProgress = true;
+            
+            try {
+                // 2. 获取输入值
+                const generatorInput = document.getElementById('generatorInput');
+                const configNameInput = document.getElementById('configNameInput');
+                
+                // 移除之前的错误样式
+                generatorInput.style.borderColor = '#e0e0e0';
+                configNameInput.parentElement.style.borderColor = '#e0e0e0';
+                
+                const generatePersonName = generatorInput.value.trim();
+                let configName = configNameInput.value.trim();  // 修改为 let 以便后续修改
+                const poolId = document.getElementById('playbookPoolId').value;
+                
+                // 3. 验证逻辑
+                let hasError = false;
+                
+                if (!generatePersonName) {
+                    generatorInput.style.borderColor = '#dc3545';
+                    hasError = true;
+                }
+                
+                if (!configName) {
+                    configNameInput.parentElement.style.borderColor = '#dc3545';
+                    hasError = true;
+                }
+                
+                if (!poolId) {
+                    showMessage('playbookResult', '云池信息丢失，请重新选择', 'error');
+                    return;
+                }
+                
+                if (hasError) {
+                    const missingFields = [];
+                    if (!generatePersonName) missingFields.push('生成人姓名');
+                    if (!configName) missingFields.push('配置名称');
+                    
+                    showMessage('playbookResult', `
+                        <strong>缺少必填信息!</strong><br>
+                        请填写以下必填项：<br>
+                        • ${missingFields.join('<br>• ')}
+                    `, 'error');
+                    
+                    // 5秒后移除错误边框
+                    setTimeout(() => {
+                        generatorInput.style.borderColor = '#e0e0e0';
+                        configNameInput.parentElement.style.borderColor = '#e0e0e0';
+                    }, 5000);
+                    
+                    return;
+                }
+                
+                // 4. 获取配置内容
+                const iniContent = document.getElementById('generatedIniContent').textContent;
+                const ymlContent = document.getElementById('generatedYmlContent').textContent;
+                
+                // 5. 获取其他必要参数
+                // 关键修改1：确保hosts是简单IP列表，不是对象列表
+                const selectedHosts = playbookState.selectedHosts.map(idx => {
+                    const host = playbookState.hosts[idx];
+                    return host.ip || host.name || host;  // 优先使用ip，然后是name，最后是原始值
+                });
+                
+                // 关键修改2：确保加固项格式为"dep_item_id"，如"1_1"
+                const selectedHardenItems = playbookState.selectedHardenItems.map(idx => {
+                    const item = playbookState.hardenItems[idx];
+                    return `${item.dep}_${item.item_id}`;
+                });
+                
+                // 关键修改3：确保harden_model格式与后端一致
+                let hardenModel = playbookState.hardenMode;
+                if (hardenModel === 'custom') {
+                    hardenModel = 'custom-model';
+                } else if (hardenModel === 'harden-company-model') {
+                    hardenModel = 'harden-company-model';  // 确保与后端完全一致
+                } else if (hardenModel === 'harden-department-model') {
+                    hardenModel = 'harden-department-model';  // 确保与后端完全一致
+                }
+                
+                // 关键修改4：确保配置名有.yml扩展名
+                if (!configName.endsWith('.yml')) {
+                    configName = configName + '.yml';
+                }
+                
+                // 6. 调用保存API
+                const resultDiv = document.getElementById('playbookResult');
+                resultDiv.innerHTML = '<div class="loading"></div> 正在保存配置...';
+                
+                const data = await apiRequest(`${API_BASE_URL}/cu-concrete/save-generated-config/`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        pool_id: poolId,
+                        hosts: selectedHosts,
+                        harden_model: hardenModel,
+                        harden_items: selectedHardenItems,
+                        generate_person_name: generatePersonName,
+                        config_name: configName,
+                        ini_content: iniContent,
+                        yml_content: ymlContent
+                    })
+                });
+                
+                // 7. 处理响应
+                if (data.code === 200) {
+                    showMessage('playbookResult', `
+                        <strong>配置保存成功!</strong><br>
+                        配置名称: ${configName}<br>
+                        云池: ${poolId}<br>
+                        INI文件路径: ${data.data.ini_file}<br>
+                        YML文件路径: ${data.data.yml_file}<br>
+                        生成人: ${generatePersonName}
+                    `, 'success');
+                    
+                    setTimeout(() => {
+                        resetPlaybookForm();
+                    }, 3000);
+                } else {
+                    showMessage('playbookResult', `保存失败: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                console.error("保存配置时出错:", error);
+                showMessage('playbookResult', `保存过程中发生错误: ${error.message}`, 'error');
+            } finally {
+                // 8. 重置防抖标志
+                setTimeout(() => {
+                    window.saveConfigInProgress = false;
+                }, 2000);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
