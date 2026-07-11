@@ -134,3 +134,6 @@ class CommonResponses:
     
     # 冲突/并发相关
     CONFLICT = lambda msg="操作冲突": ApiResponse.error(msg, 409, http_status=status.HTTP_409_CONFLICT)
+    
+    # 资源相关
+    RESOURCE_NOT_FOUND = lambda msg="资源不存在": ApiResponse.not_found(msg)
