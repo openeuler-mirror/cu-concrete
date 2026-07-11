@@ -1,4 +1,4 @@
-# cu-concrete - 系统安全加固工具
+# cu-concrete - 系统安全加固工具 
 
 cu-concrete 是一个用于 Linux 系统的安全加固工具，能够自动化检测和修复系统层面的安全隐患。
 
