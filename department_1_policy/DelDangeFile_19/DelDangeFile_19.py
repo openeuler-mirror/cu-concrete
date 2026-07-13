@@ -76,7 +76,7 @@ class DelDangeFile_19(base_fix):
         self.finalfix() 
 
     def check(self):
-        except_value=True
+        expected_value = True
         cmd=['find','/home','-type','f','-name',self.config['query']['form'][0]]
         cmd2=['find','/home','-type','f','-name',self.config['query']['form'][1]]
         result1=base_shell(cmd)
@@ -88,8 +88,8 @@ class DelDangeFile_19(base_fix):
         # 检查是否有找到危险文件
         # 如果命令执行成功（返回码为0）且找到了文件（stdout不为空），则需要加固
         if (result1[1] == 0 and result1[0]) or (result2[1] == 0 and result2[0]):
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
     
     def rollback(self):
         # 在回滚时，应该恢复备份的文件
