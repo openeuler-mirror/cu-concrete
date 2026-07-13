@@ -58,14 +58,14 @@ class CheckIcmp_20(base_fix):
         self.finalfix()
 
     def check(self):
-        except_value=True
+        expected_value = True
         cmd1=bsf.grep_shell(self.config['query']['form'],self.config['query']['path'])
         if len(cmd1[0])==0:
-            except_value=False
+            expected_value = False
         cmd2=bsf.grep_shell(self.config['change']['value'][1],self.config['query']['path'])
         if len(cmd2[0])!=0:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
 
     def rollback(self):
         bsf.remove_line(self.config['change']['value'][0],self.config['query']['path'])  
