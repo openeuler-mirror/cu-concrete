@@ -13,8 +13,9 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-logging.getLogger(__name__)
-#TestCase-部门编号-子加固项名称-子加固项编号
+logger = logging.getLogger(__name__)
+# TestCase-部门编号-子加固项名称-子加固项编号
+# 优化：统一日志变量命名
 class CheckRootDir_9(base_fix):    
     def __init__(self):
         super().__init__()
@@ -45,7 +46,7 @@ class CheckRootDir_9(base_fix):
         base_shell(cmd1)
         cmd2=['chmod',self.config['change']['value'],self.config['change']['path']]
         base_shell(cmd2)
-        data='type:fix,des:{}'.format(self.config['description'])
+        data = f"type:fix,des:{self.config['description']}"
         logging.info(data) 
         self.finalfix()
  
