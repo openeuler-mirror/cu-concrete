@@ -55,12 +55,12 @@ class ClearHistoryCmd_25(base_fix):
         self.finalfix()
     
     def check(self):
-        except_value=True
+        expected_value = True
         cmd=['wc','-c',self.config['query']['path']]
         result=base_shell(cmd)
         if '0 /root/.bash_history' != result[0]:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
     
     def rollback(self):
         bsf.cp_shell(self.config['query']['path1'], self.config['query']['path'])
