@@ -52,12 +52,12 @@ class CheckRootDir_9(base_fix):
  
 
     def check(self):
-        except_value=True
+        expected_value = True
         cmd=['stat','-c','%a',self.config['change']['path']]
         result=base_shell(cmd)
         if result[0]!='700':
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
         
     def rollback(self):
         cmd1=['chown',self.config['change']['form'],self.config['change']['path']]
