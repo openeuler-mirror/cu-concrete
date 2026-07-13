@@ -57,13 +57,13 @@ class ForbiIp_30(base_fix):
         self.finalfix()
     
     def check(self):
-        except_value=True
+        expected_value = True
         cmd=['sysctl','-n',self.config['change']['set']]
         result=base_shell(cmd)
         if '0' not in result[0]:
-            except_value=False
+            expected_value = False
         
-        return except_value
+        return expected_value
     
     def rollback(self):
         # 先删除所有的ip_forward配置行，再添加正确的配置
