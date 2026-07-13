@@ -9,3 +9,10 @@
 | 编号 | `19` |
 | 状态键 | `119` |
 
+## 配置说明
+
+配置文件：`DelDangeFile_19.yaml`
+
+- 描述：删除.netrc,.rhosts的文件
+- 策略类：`DelDangeFile_19`
+
