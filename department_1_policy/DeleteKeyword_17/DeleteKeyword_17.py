@@ -53,7 +53,7 @@ class DeleteKeyword_17(base_fix):
         self.finalfix() 
 
     def check(self):
-        except_value=True
+        expected_value = True
         results = [
             bsf.grep_shell(self.config['change']['value'][0], self.config['query']['path']),
             bsf.grep_shell(self.config['change']['value'][1], self.config['query']['path']),
@@ -63,8 +63,8 @@ class DeleteKeyword_17(base_fix):
         ]
         for i in results:
             if len(i[0])!=0:
-                except_value=False
-        return except_value
+                expected_value = False
+        return expected_value
     
     def rollback(self):
         pass
