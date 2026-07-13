@@ -57,7 +57,7 @@ class CheckUidZero_4(base_fix):
         self.finalfix()
         
     def check(self):
-        except_value=True
+        expected_value = True
         result=bsf.awk_shell(":",self.config['query'][0]['form'],self.config['query'][0]['path'])
         users = [user for user in result[0].splitlines() if user != 'root']
         for user in users:
@@ -65,8 +65,8 @@ class CheckUidZero_4(base_fix):
             uid_str=base_shell(cmd)[0]
             match = re.search(r'uid=(\d+)', uid_str)
             if match and int(match.group(1)) == 0:
-                except_value=False
-        return except_value
+                expected_value = False
+        return expected_value
             
 
     def rollback(self):
