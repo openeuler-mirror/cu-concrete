@@ -56,12 +56,12 @@ class DisableFtpAnonymous_21(base_fix):
         self.finalfix() 
 
     def check(self):
-        except_value=True
+        expected_value = True
         result2=bsf.grep_shell(self.config['change']['value'][0],self.config['query']['path'][1])
         result3=bsf.grep_shell(self.config['change']['value'][0],self.config['query']['path'][2])
         if result2[0]!=self.config['change']['value'][0] or result3[0]!=self.config['change']['value'][0]:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
 
 
     def rollback(self):
