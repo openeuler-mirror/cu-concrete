@@ -54,11 +54,11 @@ class Delbanner_18(base_fix):
         self.finalfix()
 
     def check(self):
-        except_value=True
+        expected_value = True
         for i in range(3):
             if os.path.exists(self.config['query']['path'][i]):
-                except_value=False
-        return except_value
+                expected_value = False
+        return expected_value
     
     def rollback(self):
         bsf.cp_shell(self.config['change']['value'][0], self.config['query']['path'][0])
