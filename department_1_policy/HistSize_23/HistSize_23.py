@@ -59,11 +59,11 @@ class HistSize_23(base_fix):
         self.finalfix()
     
     def check(self):
-       except_value=True
+       expected_value = True
        result=bsf.grep_shell(self.config['query']['form'],self.config['query']['path'])
        if result[0]!=self.config['change']['value'] or len(result[0])==0:
-           except_value=False
-       return except_value
+           expected_value = False
+       return expected_value
     
     def rollback(self):
         bsf.remove_line(self.config['change']['value'],self.config['query']['path'])
