@@ -57,20 +57,20 @@ class LockFile_29(base_fix):
         self.finalfix()
     
     def check(self):
-        except_value=True
+        expected_value = True
         cmd=['lsattr',self.config['query']['path'][0]]
         result=base_shell(cmd)
         if 'i' not in result[0]:
-            except_value=False
+            expected_value = False
         cmd=['lsattr',self.config['query']['path'][1]]
         result=base_shell(cmd)
         if 'i' not in result[0]:
-            except_value=False
+            expected_value = False
         cmd=['lsattr',self.config['query']['path'][2]]
         result=base_shell(cmd)
         if 'i' not in result[0]:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
     
     def rollback(self):
         cmd=['chattr',self.config['change']['value'][1],self.config['query']['path'][0]]
