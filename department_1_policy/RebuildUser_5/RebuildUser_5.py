@@ -22,8 +22,8 @@ class RebuildUser_5(base_fix):
 
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.config_file = os.path.join(self.current_dir, "RebuildUser_5.yaml")
-        with open(file=self.config_file,mode='r+',encoding='utf-8') as f :
-            config = yaml.load(f,Loader = yaml.Loader)
+        with open(file=self.config_file, mode='r', encoding='utf-8') as f:
+            config = yaml.load(f, Loader=yaml.Loader)
         self.pkl_file=os.path.join(os.path.dirname(self.current_dir),'data_status.pkl')
         self.config=config
         self.status=None
@@ -64,6 +64,7 @@ class RebuildUser_5(base_fix):
         
         
     def check(self):
+        """检查策略是否满足要求。"""
         expected_value = True
         line = bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0]
 
