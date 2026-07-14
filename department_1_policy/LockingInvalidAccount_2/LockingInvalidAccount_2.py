@@ -54,15 +54,15 @@ class LockingInvalidAccount_2(base_fix):
         
         
     def check(self):
-        except_value=True
+        expected_value = True
         for user in self.config['query']['value']:
             cmd=['passwd','-S',user]
             result=base_shell(cmd)
             if 'LK' in result[0] or '未知的用户名' in result[0]:
-                except_value=True
+                expected_value = True
             else:
-                except_value=False
-        return except_value
+                expected_value = False
+        return expected_value
     
     def rollback(self):
         for user in self.config['query']['value']:
