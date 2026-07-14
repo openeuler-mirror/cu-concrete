@@ -21,8 +21,8 @@ class SysLog_11(base_fix):
         super().__init__()
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.config_file = os.path.join(self.current_dir, "SysLog_11.yaml")
-        with open(file=self.config_file,mode='r+',encoding='utf-8') as f :
-            config = yaml.load(f,Loader = yaml.Loader)
+        with open(file=self.config_file, mode='r', encoding='utf-8') as f:
+            config = yaml.load(f, Loader=yaml.Loader)
         self.pkl_file=os.path.join(os.path.dirname(self.current_dir),'data_status.pkl')
         self.config=config
         self.status=None
@@ -71,6 +71,7 @@ class SysLog_11(base_fix):
         self.finalfix()
             
     def check(self):
+        """检查策略是否满足要求。"""
         expected_value = True
         result=bsf.grep_shell('\\'+self.config['change']['value1'],self.config['query']['path'])
         if len(result[0])==0:
