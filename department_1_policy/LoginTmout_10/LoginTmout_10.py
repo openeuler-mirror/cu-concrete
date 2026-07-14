@@ -52,11 +52,11 @@ class LoginTmout_10(base_fix):
         self.finalfix()
 
     def check(self):
-        except_value=True
+        expected_value = True
         result=bsf.grep_shell('TMOUT=',self.config['change']['path'])
         if '300' not in result[0]:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
         
     def rollback(self):
         bsf.remove_line(self.config['change']['form1'], self.config['change']['path'])
