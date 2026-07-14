@@ -22,8 +22,8 @@ class LoginTmout_10(base_fix):
 
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.config_file = os.path.join(self.current_dir, "LoginTmout_10.yaml")
-        with open(file=self.config_file,mode='r+',encoding='utf-8') as f :
-            config = yaml.load(f,Loader = yaml.Loader)
+        with open(file=self.config_file, mode='r', encoding='utf-8') as f:
+            config = yaml.load(f, Loader=yaml.Loader)
         self.pkl_file=os.path.join(os.path.dirname(self.current_dir),'data_status.pkl')
         self.config=config
         self.status=None
@@ -52,6 +52,7 @@ class LoginTmout_10(base_fix):
         self.finalfix()
 
     def check(self):
+        """检查策略是否满足要求。"""
         expected_value = True
         result=bsf.grep_shell('TMOUT=',self.config['change']['path'])
         if '300' not in result[0]:
