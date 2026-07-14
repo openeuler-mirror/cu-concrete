@@ -13,25 +13,23 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-logger = logging.getLogger(__name__)
-# TestCase-部门编号-子加固项名称-子加固项编号
-# 优化：统一日志变量命名
+logging.getLogger(__name__)
+#TestCase-部门编号-子加固项名称-子加固项编号
 class RebuildUser_5(base_fix):    
     def __init__(self):
         super().__init__()
 
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.config_file = os.path.join(self.current_dir, "RebuildUser_5.yaml")
-        with open(file=self.config_file, mode='r', encoding='utf-8') as f:
-            config = yaml.load(f, Loader=yaml.Loader)
+        with open(file=self.config_file,mode='r+',encoding='utf-8') as f :
+            config = yaml.load(f,Loader = yaml.Loader)
         self.pkl_file=os.path.join(os.path.dirname(self.current_dir),'data_status.pkl')
         self.config=config
         self.status=None
 
     def finalfix(self):
-        self.status = 2
-        key = str(self.config['dep']) + str(self.config['id'])
-        self.status_form.loc[key, 'status'] = 2
+        self.status=2
+        self.status_form.loc[str(self.config['dep'])+str(self.config['id']),'status']=2
         self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
@@ -59,43 +57,42 @@ class RebuildUser_5(base_fix):
             bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][3],self.config['query']['path'])[0],self.config['change']['value'][3],self.config['query']['path']) 
         else:
             bsf.append_line(self.config['change']['value'][3],self.config['query']['path'])
-        data = f"type:fix,des:{self.config['description']}"
+        data='type:fix,des:{}'.format(self.config['description'])
         logging.info(data)
         self.finalfix()
         
         
     def check(self):
-        """检查策略是否满足要求。"""
-        expected_value = True
+        except_value=True
         line = bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0]
 
         parts = line.split()  # 按换行字符分割
         value = int(parts[1])  # 第二个元素是数值
  
         if value==99999:
-            expected_value = False
+            except_value=False
             
         line = bsf.grep_shell(self.config['query']['form'][1],self.config['query']['path'])[0]
         parts = line.split()  # 按空白字符分割
         value = int(parts[1])  # 第二个元素是数值
 
         if value==5:
-            expected_value = False
+            except_value=False
 
         line = bsf.grep_shell(self.config['query']['form'][2],self.config['query']['path'])[0]
         parts = line.split()  # 按空白字符分割
         value = int(parts[1])  # 第二个元素是数值
 
         if value==0:
-            expected_value = False
+            except_value=False
             
         line = bsf.grep_shell(self.config['query']['form'][3],self.config['query']['path'])[0]
         parts = line.split()  # 按空白字符分割
         value = int(parts[1])  # 第二个元素是数值
 
         if value!=7:
-            expected_value = False
-        return expected_value
+            except_value=False
+        return except_value
 
     def rollback(self):
         if bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0]!=None:
