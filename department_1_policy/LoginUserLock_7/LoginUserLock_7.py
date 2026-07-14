@@ -29,8 +29,9 @@ class LoginUserLock_7(base_fix):
         self.status=None
 
     def finalfix(self):
-        self.status=2
-        self.status_form.loc[str(self.config['dep'])+str(self.config['id']),'status']=2
+        self.status = 2
+        key = str(self.config['dep']) + str(self.config['id'])
+        self.status_form.loc[key, 'status'] = 2
         self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
