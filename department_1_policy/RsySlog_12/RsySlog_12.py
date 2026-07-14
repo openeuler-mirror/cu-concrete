@@ -54,7 +54,7 @@ class RsySlog_12(base_fix):
         result = bsf.grep_shell(self.config['query']['form'], self.config['query']['path'])
         if len(result[0]) == 0:     
             except_value = False
-        return except_value
+        return expected_value
         
         
     def rollback(self):
