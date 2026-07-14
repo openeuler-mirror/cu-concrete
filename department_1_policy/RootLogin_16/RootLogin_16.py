@@ -53,11 +53,11 @@ class RootLogin_16(base_fix):
         self.finalfix() 
 
     def check(self):
-        except_value=True
+        expected_value = True
         result=bsf.grep_shell(self.config['query']['form'],self.config['query']['path'])
         if  'yes' in result[0]:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
     
     def rollback(self):
         # 每次还原前都读取最新的 pkl，避免覆盖其他加固项状态
