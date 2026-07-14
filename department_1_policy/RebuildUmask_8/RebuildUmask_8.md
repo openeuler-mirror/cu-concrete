@@ -9,3 +9,10 @@
 | 编号 | `8` |
 | 状态键 | `18` |
 
+## 配置说明
+
+配置文件：`RebuildUmask_8.yaml`
+
+- 描述：umask设置用户文件权限
+- 策略类：`RebuildUmask_8`
+

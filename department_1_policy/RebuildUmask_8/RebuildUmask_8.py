@@ -55,13 +55,13 @@ class RebuildUmask_8(base_fix):
 
     def check(self):
         umasks= bsf.grep_shell(self.config['query']['form'],self.config['query']['path'])
-        except_value=True
+        expected_value = True
         if len(umasks[0])==0:
-            except_value=False
+            expected_value = False
         cmd=bsf.grep_shell(self.config['query']['form'],self.config['query']['path'])
         if '027' not in cmd[0]:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
     
     def rollback(self):
         flag=bsf.grep_shell(self.config['query']['form'],self.config['query']['path'])
