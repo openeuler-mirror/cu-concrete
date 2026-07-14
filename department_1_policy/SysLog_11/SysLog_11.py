@@ -13,8 +13,9 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-logging.getLogger(__name__)
-#TestCase-部门编号-子加固项名称-子加固项编号
+logger = logging.getLogger(__name__)
+# TestCase-部门编号-子加固项名称-子加固项编号
+# 优化：统一日志变量命名
 class SysLog_11(base_fix):    
     def __init__(self):
         super().__init__()
@@ -65,7 +66,7 @@ class SysLog_11(base_fix):
             base_shell(cmd,input=f'\n{value}')
         cmd=['sudo','systemctl','restart','rsyslog']
         base_shell(cmd)
-        data='type:fix,des:{}'.format(self.config['description'])
+        data = f"type:fix,des:{self.config['description']}"
         logging.info(data) 
         self.finalfix()
             
