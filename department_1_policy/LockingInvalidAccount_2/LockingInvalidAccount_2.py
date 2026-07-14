@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import os
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_dir)
@@ -13,25 +13,23 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-logger = logging.getLogger(__name__)
-# TestCase-部门编号-子加固项名称-子加固项编号
-# 优化：统一日志变量命名
+logging.getLogger(__name__)
+#TestCase-部门编号-子加固项名称-子加固项编号
 class LockingInvalidAccount_2(base_fix):    
     def __init__(self):
         super().__init__()
 
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.config_file = os.path.join(self.current_dir, "LockingInvalidAccount_2.yaml")
-        with open(file=self.config_file, mode='r', encoding='utf-8') as f:
-            config = yaml.load(f, Loader=yaml.Loader)
+        with open(file=self.config_file,mode='r+',encoding='utf-8') as f :
+            config = yaml.load(f,Loader = yaml.Loader)
         self.pkl_file=os.path.join(os.path.dirname(self.current_dir),'data_status.pkl')
         self.config=config
         self.status=None
 
     def finalfix(self):
-        self.status = 2
-        key = str(self.config['dep']) + str(self.config['id'])
-        self.status_form.loc[key, 'status'] = 2
+        self.status=2
+        self.status_form.loc[str(self.config['dep'])+str(self.config['id']),'status']=2
         self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
@@ -55,16 +53,13 @@ class LockingInvalidAccount_2(base_fix):
         
         
     def check(self):
-        """检查策略是否满足要求。"""
-        expected_value = True
         for user in self.config['query']['value']:
-            cmd=['passwd','-S',user]
-            result=base_shell(cmd)
-            if 'LK' in result[0] or '未知的用户名' in result[0]:
-                expected_value = True
-            else:
-                expected_value = False
-        return expected_value
+            cmd = ['passwd', '-S', user]
+            result = base_shell(cmd)
+            # 存在且未锁定 → 需要加固
+            if 'LK' not in result[0] and '未知的用户名' not in result[0]:
+                return False
+        return True
     
     def rollback(self):
         for user in self.config['query']['value']:
