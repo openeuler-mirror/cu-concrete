@@ -13,7 +13,8 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-#TestCase-部门编号-子加固项名称-子加固项编号
+# TestCase-部门编号-子加固项名称-子加固项编号
+# 优化：统一日志变量命名
 class HistSize_23(base_fix):    
     def __init__(self):
         super().__init__()
@@ -53,7 +54,7 @@ class HistSize_23(base_fix):
             strs=f'source {self.config["query"]["path"]}'
             cmd=['bash','-c',strs]
             base_shell(cmd)
-        data='type:fix,des:{}'.format(self.config['description'])
+        data = f"type:fix,des:{self.config['description']}"
         logging.info(data) 
         self.finalfix()
     
