@@ -52,17 +52,17 @@ class LoginUserLock_7(base_fix):
         self.finalfix()
 
     def check(self):
-        except_value=True
+        expected_value = True
         result=bsf.grep_shell(self.config['change']['value'][1],self.config['query']['path'])
         if result[0]!=self.config['change']['value'][1]:
-            except_value=False
+            expected_value = False
         result=bsf.grep_shell(self.config['change']['value'][2],self.config['query']['path'])
         if result[0]!=self.config['change']['value'][2]:
-            except_value=False
+            expected_value = False
         result=bsf.grep_shell(self.config['query']['form'][3],self.config['query']['path'])
         if result[0]!=self.config['change']['value'][3]:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
 
     def rollback(self):
         bsf.cp_shell(self.config['query']['path']+'.bak',self.config['query']['path'])
