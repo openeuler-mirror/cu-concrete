@@ -21,8 +21,8 @@ class RebuildUmask_8(base_fix):
         super().__init__()
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
         self.config_file = os.path.join(self.current_dir, "RebuildUmask_8.yaml")
-        with open(file=self.config_file,mode='r+',encoding='utf-8') as f :
-            config = yaml.load(f,Loader = yaml.Loader)
+        with open(file=self.config_file, mode='r', encoding='utf-8') as f:
+            config = yaml.load(f, Loader=yaml.Loader)
         self.pkl_file=os.path.join(os.path.dirname(self.current_dir),'data_status.pkl')
         self.config=config
         self.status=None
@@ -54,6 +54,7 @@ class RebuildUmask_8(base_fix):
         self.finalfix()
 
     def check(self):
+        """检查策略是否满足要求。"""
         umasks= bsf.grep_shell(self.config['query']['form'],self.config['query']['path'])
         expected_value = True
         if len(umasks[0])==0:
