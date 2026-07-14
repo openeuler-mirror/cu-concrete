@@ -64,36 +64,36 @@ class RebuildUser_5(base_fix):
         
         
     def check(self):
-        except_value=True
+        expected_value = True
         line = bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0]
 
         parts = line.split()  # 按换行字符分割
         value = int(parts[1])  # 第二个元素是数值
  
         if value==99999:
-            except_value=False
+            expected_value = False
             
         line = bsf.grep_shell(self.config['query']['form'][1],self.config['query']['path'])[0]
         parts = line.split()  # 按空白字符分割
         value = int(parts[1])  # 第二个元素是数值
 
         if value==5:
-            except_value=False
+            expected_value = False
 
         line = bsf.grep_shell(self.config['query']['form'][2],self.config['query']['path'])[0]
         parts = line.split()  # 按空白字符分割
         value = int(parts[1])  # 第二个元素是数值
 
         if value==0:
-            except_value=False
+            expected_value = False
             
         line = bsf.grep_shell(self.config['query']['form'][3],self.config['query']['path'])[0]
         parts = line.split()  # 按空白字符分割
         value = int(parts[1])  # 第二个元素是数值
 
         if value!=7:
-            except_value=False
-        return except_value
+            expected_value = False
+        return expected_value
 
     def rollback(self):
         if bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0]!=None:
