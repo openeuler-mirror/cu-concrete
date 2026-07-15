@@ -13,7 +13,8 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-#TestCase-部门编号-子加固项名称-子加固项编号
+# TestCase-部门编号-子加固项名称-子加固项编号
+# 优化：统一日志变量命名
 class UserFilePermission_3(base_fix):    
     def __init__(self):
         super().__init__()
@@ -46,7 +47,7 @@ class UserFilePermission_3(base_fix):
         base_shell(cmd)
         cmd=['chmod',self.config['change']['value'][0],self.config['query']['path'][2]]
         base_shell(cmd)
-        data='type:fix,des:{}'.format(self.config['description'])
+        data = f"type:fix,des:{self.config['description']}"
         logging.info(data)
         self.finalfix()
         
