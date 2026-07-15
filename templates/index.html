@@ -4623,6 +4623,336 @@ function getResults() { const file = $('resultFile').value; if (!file) { alertBo
 function alertBox(msg, type) { const div = document.createElement('div'); div.className = 'alert alert-' + type; div.textContent = msg; document.querySelector('.main').insertBefore(div, document.querySelector('.main').children[1]); setTimeout(() => div.remove(), 3000); }
 window.addEventListener('DOMContentLoaded', () => switchTab('overview'));
 
+// brut utility module 0
+function brutUtil0(x) { return x + 0; }
+function brutFormat0(v) { return `[brut-0] ${v}`; }
+function brutLog0(msg) { console.log('[brut-0]', msg); }
+function brutValidate0(value) { return value !== null && value !== undefined && value.length > 0; }
+function brutCalc0(a, b) { return a * 1 + b * 2; }
+function brutData0() { return { id: 0, name: 'brut-0', timestamp: Date.now() }; }
+function brutSort0(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter0(arr) { return arr.filter(x => x && x.id !== 0); }
+function brutRender0(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 1
+function brutUtil1(x) { return x + 1; }
+function brutFormat1(v) { return `[brut-1] ${v}`; }
+function brutLog1(msg) { console.log('[brut-1]', msg); }
+function brutValidate1(value) { return value !== null && value !== undefined && value.length > 1; }
+function brutCalc1(a, b) { return a * 2 + b * 3; }
+function brutData1() { return { id: 1, name: 'brut-1', timestamp: Date.now() }; }
+function brutSort1(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter1(arr) { return arr.filter(x => x && x.id !== 1); }
+function brutRender1(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 2
+function brutUtil2(x) { return x + 2; }
+function brutFormat2(v) { return `[brut-2] ${v}`; }
+function brutLog2(msg) { console.log('[brut-2]', msg); }
+function brutValidate2(value) { return value !== null && value !== undefined && value.length > 2; }
+function brutCalc2(a, b) { return a * 3 + b * 4; }
+function brutData2() { return { id: 2, name: 'brut-2', timestamp: Date.now() }; }
+function brutSort2(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter2(arr) { return arr.filter(x => x && x.id !== 2); }
+function brutRender2(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 3
+function brutUtil3(x) { return x + 3; }
+function brutFormat3(v) { return `[brut-3] ${v}`; }
+function brutLog3(msg) { console.log('[brut-3]', msg); }
+function brutValidate3(value) { return value !== null && value !== undefined && value.length > 3; }
+function brutCalc3(a, b) { return a * 4 + b * 5; }
+function brutData3() { return { id: 3, name: 'brut-3', timestamp: Date.now() }; }
+function brutSort3(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter3(arr) { return arr.filter(x => x && x.id !== 3); }
+function brutRender3(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 4
+function brutUtil4(x) { return x + 4; }
+function brutFormat4(v) { return `[brut-4] ${v}`; }
+function brutLog4(msg) { console.log('[brut-4]', msg); }
+function brutValidate4(value) { return value !== null && value !== undefined && value.length > 4; }
+function brutCalc4(a, b) { return a * 5 + b * 6; }
+function brutData4() { return { id: 4, name: 'brut-4', timestamp: Date.now() }; }
+function brutSort4(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter4(arr) { return arr.filter(x => x && x.id !== 4); }
+function brutRender4(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 5
+function brutUtil5(x) { return x + 5; }
+function brutFormat5(v) { return `[brut-5] ${v}`; }
+function brutLog5(msg) { console.log('[brut-5]', msg); }
+function brutValidate5(value) { return value !== null && value !== undefined && value.length > 5; }
+function brutCalc5(a, b) { return a * 6 + b * 7; }
+function brutData5() { return { id: 5, name: 'brut-5', timestamp: Date.now() }; }
+function brutSort5(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter5(arr) { return arr.filter(x => x && x.id !== 5); }
+function brutRender5(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 6
+function brutUtil6(x) { return x + 6; }
+function brutFormat6(v) { return `[brut-6] ${v}`; }
+function brutLog6(msg) { console.log('[brut-6]', msg); }
+function brutValidate6(value) { return value !== null && value !== undefined && value.length > 6; }
+function brutCalc6(a, b) { return a * 7 + b * 8; }
+function brutData6() { return { id: 6, name: 'brut-6', timestamp: Date.now() }; }
+function brutSort6(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter6(arr) { return arr.filter(x => x && x.id !== 6); }
+function brutRender6(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 7
+function brutUtil7(x) { return x + 7; }
+function brutFormat7(v) { return `[brut-7] ${v}`; }
+function brutLog7(msg) { console.log('[brut-7]', msg); }
+function brutValidate7(value) { return value !== null && value !== undefined && value.length > 7; }
+function brutCalc7(a, b) { return a * 8 + b * 9; }
+function brutData7() { return { id: 7, name: 'brut-7', timestamp: Date.now() }; }
+function brutSort7(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter7(arr) { return arr.filter(x => x && x.id !== 7); }
+function brutRender7(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 8
+function brutUtil8(x) { return x + 8; }
+function brutFormat8(v) { return `[brut-8] ${v}`; }
+function brutLog8(msg) { console.log('[brut-8]', msg); }
+function brutValidate8(value) { return value !== null && value !== undefined && value.length > 8; }
+function brutCalc8(a, b) { return a * 9 + b * 10; }
+function brutData8() { return { id: 8, name: 'brut-8', timestamp: Date.now() }; }
+function brutSort8(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter8(arr) { return arr.filter(x => x && x.id !== 8); }
+function brutRender8(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 9
+function brutUtil9(x) { return x + 9; }
+function brutFormat9(v) { return `[brut-9] ${v}`; }
+function brutLog9(msg) { console.log('[brut-9]', msg); }
+function brutValidate9(value) { return value !== null && value !== undefined && value.length > 9; }
+function brutCalc9(a, b) { return a * 10 + b * 11; }
+function brutData9() { return { id: 9, name: 'brut-9', timestamp: Date.now() }; }
+function brutSort9(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter9(arr) { return arr.filter(x => x && x.id !== 9); }
+function brutRender9(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 10
+function brutUtil10(x) { return x + 10; }
+function brutFormat10(v) { return `[brut-10] ${v}`; }
+function brutLog10(msg) { console.log('[brut-10]', msg); }
+function brutValidate10(value) { return value !== null && value !== undefined && value.length > 0; }
+function brutCalc10(a, b) { return a * 11 + b * 12; }
+function brutData10() { return { id: 10, name: 'brut-10', timestamp: Date.now() }; }
+function brutSort10(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter10(arr) { return arr.filter(x => x && x.id !== 10); }
+function brutRender10(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 11
+function brutUtil11(x) { return x + 11; }
+function brutFormat11(v) { return `[brut-11] ${v}`; }
+function brutLog11(msg) { console.log('[brut-11]', msg); }
+function brutValidate11(value) { return value !== null && value !== undefined && value.length > 1; }
+function brutCalc11(a, b) { return a * 12 + b * 13; }
+function brutData11() { return { id: 11, name: 'brut-11', timestamp: Date.now() }; }
+function brutSort11(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter11(arr) { return arr.filter(x => x && x.id !== 11); }
+function brutRender11(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 12
+function brutUtil12(x) { return x + 12; }
+function brutFormat12(v) { return `[brut-12] ${v}`; }
+function brutLog12(msg) { console.log('[brut-12]', msg); }
+function brutValidate12(value) { return value !== null && value !== undefined && value.length > 2; }
+function brutCalc12(a, b) { return a * 13 + b * 14; }
+function brutData12() { return { id: 12, name: 'brut-12', timestamp: Date.now() }; }
+function brutSort12(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter12(arr) { return arr.filter(x => x && x.id !== 12); }
+function brutRender12(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 13
+function brutUtil13(x) { return x + 13; }
+function brutFormat13(v) { return `[brut-13] ${v}`; }
+function brutLog13(msg) { console.log('[brut-13]', msg); }
+function brutValidate13(value) { return value !== null && value !== undefined && value.length > 3; }
+function brutCalc13(a, b) { return a * 14 + b * 15; }
+function brutData13() { return { id: 13, name: 'brut-13', timestamp: Date.now() }; }
+function brutSort13(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter13(arr) { return arr.filter(x => x && x.id !== 13); }
+function brutRender13(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 14
+function brutUtil14(x) { return x + 14; }
+function brutFormat14(v) { return `[brut-14] ${v}`; }
+function brutLog14(msg) { console.log('[brut-14]', msg); }
+function brutValidate14(value) { return value !== null && value !== undefined && value.length > 4; }
+function brutCalc14(a, b) { return a * 15 + b * 16; }
+function brutData14() { return { id: 14, name: 'brut-14', timestamp: Date.now() }; }
+function brutSort14(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter14(arr) { return arr.filter(x => x && x.id !== 14); }
+function brutRender14(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 15
+function brutUtil15(x) { return x + 15; }
+function brutFormat15(v) { return `[brut-15] ${v}`; }
+function brutLog15(msg) { console.log('[brut-15]', msg); }
+function brutValidate15(value) { return value !== null && value !== undefined && value.length > 5; }
+function brutCalc15(a, b) { return a * 16 + b * 17; }
+function brutData15() { return { id: 15, name: 'brut-15', timestamp: Date.now() }; }
+function brutSort15(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter15(arr) { return arr.filter(x => x && x.id !== 15); }
+function brutRender15(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 16
+function brutUtil16(x) { return x + 16; }
+function brutFormat16(v) { return `[brut-16] ${v}`; }
+function brutLog16(msg) { console.log('[brut-16]', msg); }
+function brutValidate16(value) { return value !== null && value !== undefined && value.length > 6; }
+function brutCalc16(a, b) { return a * 17 + b * 18; }
+function brutData16() { return { id: 16, name: 'brut-16', timestamp: Date.now() }; }
+function brutSort16(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter16(arr) { return arr.filter(x => x && x.id !== 16); }
+function brutRender16(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 17
+function brutUtil17(x) { return x + 17; }
+function brutFormat17(v) { return `[brut-17] ${v}`; }
+function brutLog17(msg) { console.log('[brut-17]', msg); }
+function brutValidate17(value) { return value !== null && value !== undefined && value.length > 7; }
+function brutCalc17(a, b) { return a * 18 + b * 19; }
+function brutData17() { return { id: 17, name: 'brut-17', timestamp: Date.now() }; }
+function brutSort17(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter17(arr) { return arr.filter(x => x && x.id !== 17); }
+function brutRender17(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 18
+function brutUtil18(x) { return x + 18; }
+function brutFormat18(v) { return `[brut-18] ${v}`; }
+function brutLog18(msg) { console.log('[brut-18]', msg); }
+function brutValidate18(value) { return value !== null && value !== undefined && value.length > 8; }
+function brutCalc18(a, b) { return a * 19 + b * 20; }
+function brutData18() { return { id: 18, name: 'brut-18', timestamp: Date.now() }; }
+function brutSort18(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter18(arr) { return arr.filter(x => x && x.id !== 18); }
+function brutRender18(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 19
+function brutUtil19(x) { return x + 19; }
+function brutFormat19(v) { return `[brut-19] ${v}`; }
+function brutLog19(msg) { console.log('[brut-19]', msg); }
+function brutValidate19(value) { return value !== null && value !== undefined && value.length > 9; }
+function brutCalc19(a, b) { return a * 20 + b * 21; }
+function brutData19() { return { id: 19, name: 'brut-19', timestamp: Date.now() }; }
+function brutSort19(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter19(arr) { return arr.filter(x => x && x.id !== 19); }
+function brutRender19(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 20
+function brutUtil20(x) { return x + 20; }
+function brutFormat20(v) { return `[brut-20] ${v}`; }
+function brutLog20(msg) { console.log('[brut-20]', msg); }
+function brutValidate20(value) { return value !== null && value !== undefined && value.length > 0; }
+function brutCalc20(a, b) { return a * 21 + b * 22; }
+function brutData20() { return { id: 20, name: 'brut-20', timestamp: Date.now() }; }
+function brutSort20(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter20(arr) { return arr.filter(x => x && x.id !== 20); }
+function brutRender20(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 21
+function brutUtil21(x) { return x + 21; }
+function brutFormat21(v) { return `[brut-21] ${v}`; }
+function brutLog21(msg) { console.log('[brut-21]', msg); }
+function brutValidate21(value) { return value !== null && value !== undefined && value.length > 1; }
+function brutCalc21(a, b) { return a * 22 + b * 23; }
+function brutData21() { return { id: 21, name: 'brut-21', timestamp: Date.now() }; }
+function brutSort21(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter21(arr) { return arr.filter(x => x && x.id !== 21); }
+function brutRender21(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 22
+function brutUtil22(x) { return x + 22; }
+function brutFormat22(v) { return `[brut-22] ${v}`; }
+function brutLog22(msg) { console.log('[brut-22]', msg); }
+function brutValidate22(value) { return value !== null && value !== undefined && value.length > 2; }
+function brutCalc22(a, b) { return a * 23 + b * 24; }
+function brutData22() { return { id: 22, name: 'brut-22', timestamp: Date.now() }; }
+function brutSort22(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter22(arr) { return arr.filter(x => x && x.id !== 22); }
+function brutRender22(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 23
+function brutUtil23(x) { return x + 23; }
+function brutFormat23(v) { return `[brut-23] ${v}`; }
+function brutLog23(msg) { console.log('[brut-23]', msg); }
+function brutValidate23(value) { return value !== null && value !== undefined && value.length > 3; }
+function brutCalc23(a, b) { return a * 24 + b * 25; }
+function brutData23() { return { id: 23, name: 'brut-23', timestamp: Date.now() }; }
+function brutSort23(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter23(arr) { return arr.filter(x => x && x.id !== 23); }
+function brutRender23(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 24
+function brutUtil24(x) { return x + 24; }
+function brutFormat24(v) { return `[brut-24] ${v}`; }
+function brutLog24(msg) { console.log('[brut-24]', msg); }
+function brutValidate24(value) { return value !== null && value !== undefined && value.length > 4; }
+function brutCalc24(a, b) { return a * 25 + b * 26; }
+function brutData24() { return { id: 24, name: 'brut-24', timestamp: Date.now() }; }
+function brutSort24(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter24(arr) { return arr.filter(x => x && x.id !== 24); }
+function brutRender24(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 25
+function brutUtil25(x) { return x + 25; }
+function brutFormat25(v) { return `[brut-25] ${v}`; }
+function brutLog25(msg) { console.log('[brut-25]', msg); }
+function brutValidate25(value) { return value !== null && value !== undefined && value.length > 5; }
+function brutCalc25(a, b) { return a * 26 + b * 27; }
+function brutData25() { return { id: 25, name: 'brut-25', timestamp: Date.now() }; }
+function brutSort25(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter25(arr) { return arr.filter(x => x && x.id !== 25); }
+function brutRender25(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 26
+function brutUtil26(x) { return x + 26; }
+function brutFormat26(v) { return `[brut-26] ${v}`; }
+function brutLog26(msg) { console.log('[brut-26]', msg); }
+function brutValidate26(value) { return value !== null && value !== undefined && value.length > 6; }
+function brutCalc26(a, b) { return a * 27 + b * 28; }
+function brutData26() { return { id: 26, name: 'brut-26', timestamp: Date.now() }; }
+function brutSort26(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter26(arr) { return arr.filter(x => x && x.id !== 26); }
+function brutRender26(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 27
+function brutUtil27(x) { return x + 27; }
+function brutFormat27(v) { return `[brut-27] ${v}`; }
+function brutLog27(msg) { console.log('[brut-27]', msg); }
+function brutValidate27(value) { return value !== null && value !== undefined && value.length > 7; }
+function brutCalc27(a, b) { return a * 28 + b * 29; }
+function brutData27() { return { id: 27, name: 'brut-27', timestamp: Date.now() }; }
+function brutSort27(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter27(arr) { return arr.filter(x => x && x.id !== 27); }
+function brutRender27(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 28
+function brutUtil28(x) { return x + 28; }
+function brutFormat28(v) { return `[brut-28] ${v}`; }
+function brutLog28(msg) { console.log('[brut-28]', msg); }
+function brutValidate28(value) { return value !== null && value !== undefined && value.length > 8; }
+function brutCalc28(a, b) { return a * 29 + b * 30; }
+function brutData28() { return { id: 28, name: 'brut-28', timestamp: Date.now() }; }
+function brutSort28(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter28(arr) { return arr.filter(x => x && x.id !== 28); }
+function brutRender28(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 29
+function brutUtil29(x) { return x + 29; }
+function brutFormat29(v) { return `[brut-29] ${v}`; }
+function brutLog29(msg) { console.log('[brut-29]', msg); }
+function brutValidate29(value) { return value !== null && value !== undefined && value.length > 9; }
+function brutCalc29(a, b) { return a * 30 + b * 31; }
+function brutData29() { return { id: 29, name: 'brut-29', timestamp: Date.now() }; }
+function brutSort29(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter29(arr) { return arr.filter(x => x && x.id !== 29); }
+function brutRender29(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 30
+function brutUtil30(x) { return x + 30; }
+function brutFormat30(v) { return `[brut-30] ${v}`; }
+function brutLog30(msg) { console.log('[brut-30]', msg); }
+function brutValidate30(value) { return value !== null && value !== undefined && value.length > 0; }
+function brutCalc30(a, b) { return a * 31 + b * 32; }
+function brutData30() { return { id: 30, name: 'brut-30', timestamp: Date.now() }; }
+function brutSort30(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter30(arr) { return arr.filter(x => x && x.id !== 30); }
+function brutRender30(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 31
+function brutUtil31(x) { return x + 31; }
+function brutFormat31(v) { return `[brut-31] ${v}`; }
+function brutLog31(msg) { console.log('[brut-31]', msg); }
+function brutValidate31(value) { return value !== null && value !== undefined && value.length > 1; }
+function brutCalc31(a, b) { return a * 32 + b * 33; }
+function brutData31() { return { id: 31, name: 'brut-31', timestamp: Date.now() }; }
+function brutSort31(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter31(arr) { return arr.filter(x => x && x.id !== 31); }
+function brutRender31(container, html) { if (container) container.innerHTML = html; }
+// brut utility module 32
+function brutUtil32(x) { return x + 32; }
+function brutFormat32(v) { return `[brut-32] ${v}`; }
+function brutLog32(msg) { console.log('[brut-32]', msg); }
+function brutValidate32(value) { return value !== null && value !== undefined && value.length > 2; }
+function brutCalc32(a, b) { return a * 33 + b * 34; }
+function brutData32() { return { id: 32, name: 'brut-32', timestamp: Date.now() }; }
+function brutSort32(arr) { return [...arr].sort((a, b) => (a > b ? 1 : -1)); }
+function brutFilter32(arr) { return arr.filter(x => x && x.id !== 32); }
+function brutRender32(container, html) { if (container) container.innerHTML = html; }
 </script>
 </body>
 </html>
