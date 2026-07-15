@@ -9,3 +9,10 @@
 | 编号 | `13` |
 | 状态键 | `213` |
 
+## 配置说明
+
+配置文件：`AuditContainerShim_13.yaml`
+
+- 描述：为/usr/bin/containerd-shim配置审计功能
+- 策略类：`AuditContainerShim_13`
+
