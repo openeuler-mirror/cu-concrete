@@ -6806,6 +6806,55 @@ function getResults() { const file = $('resultFile').value; if (!file) { showAle
 function showAlert(msg, type) { const div = document.createElement('div'); div.className = 'alert alert-' + type; div.textContent = msg; document.querySelector('.main').insertBefore(div, document.querySelector('.main').children[0]); setTimeout(() => div.remove(), 3000); }
 window.addEventListener('DOMContentLoaded', () => switchTab('home'));
 
+</script>
+<script>
+function hosts_for_pool(poolId) {
+    const base = {
+        p1: Array.from({length: 20}, (_, i) => `10.0.1.${i + 1}`),
+        p2: Array.from({length: 15}, (_, i) => `10.0.2.${i + 1}`),
+        p3: Array.from({length: 10}, (_, i) => `10.0.3.${i + 1}`),
+        p4: Array.from({length: 12}, (_, i) => `10.0.4.${i + 1}`),
+        p5: Array.from({length: 7}, (_, i) => `10.0.5.${i + 1}`),
+    };
+    return base[poolId] || [];
+}
+
+const DATA = { pools: [{"id": "p1", "name": "生产云池-A", "region": "华北", "hosts": 128, "status": "active"}, {"id": "p2", "name": "测试云池-B", "region": "华东", "hosts": 64, "status": "active"}, {"id": "p3", "name": "灾备云池-C", "region": "华南", "hosts": 32, "status": "maintenance"}, {"id": "p4", "name": "开发云池-D", "region": "西南", "hosts": 48, "status": "active"}, {"id": "p5", "name": "边缘云池-E", "region": "海外", "hosts": 16, "status": "offline"}], hardenItems: [{"id": "h01", "name": "SSH 加固", "level": "公司级", "desc": "禁用 root 登录、限制算法、启用密钥认证"}, {"id": "h02", "name": "账户安全", "level": "部门级", "desc": "密码复杂度、账户过期、无效账户清理"}, {"id": "h03", "name": "文件权限", "level": "公司级", "desc": "关键文件权限校验、SUID 文件审计"}, {"id": "h04", "name": "防火墙策略", "level": "公司级", "desc": "默认拒绝、必要端口白名单、日志记录"}, {"id": "h05", "name": "日志审计", "level": "部门级", "desc": "rsyslog 配置、日志集中采集、留存策略"}, {"id": "h06", "name": "进程安全", "level": "部门级", "desc": "不必要服务禁用、定时任务审计"}, {"id": "h07", "name": "内核参数", "level": "公司级", "desc": "sysctl 安全参数、SYN Cookie、地址随机化"}, {"id": "h08", "name": "漏洞扫描", "level": "公司级", "desc": "自动补丁基线、CVE 风险检查"}, {"id": "h09", "name": "容器安全", "level": "部门级", "desc": "Docker 守护进程加固、镜像扫描"}, {"id": "h10", "name": "数据库加固", "level": "公司级", "desc": "MySQL/PostgreSQL 访问控制与审计"}, {"id": "h11", "name": "Web 中间件", "level": "部门级", "desc": "Nginx/Tomcat 安全配置与版本升级"}, {"id": "h12", "name": "备份策略", "level": "部门级", "desc": "关键数据备份、加密传输与异地容灾"}], tasks: [{"id": "20240711-001", "pool": "生产云池-A", "status": "success", "progress": 100, "time": "14:32"}, {"id": "20240711-002", "pool": "测试云池-B", "status": "running", "progress": 67, "time": "14:45"}, {"id": "20240711-003", "pool": "灾备云池-C", "status": "pending", "progress": 0, "time": "15:00"}, {"id": "20240711-004", "pool": "开发云池-D", "status": "failed", "progress": 42, "time": "15:12"}] };
+let selectedPool = '', selectedHosts = [], selectedHarden = [];
+function $(id) { return document.getElementById(id); }
+function switchTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.textContent.includes({home:'首页',pools:'云池',tasks:'任务',playbook:'配置',results:'结果'}[tab])));
+    const titles = { home: '首页', pools: '云池管理', tasks: '任务管理', playbook: '加固配置', results: '结果查询' };
+    $('pageTitle').textContent = titles[tab];
+    if (tab === 'home') renderHome();
+    if (tab === 'pools') loadPools();
+    if (tab === 'tasks') loadTasks();
+    if (tab === 'playbook') initPlaybook();
+}
+function renderHome() { $('homeTasks').innerHTML = DATA.tasks.map(t => `<div class="task-item"><div><div style="font-weight:500">${t.id}</div><div style="color:var(--muted);font-size:13px">${t.pool}</div></div><div><span class="badge badge-${t.status}">${t.status}</span><div class="progress-bar" style="width:140px"><div class="progress-fill" style="width:${t.progress}%"></div></div></div></div>`).join(''); }
+function loadPools() { $('poolGrid').innerHTML = DATA.pools.map(p => `<div class="pool-card ${selectedPool===p.id?'selected':''}" onclick="selectPool('${p.id}')"><div class="pool-name">${p.name}</div><div class="pool-meta">${p.region} · ${p.hosts} 台主机 · ${p.status}</div></div>`).join(''); }
+function selectPool(id) { selectedPool = selectedPool === id ? '' : id; loadPools(); }
+function executeAll() { showAlert('全域加固任务已下发', 'info'); }
+function loadTasks() { $('taskList').innerHTML = DATA.tasks.map(t => `<div class="task-item"><div>${t.id}</div><div><span class="badge badge-${t.status}">${t.status}</span> ${t.progress}%</div></div>`).join(''); }
+function clearTasks() { $('taskList').innerHTML = '<p style="color:var(--muted)">暂无任务</p>'; }
+function getTaskDetail() { const id = $('taskIdInput').value; if (!id) { showAlert('请输入任务 ID', 'error'); return; } $('taskDetail').innerHTML = `<div class="card" style="background:var(--surface-2)"><p>任务 ${id}</p><p>状态: 执行中</p><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></div>`; }
+function getTaskLogs() { $('taskDetail').innerHTML = `<div class="log-box">[INFO] 开始执行
+[INFO] 连接节点
+[SUCCESS] 完成</div>`; }
+function initPlaybook() { $('playbookPoolId').innerHTML = '<option value="">请选择</option>' + DATA.pools.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); renderHarden(); }
+function renderHarden() { $('hardenItemList').innerHTML = DATA.hardenItems.map(h => `<div class="chip ${selectedHarden.includes(h.id)?'selected':''}" onclick="toggleHarden('${h.id}')">${h.name}</div>`).join(''); }
+function loadPoolHosts() { const poolId = $('playbookPoolId').value; if (!poolId) { $('hostList').innerHTML = ''; return; } selectedHosts = []; const hosts = hosts_for_pool(poolId); $('hostList').innerHTML = hosts.map(ip => `<div class="chip ${selectedHosts.includes(ip)?'selected':''}" onclick="toggleHost('${ip}')">${ip}</div>`).join(''); }
+function toggleHost(ip) { selectedHosts = selectedHosts.includes(ip) ? selectedHosts.filter(x => x !== ip) : [...selectedHosts, ip]; loadPoolHosts(); }
+function toggleHarden(id) { selectedHarden = selectedHarden.includes(id) ? selectedHarden.filter(x => x !== id) : [...selectedHarden, id]; renderHarden(); }
+function generateConfig() { if (!selectedHosts.length || !selectedHarden.length) { showAlert('请选择机器和加固项', 'error'); return; } $('playbookResult').innerHTML = `<div class="result-box">inventory: ${selectedHosts.join(', ')}
+items: ${selectedHarden.join(', ')}</div>`; }
+function resetPlaybook() { selectedHosts = []; selectedHarden = []; $('playbookPoolId').value = ''; $('playbookResult').innerHTML = ''; $('hostList').innerHTML = ''; initPlaybook(); }
+function getResults() { const file = $('resultFile').value; if (!file) { showAlert('请输入任务 ID', 'error'); return; } const size = parseInt($('pageSize').value) || 10; let rows = ''; for (let i = 1; i <= size; i++) rows += `<tr><td>${file}</td><td>host-${i}</td><td>success</td><td>passed</td></tr>`; $('resultsContainer').innerHTML = '<table class="table"><thead><tr><th>任务</th><th>主机</th><th>状态</th><th>结果</th></tr></thead><tbody>' + rows + '</tbody></table><div class="pagination"><button class="page-btn active">1</button><button class="page-btn">2</button></div>'; }
+function showAlert(msg, type) { const div = document.createElement('div'); div.className = 'alert alert-' + type; div.textContent = msg; document.querySelector('.main').insertBefore(div, document.querySelector('.main').children[0]); setTimeout(() => div.remove(), 3000); }
+window.addEventListener('DOMContentLoaded', () => switchTab('home'));
+
 function matFilter38(arr) { return arr.filter(x => x && x.id !== 38); }
 function matRender38(container, html) { if (container) container.innerHTML = html; }
 // mat utility module 39
