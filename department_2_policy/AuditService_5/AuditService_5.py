@@ -29,8 +29,9 @@ class AuditService_5(base_fix):
         self.status=None
 
     def finalfix(self):
-        self.status=2
-        self.status_form.loc[str(self.config['dep'])+str(self.config['id']),'status']=2
+        self.status = 2
+        key = str(self.config['dep']) + str(self.config['id'])
+        self.status_form.loc[key, 'status'] = 2
         self.status_form.to_pickle(self.pkl_file)
 
     def fix(self):
@@ -40,7 +41,8 @@ class AuditService_5(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
-        self.status_form.loc[str(self.config['dep'])+str(self.config['id']),'status']=1
+        key = str(self.config['dep']) + str(self.config['id'])
+        self.status_form.loc[key, 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
         path=bsf.get_service_file(self.config['query']['path'][0])
         with open(self.config['query']['path'][1], 'w') as f:
