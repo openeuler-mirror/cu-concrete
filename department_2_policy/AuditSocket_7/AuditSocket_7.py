@@ -13,9 +13,8 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-logger = logging.getLogger(__name__)
-# TestCase-部门编号-子加固项名称-子加固项编号
-# 优化：统一日志变量命名
+logging.getLogger(__name__)
+#TestCase-部门编号-子加固项名称-子加固项编号
 class AuditSocket_7(base_fix):    
     def __init__(self):
         super().__init__()
@@ -47,26 +46,26 @@ class AuditSocket_7(base_fix):
             f.write(path+'\n')
         bsf.delete_audit_rule()
         bsf.reload_audit_rules()
-        data = f"type:fix,des:{self.config['description']}"
+        data='type:fix,des:{}'.format(self.config['description'])
         logging.info(data)
         self.finalfix()
         
     def check(self):
-        expected_value = True
+        except_value=True
         result=bsf.command_search(self.config['change']['set'])
         if len(result[0])!=0:
             result2=bsf.search_audit_rule(self.config['query']['path'][0])
             if result2[1]==0 :
-                expected_value = True
+                except_value=True
             else:
-                expected_value = False
+                except_value=False
         else:
             result3=bsf.pipe_grep_shell(self.config['query']['form'],self.config['query']['path'][0],self.config['change']['value'])
             if result3[1]==0 :
-                expected_value = True
+                except_value=True
             else:
-                expected_value = False
-        return expected_value
+                except_value=False
+        return except_value
 
     def rollback(self):
         bsf.remove_file(self.config['query']['path'][1])
