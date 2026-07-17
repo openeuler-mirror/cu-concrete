@@ -52,21 +52,21 @@ class AuditUsContainerd_12(base_fix):
         self.finalfix()
         
     def check(self):
-        except_value=True
+        expected_value = True
         result=bsf.command_search(self.config['change']['set'])
         if len(result[0])!=0:
             result2=bsf.search_audit_rule(self.config['query']['path'][0])
             if result2[0]==self.config['query']['form']:
-                except_value=True
+                expected_value = True
             else:
-                except_value=False
+                expected_value = False
         else:
             result3=bsf.pipe_grep_shell(self.config['query']['form'],self.config['query']['path'][0],self.config['change']['value'])
             if result3[0]==self.config['query']['form']:
-                except_value=True
+                expected_value = True
             else:
-                except_value=False
-        return except_value
+                expected_value = False
+        return expected_value
 
     def rollback(self):
         bsf.remove_file(self.config['query']['path'][1])
