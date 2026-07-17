@@ -49,13 +49,13 @@ class CheckOwDocker_15(base_fix):
         self.finalfix()
         
     def check(self):
-        except_value=True
+        expected_value = True
         result=bsf.file_owner(self.config['query']['path'])
         if result[1]==0:
             output=result[0].strip()
             if output!='root:root':
-                except_value=False
-        return except_value
+                expected_value = False
+        return expected_value
 
     def rollback(self):
         bsf.chown_file(self.config['change']['value'],self.config['query']['path'])
