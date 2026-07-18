@@ -9,3 +9,10 @@
 | 编号 | `16` |
 | 状态键 | `216` |
 
+## 配置说明
+
+配置文件：`CheckPeDocker_16.yaml`
+
+- 描述：修改/etc/docker文件权限
+- 策略类：`CheckPeDocker_16`
+
