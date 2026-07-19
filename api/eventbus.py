@@ -8,3 +8,14 @@ from rest_framework import status
 import threading
 import os
 import time
+from .conf_utils import *
+# 导入统一响应工具
+from .response_utils import ApiResponse, CommonResponses
+
+
+class Singleton:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
