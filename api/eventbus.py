@@ -19,3 +19,13 @@ class Singleton:
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+        return cls._instance
+
+class Eventbus(Singleton):
+    def __init__(self):
+        # 双重校验，避免重复初始化
+        if hasattr(self, '_initialized'):
+            return
