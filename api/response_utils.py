@@ -6,6 +6,7 @@ API响应格式工具模块
 from rest_framework.response import Response
 from rest_framework import status
 
+
 class ApiResponse:
     """API响应格式工具类"""
     
@@ -52,7 +53,7 @@ class ApiResponse:
         }
         return Response(response_data, status=http_status)
     
-   # 参数错误
+    # 参数错误
     @staticmethod
     def bad_request(message="请求参数错误", data=None):
         """
@@ -71,7 +72,7 @@ class ApiResponse:
             data=data, 
             http_status=status.HTTP_400_BAD_REQUEST
         )
-        
+    
     # 未找到
     @staticmethod
     def not_found(message="资源未找到", data=None):
