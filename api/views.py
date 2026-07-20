@@ -52,3 +52,14 @@ def index(request):
             openapi.IN_QUERY,
             description='云池ID, 例如: pool-1, pool-2, pool-3',
             type=openapi.TYPE_STRING,
+            required=True
+        )
+    ],
+    responses={
+        200: openapi.Response(
+            description="任务已提交",
+            examples={
+                "application/json": {
+                    "code": 200,
+                    "message": "任务已提交",
+                    "data": {
