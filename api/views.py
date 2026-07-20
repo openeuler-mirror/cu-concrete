@@ -851,3 +851,14 @@ def pool_hosts(request):
                 }
             }
         )
+    }
+)
+
+@api_view(['GET'])
+def harden_items_list(request):
+    """
+    获取所有可用的加固项列表
+    
+    动态扫描department_1_policy、department_2_policy、department_3_policy......目录下的YAML文件
+    
+    Returns:
