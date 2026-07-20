@@ -348,3 +348,14 @@ def pool_list(request):
         404: openapi.Response(
             description="文件不存在",
             examples={
+                "application/json": {
+                    "code": 404,
+                    "message": "文件不存在",
+                    "data": None
+                }
+            }
+        ),
+        500: openapi.Response(
+            description="服务器内部错误",
+            examples={
+                "application/json": {
