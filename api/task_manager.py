@@ -161,3 +161,18 @@ def create_task(pool_id: str, pool_name: str) -> str:
     with _tasks_lock:
         _tasks[task_id] = {
             'task_id': task_id,
+            'pool_id': pool_id,
+            'pool_name': pool_name,
+            'status': 'running',  # running, completed, failed
+            'created_at': datetime.datetime.now().isoformat(),
+            'completed_at': None,
+            'error_message': None,
+            'result_file': None,
+            'total_hosts': 0,
+            'timestamp': None,  # 将在任务执行时设置
+            'policy_names': [],  # 加固策略中文名称列表
+            'script_name': None,  # 执行脚本名称
+        }
+    
+    # 保存到文件
+    _save_tasks_to_file()
