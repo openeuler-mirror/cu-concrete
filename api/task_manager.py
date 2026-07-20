@@ -507,3 +507,21 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
                             continue
                             
                         if not expected_cols.issubset(set(df.columns)):
+                            continue
+
+                        for dep_id, row_data in df._data.items():
+                            raw_status = str(row_data.get("status", "")).strip()
+                            status_text = STATUS_MAP.get(raw_status, f"未知状态({raw_status})")
+                            module_text = str(row_data.get("module_path", ""))
+                            module_name = str(row_data.get("module_name", ""))
+                            config_file = os.path.join(os.path.dirname(module_text), f"{module_name}.yaml")
+                            
+                            # 读取 YAML 获取描述
+                            module_desc = module_name
+                            if os.path.exists(config_file):
+                                try:
+                                    with open(file=config_file, mode='r', encoding='utf-8') as f:
+                                        config = yaml.safe_load(f)
+                                    if config:
+                                        module_desc = config.get('description', module_name)
+                                except Exception as e:
