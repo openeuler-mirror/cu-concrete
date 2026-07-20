@@ -537,3 +537,19 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
                                     "module_name": module_desc
                                 })
                     except Exception as e:
+                        logger.error(f"处理pkl文件时出错 {pkl_path}: {e}")
+                        continue
+
+        if not records:
+            return {'success': False, 'error': '没有找到有效的策略数据'}
+
+        # 写入结果文件
+        output_path = RESULTS_DIR / OUTPUT_CSV
+        
+        fieldnames = ["task_id", "host", "dep_id", "status", "module_name"]
+        import csv
+        with open(output_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(records)
+
