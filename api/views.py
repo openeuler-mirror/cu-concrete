@@ -490,3 +490,14 @@ def get_results(request):
                     "code": 200,
                     "message": "查询成功",
                     "data": {
+                        "count": 100,
+                        "pageIndex": 1,
+                        "pageSize": 10,
+                        "list": [
+                            {
+                                "task_id": "20240311-abc123",
+                                "pool_id": "pool-1",
+                                "pool_name": "云池1",
+                                "status": "completed"
+                            }
+                        ]
