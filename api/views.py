@@ -632,3 +632,14 @@ def get_task(request):
 
 @swagger_auto_schema(
     method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            'task_id',
+            openapi.IN_QUERY,
+            description='任务ID',
+            type=openapi.TYPE_STRING,
+            required=True
+        ),
+    ],
+    responses={
+        200: openapi.Response(
