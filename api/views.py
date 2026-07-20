@@ -260,3 +260,14 @@ def pool_list(request):
                     {
                         "id": "云池ID",
                         "name": "云池名称"
+                    }
+                ]
+            }
+        }
+    """
+    try:
+        return event_bus.eventbus_pool_list(request)
+    except Exception as e:
+        logger.error(f"获取云池列表时出错: {str(e)}")
+        return ApiResponse.error(f'获取云池列表时出错: {str(e)}', 500)
+
