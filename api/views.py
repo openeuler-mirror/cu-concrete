@@ -840,3 +840,14 @@ def pool_hosts(request):
                     }
                 }
             }
+        ),
+        500: openapi.Response(
+            description="服务器内部错误",
+            examples={
+                "application/json": {
+                    "code": 500,
+                    "message": "获取加固项列表时出错: 具体错误信息",
+                    "data": None
+                }
+            }
+        )
