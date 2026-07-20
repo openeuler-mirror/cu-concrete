@@ -277,3 +277,17 @@ def get_all_tasks(current: int = 1, pageSize: int = 10) -> list:
     # 分页
     total = len(tasks)
     offset = (current - 1) * pageSize
+    tasks = tasks[offset:offset + pageSize]
+    
+    return {
+        'count': total,
+        'pageIndex': current,
+        'pageSize': pageSize,
+        'list': tasks
+    }
+
+
+def is_pool_running(pool_id: str) -> bool:
+    """检查云池是否正在运行任务"""
+    with _running_pools_lock:
+        return pool_id in _running_pools
