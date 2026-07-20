@@ -249,3 +249,14 @@ def pool_list(request):
     Returns:
         Response: 包含云池列表的响应对象（带分页）
         {
+            "requestId": "唯一请求ID",
+            "code": 200,
+            "message": "查询成功",
+            "data": {
+                "count": 总记录数,
+                "pageIndex": 当前页码,
+                "pageSize": 每页大小,
+                "list": [
+                    {
+                        "id": "云池ID",
+                        "name": "云池名称"
