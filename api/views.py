@@ -216,3 +216,14 @@ def execute_playbook(request):
                                 "id": "pool-1",
                                 "name": "云池1"
                             },
+                            {
+                                "id": "pool-2", 
+                                "name": "云池2"
+                            }
+                        ]
+                    }
+                }
+            }
+        ),
+        500: openapi.Response(
+            description="服务器内部错误",
