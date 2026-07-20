@@ -884,3 +884,14 @@ def harden_items_list(request):
             # 遍历目录下的所有子目录
             for item_dir in dep_path.iterdir():
                 
+                if not item_dir.is_dir():
+                    continue
+                    
+                # 查找YAML文件
+                yaml_files = list(item_dir.glob('*.yaml'))
+                if not yaml_files:
+                    continue
+                    
+                yaml_file = yaml_files[0]
+                
+                try:
