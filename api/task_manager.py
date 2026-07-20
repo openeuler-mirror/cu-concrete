@@ -377,3 +377,18 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
             env = os.environ.copy()
             env['CU_CONCRETE_TASK_ID'] = task_id
             
+            # 使用Popen实时获取输出
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+                universal_newlines=True,
+                env=env
+            )
+            
+            # 实时读取输出
+            for line in process.stdout:
+                line = line.rstrip()
+                if line:
