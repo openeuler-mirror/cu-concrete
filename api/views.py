@@ -643,3 +643,14 @@ def get_task(request):
     ],
     responses={
         200: openapi.Response(
+            description="查询成功",
+            examples={
+                "application/json": {
+                    "code": 200,
+                    "message": "查询成功",
+                    "data": {
+                        "task_id": "20240311-abc123",
+                        "content": [
+                            "[12:34:56] 开始执行云池 pool-1 的加固任务",
+                            "[12:34:56] Playbook路径: /path/to/playbook.yml",
+                            "[12:35:30] 任务执行完成"
