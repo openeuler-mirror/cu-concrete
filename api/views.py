@@ -687,3 +687,14 @@ def get_task(request):
                     "message": "获取任务日志时出错: 具体错误信息",
                     "data": None
                 }
+            }
+        )
+    }
+)
+@api_view(['GET'])
+def get_task_logs_view(request):
+    """
+    获取任务日志
+    
+    Query Parameters:
+        task_id (str): 任务ID
