@@ -151,3 +151,14 @@ def execute_playbook(request):
         
         # 检查云池是否正在运行任务（同一云池串行）
         if task_manager.is_pool_running(pool_id):
+            return CommonResponses.CONFLICT(f'云池 {pool_id} 正在执行其他任务，请稍后再试')
+        
+        # 获取云池锁
+        if not task_manager.acquire_pool_lock(pool_id):
+            return CommonResponses.CONFLICT(f'云池 {pool_id} 正在执行其他任务，请稍后再试')
+        
+        # 创建任务
+        task_id = task_manager.create_task(pool_id, pool_info['name'])
+        
+        # 启动异步执行
+        task_manager.run_ansible_playbook_async(task_id, pool_id, pool_info)
