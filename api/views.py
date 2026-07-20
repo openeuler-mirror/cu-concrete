@@ -304,3 +304,14 @@ def pool_list(request):
     responses={
         200: openapi.Response(
             description="查询成功",
+            examples={
+                "application/json": {
+                    "code": 200,
+                    "message": "查询成功",
+                    "data": {
+                        "count": 100,
+                        "pageIndex": 1,
+                        "pageSize": 10,
+                        "list": [
+                            {
+                                "task_id": "20231201-123456",
