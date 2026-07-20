@@ -435,3 +435,20 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
     # 启动后台线程
     thread = threading.Thread(target=target, daemon=True)
     thread.start()
+
+
+def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
+    """
+    执行 combine_to_csv 逻辑
+    
+    Args:
+        pool_info: 云池配置信息
+        task_id: 任务ID，只处理该任务对应的数据
+    """
+    try:
+        records = []
+        expected_cols = {'status', 'module_name', 'module_path'}
+        
+        # 使用任务ID作为结果文件名，确保唯一性
+        if not task_id:
+            return {'success': False, 'error': '任务ID不能为空'}
