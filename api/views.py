@@ -402,3 +402,14 @@ def get_results(request):
         
         if not task_id:
             return CommonResponses.MISSING_PARAMETER('task_id')
+        
+        # 清理 task_id，移除可能存在的 result_ 前缀和 .csv 后缀
+        task_id = task_id.replace('result_', '').replace('.csv', '')
+        
+        # 后端拼接文件路径
+        result_file = f"/opt/cu-concrete/data/results/result_{task_id}.csv"
+        result_path = Path(result_file).resolve()
+        project_root = Path('/opt/cu-concrete').resolve()
+        
+        if not str(result_path).startswith(str(project_root)):
+            return ApiResponse.error('无效的文件路径', 400)
