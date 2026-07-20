@@ -483,3 +483,13 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
                 logger.warning(f"任务目录不存在: {task_dir}")
                 continue
                 
+            logger.info(f"处理任务目录: {task_dir.name}")
+            
+            for host_dir in task_dir.glob("cu-concrete-*"):
+                if not host_dir.is_dir():
+                    continue
+                host = extract_host(host_dir.name)
+                if not host:
+                    continue
+                    
+                # 查找 pkl 文件
