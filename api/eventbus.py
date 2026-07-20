@@ -51,3 +51,13 @@ class Eventbus(Singleton):
     def eventbus_get_level_conf(self, harden_models):
         """
         读方法：获取级别配置信息
+        """
+        try:
+            return get_level_conf(harden_models)
+        except Exception as e:
+            logger.error(f"获取配置内容时出错: {str(e)}", exc_info=True)
+            return ApiResponse.error(f'获取级别配置信息时出错: {str(e)}', 500)
+    
+    def eventbus_get_config_content(self, pool_id, config_name):
+        """
+        读方法：获取配置文件内容
