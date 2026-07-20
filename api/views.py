@@ -862,3 +862,14 @@ def harden_items_list(request):
     动态扫描department_1_policy、department_2_policy、department_3_policy......目录下的YAML文件
     
     Returns:
+        加固项列表, 包含id、name、description、category、dep等信息
+    """
+    try:
+        items = []
+        base_path = Path("/opt/cu-concrete").resolve()
+        # 定义部门映射
+        dep_mapping = {
+            'department_1_policy': '系统安全',
+            'department_2_policy': '容器安全',
+            'department_3_policy': '应用安全'
+        }
