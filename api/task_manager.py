@@ -75,7 +75,8 @@ def _load_tasks_from_file():
     except Exception as e:
         logger.error(f"加载任务文件失败: {e}")
         _tasks = {}
-        
+
+
 def _save_tasks_to_file():
     """保存任务数据到文件（线程安全）"""
     try:
