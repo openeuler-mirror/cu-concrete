@@ -654,3 +654,14 @@ def get_task(request):
                             "[12:34:56] 开始执行云池 pool-1 的加固任务",
                             "[12:34:56] Playbook路径: /path/to/playbook.yml",
                             "[12:35:30] 任务执行完成"
+                        ]
+                    }
+                }
+            }
+        ),
+        400: openapi.Response(
+            description="缺少task_id参数",
+            examples={
+                "application/json": {
+                    "code": 400,
+                    "message": "缺少task_id参数",
