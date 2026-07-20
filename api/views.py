@@ -282,3 +282,14 @@ def pool_list(request):
             type=openapi.TYPE_STRING,
             required=True
         ),
+        openapi.Parameter(
+            'current', 
+            openapi.IN_QUERY,
+            description="当前页码, 从1开始",
+            type=openapi.TYPE_INTEGER,
+            required=False,
+            default=1,
+            example=1
+        ),
+        openapi.Parameter(
+            'pageSize',
