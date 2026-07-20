@@ -321,3 +321,19 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
     异步执行Ansible Playbook
     
     使用任务ID作为数据目录标识，确保精确匹配
+    """
+    def target():
+        try:
+            # 记录脚本信息
+            script_name = os.path.basename(pool_info['playbook_path'])
+            update_task_script(task_id, script_name)
+            
+            # 记录加固策略中文名称列表
+            policy_ids = pool_info.get('list', [])
+            policy_names = []
+            current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            for policy_id in policy_ids:
+                # 查找对应的 YAML 文件读取中文描述
+                yaml_path = find_policy_yaml(current_dir, policy_id)
+                if yaml_path:
+                    try:
