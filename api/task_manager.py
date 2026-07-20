@@ -413,3 +413,25 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
                 update_task_status(task_id, 'failed', error_message=error_msg)
                 return
             
+            append_task_log(task_id, f"结果文件生成成功: {combine_result['output_file']}")
+            append_task_log(task_id, f"主机总数: {combine_result.get('total_hosts', 0)}")
+            
+            # 更新任务状态为完成
+            update_task_status(
+                task_id=task_id,
+                status='completed',
+                result_file=combine_result['output_file'],
+                total_hosts=combine_result.get('total_hosts', 0)
+            )
+            
+        except Exception as e:
+            error_msg = f"执行任务时发生错误: {str(e)}"
+            append_task_log(task_id, f"ERROR: {error_msg}")
+            update_task_status(task_id, 'failed', error_message=error_msg)
+        finally:
+            # 无论成功失败，都要释放锁
+            release_pool_lock(pool_id)
+    
+    # 启动后台线程
+    thread = threading.Thread(target=target, daemon=True)
+    thread.start()
