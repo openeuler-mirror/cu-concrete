@@ -731,3 +731,14 @@ def get_task_logs_view(request):
             openapi.IN_QUERY,
             description='云池ID',
             type=openapi.TYPE_STRING,
+            required=True
+        )
+    ],
+    responses={
+        200: openapi.Response(
+            description="查询成功",
+            examples={
+                "application/json": {
+                    "code": 200,
+                    "message": "查询成功",
+                    "data": {
