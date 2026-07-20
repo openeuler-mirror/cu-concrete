@@ -118,3 +118,14 @@ def execute_playbook(request):
     """
     执行ansible-playbook脚本的接口（异步模式）
     接收云池ID参数, 创建异步任务执行playbook
+    
+    同一云池内串行执行（互斥），不同云池并行执行
+    
+    Query Parameters:
+        pool_id (str): 云池ID, 例如: pool-1, pool-2, pool-3
+    
+    Returns:
+        Response: 包含任务ID的响应对象
+            {
+                "code": 200,
+                "message": "任务已提交",
