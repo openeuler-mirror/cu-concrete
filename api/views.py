@@ -709,3 +709,14 @@ def get_task_logs_view(request):
         
         # 检查任务是否存在
         task = task_manager.get_task_status(task_id)
+        if not task:
+            return CommonResponses.RESOURCE_NOT_FOUND(f'任务 {task_id} 不存在')
+        
+        logs = task_manager.get_task_logs(task_id)
+        
+        return CommonResponses.QUERY_SUCCESS({
+            'task_id': task_id,
+            'content': logs
+        })
+    except Exception as e:
+        logger.error(f"获取任务日志时出错: {str(e)}")
