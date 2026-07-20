@@ -121,3 +121,12 @@ def _save_logs_to_file(task_id: str, logs: list):
                 f.write('\n'.join(logs))
     except Exception as e:
         logger.error(f"保存日志文件失败 {task_id}: {e}")
+
+
+# 启动时加载历史数据
+_load_tasks_from_file()
+
+
+def generate_task_id() -> str:
+    """生成唯一任务ID: 年月日 + 随机后缀"""
+    timestamp = datetime.datetime.now().strftime("%Y%m%d")
