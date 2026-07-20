@@ -464,3 +464,22 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
             return m.group(1) if m else None
 
         # 确定要处理的任务目录
+        if task_id:
+            # 使用指定任务ID的目录
+            task_dirs = [BACKUP_ROOT / f"cu-concrete-{task_id}"]
+            logger.info(f"只处理指定任务目录: cu-concrete-{task_id}")
+        else:
+            # 回退：查找最新的目录（不推荐，仅兼容旧逻辑）
+            all_dirs = [d for d in BACKUP_ROOT.glob("cu-concrete-*") if d.is_dir()]
+            if not all_dirs:
+                return {'success': False, 'error': '未找到任何任务目录'}
+            # 按修改时间排序获取最新的
+            latest_dir = sorted(all_dirs, key=lambda x: x.stat().st_mtime, reverse=True)[0]
+            task_dirs = [latest_dir]
+            logger.warning(f"未指定任务ID，使用最新的目录: {latest_dir.name}")
+            
+        for task_dir in task_dirs:
+            if not task_dir.exists():
+                logger.warning(f"任务目录不存在: {task_dir}")
+                continue
+                
