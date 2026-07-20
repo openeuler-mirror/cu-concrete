@@ -366,3 +366,14 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
             cmd = [
                 'ansible-playbook',
                 '-i', inventory_path,
+                playbook_path
+            ]
+            
+            append_task_log(task_id, f"执行命令: {' '.join(cmd)}")
+            append_task_log(task_id, f"环境变量 CU_CONCRETE_TASK_ID={task_id}")
+            
+
+            # 设置环境变量，确保 ansible 使用相同任务ID
+            env = os.environ.copy()
+            env['CU_CONCRETE_TASK_ID'] = task_id
+            
