@@ -140,3 +140,14 @@ def execute_playbook(request):
     try:
         # 从查询参数获取 pool_id
         pool_id = request.query_params.get('pool_id')
+        
+        if not pool_id:
+            return CommonResponses.MISSING_PARAMETER('pool_id')
+        
+        if pool_id not in CLOUD_POOLS:
+            return CommonResponses.INVALID_PARAMETER(f'无效的云池ID: {pool_id}')
+        
+        pool_info = CLOUD_POOLS[pool_id]
+        
+        # 检查云池是否正在运行任务（同一云池串行）
+        if task_manager.is_pool_running(pool_id):
