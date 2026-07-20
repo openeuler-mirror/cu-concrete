@@ -381,3 +381,13 @@ def get_results(request):
         Response: 包含文件内容的响应对象（带分页）
         {
             "requestId": "唯一请求ID",
+            "code": 200,
+            "message": "查询成功",
+            "data": {
+                "count": 总记录数,
+                "pageIndex": 当前页码,
+                "pageSize": 每页大小,
+                "list": [
+                    {
+                        "column1": "value1",
+                        "column2": "value2",
