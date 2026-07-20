@@ -41,3 +41,14 @@ with open(path, 'r', encoding='utf-8') as f:
 def index(request):
     """
     渲染主页（非 API, 保持原样）
+    """
+    return render(request, 'index.html')
+
+@swagger_auto_schema(
+    method='post',
+    manual_parameters=[
+        openapi.Parameter(
+            'pool_id', 
+            openapi.IN_QUERY,
+            description='云池ID, 例如: pool-1, pool-2, pool-3',
+            type=openapi.TYPE_STRING,
