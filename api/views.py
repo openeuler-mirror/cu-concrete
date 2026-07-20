@@ -534,3 +534,14 @@ def list_tasks(request):
         pageSize = int(request.query_params.get('pageSize', 10))
         
         result = task_manager.get_all_tasks(current, pageSize)
+        return CommonResponses.QUERY_SUCCESS(result)
+    except Exception as e:
+        logger.error(f"获取任务列表时出错: {str(e)}")
+        return ApiResponse.error(f'获取任务列表时出错: {str(e)}', 500)
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            'task_id',
