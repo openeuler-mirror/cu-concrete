@@ -468,3 +468,14 @@ def get_results(request):
     method='get',
     manual_parameters=[
         openapi.Parameter(
+            'current',
+            openapi.IN_QUERY,
+            type=openapi.TYPE_INTEGER,
+            default=1,
+            description='当前页码'
+        ),
+        openapi.Parameter(
+            'pageSize',
+            openapi.IN_QUERY,
+            type=openapi.TYPE_INTEGER,
+            default=10,
