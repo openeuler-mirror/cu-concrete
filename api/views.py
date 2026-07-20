@@ -753,3 +753,14 @@ def get_task_logs_view(request):
         ),
         400: openapi.Response(description="缺少pool_id参数"),
         404: openapi.Response(description="云池不存在"),
+        500: openapi.Response(description="服务器内部错误")
+    }
+)
+@api_view(['GET'])
+def pool_hosts(request):
+    """
+    获取云池的机器列表
+    
+    Query Parameters:
+        pool_id (str): 云池ID
+        
