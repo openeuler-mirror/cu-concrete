@@ -129,3 +129,14 @@ def execute_playbook(request):
             {
                 "code": 200,
                 "message": "任务已提交",
+                "data": {
+                    "task_id": "任务ID",
+                    "status": "running",
+                    "pool_id": "云池ID",
+                    "pool_name": "云池名称"
+                }
+            }
+    """
+    try:
+        # 从查询参数获取 pool_id
+        pool_id = request.query_params.get('pool_id')
