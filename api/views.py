@@ -556,3 +556,14 @@ def list_tasks(request):
             description="查询成功",
             examples={
                 "application/json": {
+                    "code": 200,
+                    "message": "查询成功",
+                    "data": {
+                        "task_id": "20240311-abc123",
+                        "pool_id": "pool-1",
+                        "pool_name": "云池1",
+                        "status": "completed",
+                        "created_at": "2024-03-11T12:34:56",
+                        "completed_at": "2024-03-11T12:35:30",
+                        "result_file": "/opt/cu-concrete/data/results/result_20240311-abc123.csv",
+                        "total_hosts": 2,
