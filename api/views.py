@@ -599,3 +599,14 @@ def list_tasks(request):
                 "application/json": {
                     "code": 500,
                     "message": "获取任务状态时出错: 具体错误信息",
+                    "data": None
+                }
+            }
+        )
+    }
+)
+@api_view(['GET'])
+def get_task(request):
+    """
+    获取任务状态
+    
