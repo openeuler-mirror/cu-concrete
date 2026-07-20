@@ -189,3 +189,11 @@ def update_task_status(task_id: str, status: str, result_file: str = None,
                        error_message: str = None):
     """更新任务状态"""
     with _tasks_lock:
+        if task_id in _tasks:
+            _tasks[task_id]['status'] = status
+            _tasks[task_id]['completed_at'] = datetime.datetime.now().isoformat()
+            if result_file:
+                _tasks[task_id]['result_file'] = result_file
+            _tasks[task_id]['total_hosts'] = total_hosts
+            if error_message:
+                _tasks[task_id]['error_message'] = error_message
