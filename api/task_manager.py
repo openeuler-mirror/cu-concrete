@@ -150,3 +150,14 @@ def get_or_create_task_timestamp(task_id: str) -> str:
 
 
 def create_task(pool_id: str, pool_name: str) -> str:
+    """
+    创建新任务
+    
+    Returns:
+        task_id: 任务唯一标识
+    """
+    task_id = generate_task_id()
+    
+    with _tasks_lock:
+        _tasks[task_id] = {
+            'task_id': task_id,
