@@ -457,3 +457,14 @@ def get_results(request):
             'list': paginated_data
         }
         
+        return CommonResponses.QUERY_SUCCESS(response_data)
+        
+    except Exception as e:
+        logger.error(f"获取结果文件时出错: {str(e)}")
+        return ApiResponse.error(f'获取结果文件时出错: {str(e)}', 500)
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
