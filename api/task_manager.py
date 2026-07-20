@@ -346,3 +346,23 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
                                 policy_names.append(policy_id)
                     except Exception as e:
                         logger.warning(f"读取策略配置失败 {policy_id}: {e}")
+                        policy_names.append(policy_id)
+                else:
+                    policy_names.append(policy_id)
+            update_task_policy_names(task_id, policy_names)
+            
+            append_task_log(task_id, f"开始执行云池 {pool_id} 的加固任务")
+            append_task_log(task_id, f"Playbook路径: {pool_info['playbook_path']}")
+            append_task_log(task_id, f"加固策略数: {len(policy_names)}")
+            
+            # 使用任务ID作为数据标识
+            with _task_timestamps_lock:
+                _task_timestamps[task_id] = task_id
+            append_task_log(task_id, f"任务标识: {task_id}")
+            
+            # 执行ansible-playbook，传入任务ID环境变量
+            playbook_path = pool_info['playbook_path']
+            inventory_path = pool_info['ansible_inventory']
+            cmd = [
+                'ansible-playbook',
+                '-i', inventory_path,
