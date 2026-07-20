@@ -562,3 +562,16 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
         if task_id:
             backup_dir = BACKUP_ROOT / f"cu-concrete-{task_id}"
             if backup_dir.exists():
+                import shutil
+                shutil.rmtree(backup_dir)
+                logger.info(f"已删除备份目录: {backup_dir}")
+
+        return {
+            'success': True,
+            'output_file': str(output_path),
+            'total_hosts': len(unique_hosts),
+        }
+        
+    except Exception as e:
+        logger.error(f"run_combine_to_csv 错误: {e}")
+        return {'success': False, 'error': str(e)}
