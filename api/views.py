@@ -337,3 +337,14 @@ def pool_list(request):
         ),
         400: openapi.Response(
             description="无效的文件路径",
+            examples={
+                "application/json": {
+                    "code": 400,
+                    "message": "无效的文件路径",
+                    "data": None
+                }
+            }
+        ),
+        404: openapi.Response(
+            description="文件不存在",
+            examples={
