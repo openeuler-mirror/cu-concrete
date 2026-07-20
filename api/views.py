@@ -30,3 +30,14 @@ import json
 # 导入事件总线
 from .eventbus import Eventbus
 # 创建事件总线对象
+event_bus = Eventbus()
+
+# 云池地址
+path= Path(__file__).parent / "config.yaml"
+with open(path, 'r', encoding='utf-8') as f:
+    CLOUD_POOLS = yaml.load(f,Loader=yaml.Loader)
+
+
+def index(request):
+    """
+    渲染主页（非 API, 保持原样）
