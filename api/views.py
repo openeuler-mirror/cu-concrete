@@ -238,3 +238,14 @@ def execute_playbook(request):
     }
 )
 @api_view(['GET'])
+def pool_list(request):
+    """
+    返回可用的云池列表（DRF 视图，带分页）
+    
+    Query Parameters:
+        page_index (int, optional): 页码, 默认为1
+        page_size (int, optional): 每页大小，默认为全部
+        
+    Returns:
+        Response: 包含云池列表的响应对象（带分页）
+        {
