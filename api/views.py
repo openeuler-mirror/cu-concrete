@@ -173,3 +173,14 @@ def execute_playbook(request):
             'pool_name': pool_info['name']
         }, message='任务已提交')
         
+    except Exception as e:
+        logger.error(f"提交任务时发生错误: {str(e)}")
+        return ApiResponse.server_error(f'提交任务时发生错误: {str(e)}')
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            'current', 
+            openapi.IN_QUERY,
