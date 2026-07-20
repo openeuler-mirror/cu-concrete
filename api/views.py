@@ -326,3 +326,14 @@ def pool_list(request):
             }
         ),
         400: openapi.Response(
+            description="缺少task_id参数",
+            examples={
+                "application/json": {
+                    "code": 400,
+                    "message": "缺少task_id参数",
+                    "data": None
+                }
+            }
+        ),
+        400: openapi.Response(
+            description="无效的文件路径",
