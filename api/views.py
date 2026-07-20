@@ -85,3 +85,14 @@ def index(request):
             description="无效的云池ID",
             examples={
                 "application/json": {
+                    "code": 400,
+                    "message": "无效的云池ID: pool-xxx",
+                    "data": None
+                }
+            }
+        ),
+        409: openapi.Response(
+            description="云池正在执行其他任务",
+            examples={
+                "application/json": {
+                    "code": 409,
