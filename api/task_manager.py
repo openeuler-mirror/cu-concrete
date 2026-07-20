@@ -93,3 +93,15 @@ def _save_tasks_to_file():
                 temp_file.replace(TASKS_FILE)
     except Exception as e:
         logger.error(f"保存任务文件失败: {e}")
+
+
+def _get_log_file_path(task_id: str) -> Path:
+    """获取任务日志文件路径"""
+    return LOGS_DIR / f"{task_id}.log"
+
+
+def _load_logs_from_file(task_id: str) -> list:
+    """从文件加载任务日志"""
+    log_file = _get_log_file_path(task_id)
+    try:
+        if log_file.exists():
