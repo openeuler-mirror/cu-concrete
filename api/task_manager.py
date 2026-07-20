@@ -553,3 +553,12 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
             writer.writeheader()
             writer.writerows(records)
 
+        logger.info(f"成功导出 {len(records)} 条记录到 '{output_path}'")
+
+        # 统计主机数
+        unique_hosts = set(r['host'] for r in records)
+
+        # 合并成功后删除备份目录
+        if task_id:
+            backup_dir = BACKUP_ROOT / f"cu-concrete-{task_id}"
+            if backup_dir.exists():
