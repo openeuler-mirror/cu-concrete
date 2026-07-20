@@ -63,3 +63,14 @@ def index(request):
                     "code": 200,
                     "message": "任务已提交",
                     "data": {
+                        "task_id": "20240311-abc123",
+                        "status": "running",
+                        "pool_id": "pool-1",
+                        "pool_name": "云池1"
+                    }
+                }
+            }
+        ),
+        400: openapi.Response(
+            description="请求参数错误",
+            examples={
