@@ -337,3 +337,12 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
                 yaml_path = find_policy_yaml(current_dir, policy_id)
                 if yaml_path:
                     try:
+                        with open(yaml_path, 'r', encoding='utf-8') as f:
+                            import yaml
+                            config = yaml.safe_load(f)
+                            if config and 'description' in config:
+                                policy_names.append(config['description'])
+                            else:
+                                policy_names.append(policy_id)
+                    except Exception as e:
+                        logger.warning(f"读取策略配置失败 {policy_id}: {e}")
