@@ -698,3 +698,14 @@ def get_task_logs_view(request):
     
     Query Parameters:
         task_id (str): 任务ID
+        
+    Returns:
+        任务执行日志
+    """
+    try:
+        task_id = request.query_params.get('task_id')
+        if not task_id:
+            return CommonResponses.MISSING_PARAMETER('task_id')
+        
+        # 检查任务是否存在
+        task = task_manager.get_task_status(task_id)
