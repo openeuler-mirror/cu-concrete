@@ -162,3 +162,14 @@ def execute_playbook(request):
         
         # 启动异步执行
         task_manager.run_ansible_playbook_async(task_id, pool_id, pool_info)
+        
+        logger.info(f"任务 {task_id} 已提交，云池: {pool_id}")
+        
+        # 立即返回任务信息
+        return CommonResponses.OPERATION_SUCCESS({
+            'task_id': task_id,
+            'status': 'running',
+            'pool_id': pool_id,
+            'pool_name': pool_info['name']
+        }, message='任务已提交')
+        
