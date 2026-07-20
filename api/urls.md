@@ -82,3 +82,14 @@
 | code | int | 状态码，200表示成功 |
 | message | string | 响应消息 |
 | data.count | int | 总记录数 |
+| data.pageIndex | int | 当前页码 |
+| data.pageSize | int | 每页大小 |
+| data.list[].id | string | 云池ID |
+| data.list[].name | string | 云池名称 |
+
+**成功响应示例（200）**
+
+```json
+{
+  "code": 200,
+  "message": "查询成功",
