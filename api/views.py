@@ -391,3 +391,14 @@ def get_results(request):
                     {
                         "column1": "value1",
                         "column2": "value2",
+                        ...
+                    }
+                ]
+            }
+        }
+    """
+    try:
+        task_id = request.query_params.get('task_id')
+        
+        if not task_id:
+            return CommonResponses.MISSING_PARAMETER('task_id')
