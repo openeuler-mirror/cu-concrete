@@ -525,3 +525,15 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
                                     if config:
                                         module_desc = config.get('description', module_name)
                                 except Exception as e:
+                                    logger.warning(f"读取配置文件失败 {config_file}: {e}")
+                            
+                            # 只处理该云池配置的加固项
+                            if str(dep_id) in pool_info.get('list', []):
+                                records.append({
+                                    "task_id": task_id,
+                                    "host": host,
+                                    "dep_id": str(dep_id),
+                                    "status": status_text,
+                                    "module_name": module_desc
+                                })
+                    except Exception as e:
