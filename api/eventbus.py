@@ -72,3 +72,13 @@ class Eventbus(Singleton):
 
     def eventbus_save_conf_content(self, pool_id, config_name, ini_content, yml_content):
         """
+        写方法：保存修改好的配置内容
+        with 语法自动加锁/解锁
+        """
+        with self.save_conf_content_lock:
+            return save_conf_content(pool_id, config_name, ini_content, yml_content)
+    
+    def eventbus_delete_conf(self, pool_id, config_name):
+        """
+        写方法：删除配置内容
+        with 语法自动加锁/解锁
