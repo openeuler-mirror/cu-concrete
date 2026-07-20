@@ -567,3 +567,14 @@ def list_tasks(request):
                         "completed_at": "2024-03-11T12:35:30",
                         "result_file": "/opt/cu-concrete/data/results/result_20240311-abc123.csv",
                         "total_hosts": 2,
+                        "policy_names": ["uid为0用户检查"],
+                        "script_name": "harden.yml"
+                    }
+                }
+            }
+        ),
+        400: openapi.Response(
+            description="缺少task_id参数",
+            examples={
+                "application/json": {
+                    "code": 400,
