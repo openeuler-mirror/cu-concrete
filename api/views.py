@@ -796,3 +796,14 @@ def pool_hosts(request):
             if isinstance(host_list, str) and os.path.exists(host_list):
                 # 如果hosts是文件路径
                 with open(host_list, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith('[') and not line.startswith('#'):
+                            hosts.append({'name': line, 'ip': line})
+            elif isinstance(host_list, list):
+                # hosts是列表
+                for host in host_list:
+                    if isinstance(host, dict):
+                        hosts.append(host)
+                    else:
+                        hosts.append({'name': str(host), 'ip': str(host)})
