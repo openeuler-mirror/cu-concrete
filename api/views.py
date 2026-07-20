@@ -512,3 +512,14 @@ def get_results(request):
                     "code": 500,
                     "message": "获取任务列表时出错: 具体错误信息",
                     "data": None
+                }
+            }
+        )
+    }
+)
+@api_view(['GET'])
+def list_tasks(request):
+    """
+    获取任务列表（支持分页）
+    
+    Query Parameters:
