@@ -194,3 +194,14 @@ def execute_playbook(request):
             'pageSize',
             openapi.IN_QUERY,
             description="每页记录数",
+            type=openapi.TYPE_INTEGER,
+            required=False,
+            default=10,
+            example=10
+        ),
+    ],
+    responses={
+        200: openapi.Response(
+            description="返回云池列表（带分页）",
+            examples={
+                "application/json": {
