@@ -588,3 +588,14 @@ def list_tasks(request):
             examples={
                 "application/json": {
                     "code": 404,
+                    "message": "任务 20240311-abc123 不存在",
+                    "data": None
+                }
+            }
+        ),
+        500: openapi.Response(
+            description="服务器内部错误",
+            examples={
+                "application/json": {
+                    "code": 500,
+                    "message": "获取任务状态时出错: 具体错误信息",
