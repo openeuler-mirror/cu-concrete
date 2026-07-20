@@ -291,3 +291,21 @@ def is_pool_running(pool_id: str) -> bool:
     """检查云池是否正在运行任务"""
     with _running_pools_lock:
         return pool_id in _running_pools
+
+
+def acquire_pool_lock(pool_id: str) -> bool:
+    """
+    获取云池执行锁
+    
+    Returns:
+        bool: 是否成功获取锁
+    """
+    with _running_pools_lock:
+        if pool_id in _running_pools:
+            return False
+        _running_pools.add(pool_id)
+        logger.info(f"云池 {pool_id} 获取执行锁")
+        return True
+
+
+def release_pool_lock(pool_id: str):
