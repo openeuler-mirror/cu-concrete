@@ -764,3 +764,14 @@ def pool_hosts(request):
     Query Parameters:
         pool_id (str): 云池ID
         
+    Returns:
+        机器列表
+    """
+    try:
+        pool_id = request.query_params.get('pool_id')
+        if not pool_id:
+            return CommonResponses.MISSING_PARAMETER('pool_id')
+        
+        if pool_id not in CLOUD_POOLS:
+            return CommonResponses.RESOURCE_NOT_FOUND(f'云池 {pool_id} 不存在')
+        
