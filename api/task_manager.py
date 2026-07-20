@@ -130,3 +130,23 @@ _load_tasks_from_file()
 def generate_task_id() -> str:
     """生成唯一任务ID: 年月日 + 随机后缀"""
     timestamp = datetime.datetime.now().strftime("%Y%m%d")
+    random_suffix = os.urandom(4).hex()
+    return f"{timestamp}-{random_suffix}"
+
+
+def get_or_create_task_timestamp(task_id: str) -> str:
+    """
+    获取或创建任务的时间戳
+    使用任务ID作为时间戳标识
+    """
+    with _task_timestamps_lock:
+        if task_id in _task_timestamps:
+            return _task_timestamps[task_id]
+        
+        # 使用任务ID作为时间戳
+        _task_timestamps[task_id] = task_id
+        logger.info(f"任务 {task_id} 使用任务ID作为时间戳")
+        return task_id
+
+
+def create_task(pool_id: str, pool_name: str) -> str:
