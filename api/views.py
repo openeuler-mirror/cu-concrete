@@ -873,3 +873,14 @@ def harden_items_list(request):
             'department_2_policy': '容器安全',
             'department_3_policy': '应用安全'
         }
+
+        # 扫描三个策略目录
+        for dep_dir, category in dep_mapping.items():
+            dep_path = base_path / dep_dir
+
+            if not dep_path.exists():
+                continue
+            
+            # 遍历目录下的所有子目录
+            for item_dir in dep_path.iterdir():
+                
