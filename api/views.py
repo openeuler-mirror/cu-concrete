@@ -479,3 +479,14 @@ def get_results(request):
             openapi.IN_QUERY,
             type=openapi.TYPE_INTEGER,
             default=10,
+            description='每页数量'
+        )
+    ],
+    responses={
+        200: openapi.Response(
+            description="查询成功",
+            examples={
+                "application/json": {
+                    "code": 200,
+                    "message": "查询成功",
+                    "data": {
