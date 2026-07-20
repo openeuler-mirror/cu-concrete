@@ -413,3 +413,14 @@ def get_results(request):
         
         if not str(result_path).startswith(str(project_root)):
             return ApiResponse.error('无效的文件路径', 400)
+        
+        if not result_path.exists():
+            return CommonResponses.FILE_NOT_FOUND()
+        
+        with open(result_path, 'r', encoding='utf-8') as f:
+            csv_content = f.read()
+        
+        import io
+        import csv
+        csv_file = io.StringIO(csv_content)
+        csv_reader = csv.DictReader(csv_file)
