@@ -184,3 +184,13 @@ def execute_playbook(request):
         openapi.Parameter(
             'current', 
             openapi.IN_QUERY,
+            description="当前页码, 从1开始",
+            type=openapi.TYPE_INTEGER,
+            required=False,
+            default=1,
+            example=1
+        ),
+        openapi.Parameter(
+            'pageSize',
+            openapi.IN_QUERY,
+            description="每页记录数",
