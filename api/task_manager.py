@@ -392,3 +392,16 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
             for line in process.stdout:
                 line = line.rstrip()
                 if line:
+                    append_task_log(task_id, line)
+            
+            process.wait()
+            
+            if process.returncode != 0:
+                error_msg = f"ansible-playbook 执行失败 (exit code {process.returncode})"
+                append_task_log(task_id, f"ERROR: {error_msg}")
+                update_task_status(task_id, 'failed', error_message=error_msg)
+                return
+            
+            append_task_log(task_id, "ansible-playbook 执行成功，开始生成结果文件")
+            
+            # 使用任务ID作为目录标识进行合并
