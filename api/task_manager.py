@@ -236,3 +236,15 @@ def append_task_log(task_id: str, message: str):
         _save_logs_to_file(task_id, _task_logs[task_id])
 
 
+def get_task_status(task_id: str) -> Optional[dict]:
+    """获取任务状态"""
+    with _tasks_lock:
+        task = _tasks.get(task_id)
+        if task:
+            return task.copy()
+        
+        # 如果内存中没有，尝试从文件加载
+        _load_tasks_from_file()
+        task = _tasks.get(task_id)
+        return task.copy() if task else None
+
