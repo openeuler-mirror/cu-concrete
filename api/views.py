@@ -621,3 +621,14 @@ def get_task(request):
         if not task_id:
             return CommonResponses.MISSING_PARAMETER('task_id')
         
+        task = task_manager.get_task_status(task_id)
+        if not task:
+            return CommonResponses.RESOURCE_NOT_FOUND(f'任务 {task_id} 不存在')
+        return CommonResponses.QUERY_SUCCESS(task)
+    except Exception as e:
+        logger.error(f"获取任务状态时出错: {str(e)}")
+        return ApiResponse.error(f'获取任务状态时出错: {str(e)}', 500)
+
+
+@swagger_auto_schema(
+    method='get',
