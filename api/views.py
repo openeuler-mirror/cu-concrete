@@ -775,3 +775,13 @@ def pool_hosts(request):
         if pool_id not in CLOUD_POOLS:
             return CommonResponses.RESOURCE_NOT_FOUND(f'云池 {pool_id} 不存在')
         
+        pool_info = CLOUD_POOLS[pool_id]
+
+        # 从云池配置中获取机器列表
+        hosts = []
+        
+        # 优先从ansible_inventory文件读取
+        inventory_path = pool_info.get('ansible_inventory')
+        if inventory_path and os.path.exists(inventory_path):
+            with open(inventory_path, 'r', encoding='utf-8') as f:
+                for line in f:
