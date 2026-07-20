@@ -523,3 +523,14 @@ def list_tasks(request):
     获取任务列表（支持分页）
     
     Query Parameters:
+        current (int): 当前页码, 默认1
+        pageSize (int): 每页数量, 默认10
+        
+    Returns:
+        任务列表（按时间倒序）
+    """
+    try:
+        current = int(request.query_params.get('current', 1))
+        pageSize = int(request.query_params.get('pageSize', 10))
+        
+        result = task_manager.get_all_tasks(current, pageSize)
