@@ -107,3 +107,14 @@ def index(request):
                 "application/json": {
                     "code": 500,
                     "message": "提交任务时发生错误: 具体错误信息",
+                    "data": None
+                }
+            }
+        )
+    }
+)
+@api_view(['POST'])
+def execute_playbook(request):
+    """
+    执行ansible-playbook脚本的接口（异步模式）
+    接收云池ID参数, 创建异步任务执行playbook
