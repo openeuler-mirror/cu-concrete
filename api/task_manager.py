@@ -176,3 +176,16 @@ def create_task(pool_id: str, pool_name: str) -> str:
     
     # 保存到文件
     _save_tasks_to_file()
+    
+    with _task_logs_lock:
+        _task_logs[task_id] = []
+    
+    logger.info(f"创建任务 {task_id}，云池: {pool_id}")
+    return task_id
+
+
+def update_task_status(task_id: str, status: str, result_file: str = None, 
+                       total_hosts: int = 0, 
+                       error_message: str = None):
+    """更新任务状态"""
+    with _tasks_lock:
