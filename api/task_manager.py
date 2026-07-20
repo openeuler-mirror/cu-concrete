@@ -493,3 +493,17 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
                     continue
                     
                 # 查找 pkl 文件
+                pkl_files = list(host_dir.rglob("*.pkl"))
+                if not pkl_files:
+                    logger.warning(f"主机 {host} 下未找到 .pkl 文件")
+                    continue
+                    
+                for pkl_path in pkl_files:
+                    try:
+                        import pandas as pd
+                        import yaml
+                        df = pd.read_pickle(pkl_path)
+                        if df is None:
+                            continue
+                            
+                        if not expected_cols.issubset(set(df.columns)):
