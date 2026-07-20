@@ -309,3 +309,15 @@ def acquire_pool_lock(pool_id: str) -> bool:
 
 
 def release_pool_lock(pool_id: str):
+    """释放云池执行锁"""
+    with _running_pools_lock:
+        if pool_id in _running_pools:
+            _running_pools.remove(pool_id)
+            logger.info(f"云池 {pool_id} 释放执行锁")
+
+
+def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
+    """
+    异步执行Ansible Playbook
+    
+    使用任务ID作为数据目录标识，确保精确匹配
