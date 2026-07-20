@@ -829,3 +829,14 @@ def pool_hosts(request):
                     "data": {
                         "count": 60,
                         "list": [
+                            {
+                                "id": "CheckEmptyAccount_1",
+                                "name": "检查空口令账号",
+                                "description": "检测系统中是否存在空口令账号",
+                                "category": "系统安全",
+                                "dep": 1
+                            }
+                        ]
+                    }
+                }
+            }
