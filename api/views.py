@@ -435,3 +435,14 @@ def get_results(request):
             pageSize_param = request.query_params.get('pageSize', str(len(rows)))
             
             # 验证并转换参数
+            current = int(current_param) if current_param.isdigit() and int(current_param) > 0 else 1
+            pageSize = int(pageSize_param) if pageSize_param.isdigit() and int(pageSize_param) > 0 else 10
+            
+        except (ValueError, TypeError):
+            # 如果参数转换失败，使用默认值
+            current = 1
+            pageSize = len(rows)
+        
+        # 分页处理
+        total_count = len(rows)
+        start_index = (current - 1) * pageSize
