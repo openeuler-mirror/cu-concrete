@@ -267,3 +267,13 @@ def get_all_tasks(current: int = 1, pageSize: int = 10) -> list:
     Args:
         current: 当前页码，从1开始
         pageSize: 每页数量
+    """
+    with _tasks_lock:
+        tasks = list(_tasks.values())
+    
+    # 按时间倒序
+    tasks.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+    
+    # 分页
+    total = len(tasks)
+    offset = (current - 1) * pageSize
