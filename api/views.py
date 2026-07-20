@@ -315,3 +315,14 @@ def pool_list(request):
                         "list": [
                             {
                                 "task_id": "20231201-123456",
+                                "host": "example-host",
+                                "dep_id": "1",
+                                "status": "已加固",
+                                "module_name": "安全模块名称"
+                            }
+                        ]
+                    }
+                }
+            }
+        ),
+        400: openapi.Response(
