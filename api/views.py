@@ -293,3 +293,14 @@ def pool_list(request):
         ),
         openapi.Parameter(
             'pageSize',
+            openapi.IN_QUERY,
+            description="每页记录数",
+            type=openapi.TYPE_INTEGER,
+            required=False,
+            default=10,
+            example=10
+        )
+    ],
+    responses={
+        200: openapi.Response(
+            description="查询成功",
