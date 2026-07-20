@@ -452,3 +452,15 @@ def run_combine_to_csv(pool_info: dict, task_id: str = None) -> dict:
         # 使用任务ID作为结果文件名，确保唯一性
         if not task_id:
             return {'success': False, 'error': '任务ID不能为空'}
+        OUTPUT_CSV = f"result_{task_id}.csv"
+        STATUS_MAP = {
+            "0": "未加固",
+            "1": "加固失败", 
+            "2": "已加固"
+        }
+
+        def extract_host(dirname: str) -> str | None:
+            m = re.match(r"cu-concrete-(.+)", dirname)
+            return m.group(1) if m else None
+
+        # 确定要处理的任务目录
