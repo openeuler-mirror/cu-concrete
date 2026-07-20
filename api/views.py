@@ -610,3 +610,14 @@ def get_task(request):
     """
     获取任务状态
     
+    Query Parameters:
+        task_id (str): 任务ID
+        
+    Returns:
+        任务详细信息
+    """
+    try:
+        task_id = request.query_params.get('task_id')
+        if not task_id:
+            return CommonResponses.MISSING_PARAMETER('task_id')
+        
