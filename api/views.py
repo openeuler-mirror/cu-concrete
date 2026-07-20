@@ -676,3 +676,14 @@ def get_task(request):
                     "code": 404,
                     "message": "任务 20240311-abc123 不存在",
                     "data": None
+                }
+            }
+        ),
+        500: openapi.Response(
+            description="服务器内部错误",
+            examples={
+                "application/json": {
+                    "code": 500,
+                    "message": "获取任务日志时出错: 具体错误信息",
+                    "data": None
+                }
