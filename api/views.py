@@ -424,3 +424,14 @@ def get_results(request):
         import csv
         csv_file = io.StringIO(csv_content)
         csv_reader = csv.DictReader(csv_file)
+        rows = []
+        for row in csv_reader:
+            if any(field.strip() for field in row.values()):
+                rows.append(row)
+        
+        # 处理分页参数，添加参数验证
+        try:
+            current_param = request.query_params.get('current', '1')
+            pageSize_param = request.query_params.get('pageSize', str(len(rows)))
+            
+            # 验证并转换参数
