@@ -665,3 +665,14 @@ def get_task(request):
                 "application/json": {
                     "code": 400,
                     "message": "缺少task_id参数",
+                    "data": None
+                }
+            }
+        ),
+        404: openapi.Response(
+            description="任务不存在",
+            examples={
+                "application/json": {
+                    "code": 404,
+                    "message": "任务 20240311-abc123 不存在",
+                    "data": None
