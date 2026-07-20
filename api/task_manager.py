@@ -248,3 +248,22 @@ def get_task_status(task_id: str) -> Optional[dict]:
         task = _tasks.get(task_id)
         return task.copy() if task else None
 
+
+def get_task_logs(task_id: str) -> str:
+    """获取任务日志"""
+    with _task_logs_lock:
+        if task_id not in _task_logs:
+            # 从文件加载
+            _task_logs[task_id] = _load_logs_from_file(task_id)
+        
+        logs = _task_logs[task_id]
+        return "\n".join(logs)
+
+
+def get_all_tasks(current: int = 1, pageSize: int = 10) -> list:
+    """
+    获取所有任务列表（支持分页）
+    
+    Args:
+        current: 当前页码，从1开始
+        pageSize: 每页数量
