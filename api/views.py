@@ -785,3 +785,14 @@ def pool_hosts(request):
         if inventory_path and os.path.exists(inventory_path):
             with open(inventory_path, 'r', encoding='utf-8') as f:
                 for line in f:
+                    line = line.strip()
+                    # 跳过空行、注释行、组定义行和变量定义行
+                    if line and not line.startswith('[') and not line.startswith('#') and not line.startswith('ansible_'):
+                        hosts.append({'name': line, 'ip': line})
+        else:
+            # 回退到hosts或list字段
+            host_list = pool_info.get('hosts', [])
+            
+            if isinstance(host_list, str) and os.path.exists(host_list):
+                # 如果hosts是文件路径
+                with open(host_list, 'r', encoding='utf-8') as f:
