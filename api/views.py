@@ -205,3 +205,14 @@ def execute_playbook(request):
             description="返回云池列表（带分页）",
             examples={
                 "application/json": {
+                    "code": 200,
+                    "message": "查询成功",
+                    "data": {
+                        "count": 3,
+                        "pageIndex": 1,
+                        "pageSize": 10,
+                        "list": [
+                            {
+                                "id": "pool-1",
+                                "name": "云池1"
+                            },
