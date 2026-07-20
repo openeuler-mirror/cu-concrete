@@ -359,3 +359,14 @@ def pool_list(request):
             description="服务器内部错误",
             examples={
                 "application/json": {
+                    "code": 500,
+                    "message": "获取结果文件时出错: 具体错误信息",
+                    "data": None
+                }
+            }
+        )
+    }
+)
+@api_view(['GET'])
+def get_results(request):
+    """
