@@ -818,3 +818,14 @@ def pool_hosts(request):
 
 
 @swagger_auto_schema(
+    method='get',
+    responses={
+        200: openapi.Response(
+            description="查询成功",
+            examples={
+                "application/json": {
+                    "code": 200,
+                    "message": "查询成功",
+                    "data": {
+                        "count": 60,
+                        "list": [
