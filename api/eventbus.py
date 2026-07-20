@@ -93,3 +93,14 @@ class Eventbus(Singleton):
         """
         print("执行-eventbus_generate_config-000")
         with self.generate_config_lock:
+            print("执行-eventbus_generate_config-001")
+            return generate_config(params_json)
+    
+    def eventbus_save_generated_config(self, params_json):
+        """
+        写方法：保存生成好的配置内容
+        with 语法自动加锁/解锁
+        """
+        with self.save_generated_config_lock:
+            return save_generated_config(params_json)
+
