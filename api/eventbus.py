@@ -40,3 +40,14 @@ class Eventbus(Singleton):
     def eventbus_pool_list(self, request):
         """
         读方法：查找云池列表信息
+        """
+        return pool_list(request)
+        
+    def eventbus_find_pool_configs(self, pool_name):
+        """
+        读方法：查找某云池内所有配置信息
+        """
+        return find_pool_configs(pool_name)
+    def eventbus_get_level_conf(self, harden_models):
+        """
+        读方法：获取级别配置信息
