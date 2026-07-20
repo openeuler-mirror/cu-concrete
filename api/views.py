@@ -720,3 +720,14 @@ def get_task_logs_view(request):
         })
     except Exception as e:
         logger.error(f"获取任务日志时出错: {str(e)}")
+        return ApiResponse.error(f'获取任务日志时出错: {str(e)}', 500)
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            'pool_id',
+            openapi.IN_QUERY,
+            description='云池ID',
+            type=openapi.TYPE_STRING,
