@@ -74,3 +74,14 @@ def index(request):
         400: openapi.Response(
             description="请求参数错误",
             examples={
+                "application/json": {
+                    "code": 400,
+                    "message": "缺少pool_id参数",
+                    "data": None
+                }
+            }
+        ),
+        400: openapi.Response(
+            description="无效的云池ID",
+            examples={
+                "application/json": {
