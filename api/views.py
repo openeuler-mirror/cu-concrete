@@ -545,3 +545,14 @@ def list_tasks(request):
     manual_parameters=[
         openapi.Parameter(
             'task_id',
+            openapi.IN_QUERY,
+            description='任务ID',
+            type=openapi.TYPE_STRING,
+            required=True
+        )
+    ],
+    responses={
+        200: openapi.Response(
+            description="查询成功",
+            examples={
+                "application/json": {
