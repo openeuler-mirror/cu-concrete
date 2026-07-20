@@ -29,3 +29,14 @@ class Eventbus(Singleton):
         # 双重校验，避免重复初始化
         if hasattr(self, '_initialized'):
             return
+        self._initialized = True
+        
+        # 两个独立的写锁
+        self.save_conf_content_lock = threading.Lock()
+        self.delete_conf_lock = threading.Lock()
+        self.generate_config_lock = threading.Lock()
+        self.save_generated_config_lock = threading.Lock()
+
+    def eventbus_pool_list(self, request):
+        """
+        读方法：查找云池列表信息
