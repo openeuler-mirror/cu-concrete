@@ -271,3 +271,14 @@ def pool_list(request):
         logger.error(f"获取云池列表时出错: {str(e)}")
         return ApiResponse.error(f'获取云池列表时出错: {str(e)}', 500)
 
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            'task_id',
+            openapi.IN_QUERY,
+            description='任务ID',
+            type=openapi.TYPE_STRING,
+            required=True
+        ),
