@@ -807,3 +807,14 @@ def pool_hosts(request):
                         hosts.append(host)
                     else:
                         hosts.append({'name': str(host), 'ip': str(host)})
+
+        return CommonResponses.QUERY_SUCCESS({
+            'count': len(hosts),
+            'list': hosts
+        })
+    except Exception as e:
+        logger.error(f"获取云池机器列表时出错: {str(e)}")
+        return ApiResponse.error(f'获取云池机器列表时出错: {str(e)}', 500)
+
+
+@swagger_auto_schema(
