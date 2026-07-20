@@ -742,3 +742,14 @@ def get_task_logs_view(request):
                     "code": 200,
                     "message": "查询成功",
                     "data": {
+                        "count": 3,
+                        "list": [
+                            {"name": "host-1", "ip": "192.168.1.1"},
+                            {"name": "host-2", "ip": "192.168.1.2"}
+                        ]
+                    }
+                }
+            }
+        ),
+        400: openapi.Response(description="缺少pool_id参数"),
+        404: openapi.Response(description="云池不存在"),
