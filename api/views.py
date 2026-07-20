@@ -446,3 +446,14 @@ def get_results(request):
         # 分页处理
         total_count = len(rows)
         start_index = (current - 1) * pageSize
+        end_index = start_index + pageSize
+        paginated_data = rows[start_index:end_index]
+        
+        # 构造响应数据
+        response_data = {
+            'count': total_count,
+            'pageIndex': current,
+            'pageSize': pageSize,
+            'list': paginated_data
+        }
+        
