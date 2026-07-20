@@ -61,3 +61,14 @@ class Eventbus(Singleton):
     def eventbus_get_config_content(self, pool_id, config_name):
         """
         读方法：获取配置文件内容
+        """
+        print("执行-eventbus_get_config_content")
+        try:
+            # 调用conf_utils中的函数，传递两个参数
+            return find_config_content(pool_id, config_name)
+        except Exception as e:
+            logger.error(f"获取配置内容时出错: {str(e)}", exc_info=True)
+            return ApiResponse.error(f'获取配置内容时出错: {str(e)}', 500)
+
+    def eventbus_save_conf_content(self, pool_id, config_name, ini_content, yml_content):
+        """
