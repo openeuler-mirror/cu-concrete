@@ -105,3 +105,19 @@ def _load_logs_from_file(task_id: str) -> list:
     log_file = _get_log_file_path(task_id)
     try:
         if log_file.exists():
+            with open(log_file, 'r', encoding='utf-8') as f:
+                return f.read().splitlines()
+    except Exception as e:
+        logger.error(f"加载日志文件失败 {task_id}: {e}")
+    return []
+
+
+def _save_logs_to_file(task_id: str, logs: list):
+    """保存任务日志到文件（线程安全）"""
+    log_file = _get_log_file_path(task_id)
+    try:
+        with _file_write_lock:  # 获取文件写入锁
+            with open(log_file, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(logs))
+    except Exception as e:
+        logger.error(f"保存日志文件失败 {task_id}: {e}")
