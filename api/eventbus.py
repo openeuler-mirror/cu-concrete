@@ -82,3 +82,14 @@ class Eventbus(Singleton):
         """
         写方法：删除配置内容
         with 语法自动加锁/解锁
+        """
+        with self.delete_conf_lock:
+            return delete_conf(pool_id, config_name)
+    
+    def eventbus_generate_config(self, params_json):
+        """
+        写方法：生成配置文件
+        with 语法自动加锁/解锁
+        """
+        print("执行-eventbus_generate_config-000")
+        with self.generate_config_lock:
