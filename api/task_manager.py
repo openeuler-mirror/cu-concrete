@@ -197,3 +197,25 @@ def update_task_status(task_id: str, status: str, result_file: str = None,
             _tasks[task_id]['total_hosts'] = total_hosts
             if error_message:
                 _tasks[task_id]['error_message'] = error_message
+            logger.info(f"任务 {task_id} 状态更新为: {status}")
+    
+    # 保存到文件
+    _save_tasks_to_file()
+
+
+def update_task_policy_names(task_id: str, policy_names: list):
+    """更新任务加固策略中文名称列表"""
+    with _tasks_lock:
+        if task_id in _tasks:
+            _tasks[task_id]['policy_names'] = policy_names
+    _save_tasks_to_file()
+
+
+def update_task_script(task_id: str, script_name: str):
+    """更新任务执行脚本信息"""
+    with _tasks_lock:
+        if task_id in _tasks:
+            _tasks[task_id]['script_name'] = script_name
+    _save_tasks_to_file()
+
+
