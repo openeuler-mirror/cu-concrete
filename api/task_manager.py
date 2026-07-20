@@ -405,3 +405,11 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
             append_task_log(task_id, "ansible-playbook 执行成功，开始生成结果文件")
             
             # 使用任务ID作为目录标识进行合并
+            combine_result = run_combine_to_csv(pool_info, task_id)
+            
+            if not combine_result['success']:
+                error_msg = f"combine_to_csv 执行失败: {combine_result['error']}"
+                append_task_log(task_id, f"ERROR: {error_msg}")
+                update_task_status(task_id, 'failed', error_message=error_msg)
+                return
+            
