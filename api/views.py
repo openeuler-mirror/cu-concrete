@@ -370,3 +370,14 @@ def pool_list(request):
 @api_view(['GET'])
 def get_results(request):
     """
+    获取执行结果文件内容并转换为JSON格式（DRF 视图，带分页）
+    
+    Query Parameters:
+        task_id (str): 任务ID
+        current (int, optional): 页码, 默认为1
+        pageSize (int, optional): 每页大小, 默认为10
+        
+    Returns:
+        Response: 包含文件内容的响应对象（带分页）
+        {
+            "requestId": "唯一请求ID",
