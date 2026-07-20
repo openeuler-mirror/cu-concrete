@@ -96,3 +96,14 @@ def index(request):
             examples={
                 "application/json": {
                     "code": 409,
+                    "message": "云池 pool-1 正在执行其他任务，请稍后再试",
+                    "data": None
+                }
+            }
+        ),
+        500: openapi.Response(
+            description="服务器内部错误",
+            examples={
+                "application/json": {
+                    "code": 500,
+                    "message": "提交任务时发生错误: 具体错误信息",
