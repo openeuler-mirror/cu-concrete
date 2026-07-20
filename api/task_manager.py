@@ -219,3 +219,20 @@ def update_task_script(task_id: str, script_name: str):
     _save_tasks_to_file()
 
 
+def append_task_log(task_id: str, message: str):
+    """追加任务日志"""
+    with _task_logs_lock:
+        if task_id not in _task_logs:
+            # 尝试从文件加载已有日志
+            _task_logs[task_id] = _load_logs_from_file(task_id)
+        
+        timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+        _task_logs[task_id].append(f"[{timestamp}] {message}")
+        # 限制日志行数
+        if len(_task_logs[task_id]) > MAX_LOG_LINES:
+            _task_logs[task_id] = _task_logs[task_id][-MAX_LOG_LINES:]
+        
+        # 保存到文件
+        _save_logs_to_file(task_id, _task_logs[task_id])
+
+
