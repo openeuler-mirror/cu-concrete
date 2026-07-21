@@ -928,3 +928,14 @@ def harden_items_list(request):
         properties={
             'pool_id': openapi.Schema(type=openapi.TYPE_STRING, description='云池ID'),
             'hosts': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT), description='选择的机器列表'),
+            'harden_items': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_STRING), description='选择的加固项ID列表'),
+        },
+        required=['pool_id', 'hosts', 'harden_items']
+    ),
+    responses={
+        200: openapi.Response(
+            description="生成配置文件成功",
+            examples={
+                "application/json": {
+                    "code": 200,
+                    "message": "配置文件生成成功",
