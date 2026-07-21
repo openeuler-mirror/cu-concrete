@@ -990,3 +990,36 @@ def generate_config(request):
         logger.error(f"生成配置文件时出错: {str(e)}")
         return ApiResponse.error(f'生成配置文件时出错: {str(e)}', 500)
 
+# 保存生成的配置文件
+@api_view(['GET', 'POST'])
+def save_generated_config(request):
+    try:
+        data = request.data
+        # 定义所有需要校验的参数：(参数名, 默认值)
+        required_params = [
+            ("pool_id", None),
+            ("hosts", []),
+            ("harden_model", None),
+            ("harden_items", []),
+            ("generate_person_name", None),
+            ("config_name", None),
+            ("ini_content", None),
+            ("yml_content", None),
+        ]
+        # 统一获取 + 统一校验
+        params_dict = {}
+        for name, default in required_params:
+            value = data.get(name, default)
+            # 空值直接返回
+            if not value:
+                return CommonResponses.MISSING_PARAMETER(name)
+            params_dict[name] = value
+        # 最终 JSON
+        params_json = json.dumps(params_dict)
+        # 保存配置文件
+        return event_bus.eventbus_save_generated_config(params_json)
+        
+    except Exception as e:
+        logger.error(f"生成配置文件时出错: {str(e)}")
+        return ApiResponse.error(f'生成配置文件时出错: {str(e)}', 500)
+
