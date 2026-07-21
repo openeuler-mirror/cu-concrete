@@ -906,3 +906,14 @@ def harden_items_list(request):
                             'category': category,
                             'dep': config.get('dep', 0),
                             'item_id': config.get('id', 0)
+                        })
+                except Exception as e:
+                    logger.warning(f"读取YAML文件失败 {yaml_file}: {str(e)}")
+                    continue
+        # 按部门和ID排序
+        items.sort(key=lambda x: (x['dep'], x['item_id']))
+        return CommonResponses.QUERY_SUCCESS({
+            'count': len(items),
+            'list': items
+        })
+    except Exception as e:
