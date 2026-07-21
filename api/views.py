@@ -1068,3 +1068,49 @@ def from_file_get_config(request):
         logger.error(f"获取配置文件内容时出错: {str(e)}", exc_info=True)
         return ApiResponse.error(f'获取配置文件内容时出错: {str(e)}', 500)
 
+# 保存修改的配置文件内容
+@api_view(['GET', 'POST'])
+def save_conf_content(request):
+    """
+    保存修改后的配置内容
+    接收POST请求, 包含:
+    - pool_name: 云池名称
+    - config_name: 配置名称
+    - ini_content: 修改后的INI内容
+    - yml_content: 修改后的YML内容
+    """
+    if request.method == 'POST':
+        try:
+            # 解析JSON数据
+            data = json.loads(request.body)
+            
+            # 获取请求参数
+            pool_id = data.get('pool_id')
+            config_name = data.get('config_name')
+            ini_content = data.get('ini_content')
+            yml_content = data.get('yml_content')
+            
+            # 验证必要参数
+            if not all([pool_id, config_name, ini_content, yml_content]):
+                return JsonResponse({
+                    'code': 400,
+                    'message': '缺少必要参数',
+                    'data': None
+                }, status=400)
+            
+            # 这里添加实际保存配置的逻辑
+            return event_bus.eventbus_save_conf_content(pool_id, config_name, ini_content, yml_content)
+            
+        except Exception as e:
+            return JsonResponse({
+                'code': 500,
+                'message': f'服务器错误: {str(e)}',
+                'data': None
+            }, status=500)
+    
+    return JsonResponse({
+        'code': 405,
+        'message': '方法不允许',
+        'data': None
+    }, status=405)
+    
