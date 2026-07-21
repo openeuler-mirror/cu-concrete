@@ -1045,3 +1045,26 @@ def from_pool_get_configs(request):
         logger.error(f"获取配置列表时出错: {str(e)}", exc_info=True)
         return ApiResponse.error(f'获取所有配置文件名时出错: {str(e)}', 500)   
 
+# 根据配置文件名获取配置文件内容
+@api_view(['GET', 'POST'])
+def from_file_get_config(request):
+    try:
+        # 正确获取参数 - 区分GET和POST请求
+        if request.method == 'GET':
+            pool_id = request.query_params.get('pool_id')
+            config_name = request.query_params.get('config_name')
+        else:  # POST
+            pool_id = request.data.get('pool_id')
+            config_name = request.data.get('config_name')
+        
+        if not pool_id:
+            return CommonResponses.MISSING_PARAMETER('pool_id')
+        if not config_name:
+            return CommonResponses.MISSING_PARAMETER('config_name')
+        
+        # 传递两个参数给event_bus
+        return event_bus.eventbus_get_config_content(pool_id, config_name)
+    except Exception as e:
+        logger.error(f"获取配置文件内容时出错: {str(e)}", exc_info=True)
+        return ApiResponse.error(f'获取配置文件内容时出错: {str(e)}', 500)
+
