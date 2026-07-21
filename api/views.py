@@ -939,3 +939,54 @@ def harden_items_list(request):
                 "application/json": {
                     "code": 200,
                     "message": "配置文件生成成功",
+                    "data": {
+                        "ini_content": "inventory.ini内容",
+                        "yml_content": "playbook.yml内容",
+                        "filename": "配置包文件名"
+                    }
+                }
+            }
+        )
+    }
+)
+
+# 生成配置
+@api_view(['POST'])
+def generate_config(request):
+    """
+    根据选择的云池、机器和加固项生成Ansible配置文件
+    
+    直接修改 /opt/cu-concrete/data/fetch/fetch.ini 和 fetch.yml 文件
+    
+    Request Body:
+        pool_id (str): 云池ID
+        hosts (list): 选择的机器列表, 包含ip、name等信息
+        harden_items (list): 选择的加固项ID列表
+    
+    Returns:
+        操作结果
+    """
+    try:
+        data = request.data
+        # 定义参数：(参数名, 默认值)
+        required_params = [
+            ("pool_id", None),
+            ("hosts", []),
+            ("harden_model", None),
+            ("harden_items", []),
+        ]
+        # 统一获取 + 校验 + 组装字典
+        params_dict = {}
+        for name, default in required_params:
+            value = data.get(name, default)
+            if not value:
+                return CommonResponses.MISSING_PARAMETER(name)
+            params_dict[name] = value
+        params_json = json.dumps(params_dict)
+        # 生成配置并保存
+        return event_bus.eventbus_generate_config(params_json)
+    
+    except Exception as e:
+        logger.error(f"生成配置文件时出错: {str(e)}")
+        return ApiResponse.error(f'生成配置文件时出错: {str(e)}', 500)
+
