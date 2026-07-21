@@ -1145,3 +1145,27 @@ def delete_conf(request):
     
     return ApiResponse.error('方法不允许', 405)
 
+# 获取配置级别
+@api_view(['GET', 'POST'])
+def get_conf_level(request):
+    if request.method == 'GET':
+        # 从请求参数中获取 harden_models
+        harden_models = request.GET.get('harden_models', '')
+        
+        # 验证 harden_models 是否有效
+        valid_types = ['harden-company-model', 'harden-department-model']
+        if harden_models not in valid_types:
+            return JsonResponse({
+                'code': 400,
+                'message': '无效的模型类型，必须是 harden-company-model 或 harden-department-model',
+                'data': None
+            }, status=400)
+            
+        return event_bus.eventbus_get_level_conf(harden_models)
+    
+    # 只允许 GET 请求
+    return JsonResponse({
+        'code': 405,
+        'message': '方法不允许，只支持 GET 请求',
+        'data': None
+    }, status=405)
