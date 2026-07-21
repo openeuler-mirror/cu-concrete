@@ -917,3 +917,14 @@ def harden_items_list(request):
             'list': items
         })
     except Exception as e:
+        logger.error(f"获取加固项列表时出错: {str(e)}")
+        return ApiResponse.error(f'获取加固项列表时出错: {str(e)}', 500)
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'pool_id': openapi.Schema(type=openapi.TYPE_STRING, description='云池ID'),
+            'hosts': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_OBJECT), description='选择的机器列表'),
