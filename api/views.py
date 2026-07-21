@@ -1023,3 +1023,25 @@ def save_generated_config(request):
         logger.error(f"生成配置文件时出错: {str(e)}")
         return ApiResponse.error(f'生成配置文件时出错: {str(e)}', 500)
 
+# 根据pool名获取所有配置文件名
+@api_view(['GET', 'POST'])
+def from_pool_get_configs(request):
+    """
+    根据pool名获取所有配置文件名
+    """
+    try:
+        # 正确获取pool_id参数
+        if request.method == 'GET':
+            pool_id = request.query_params.get('pool_id')
+        else:  # POST
+            pool_id = request.data.get('pool_id')
+        
+        if not pool_id:
+            return CommonResponses.MISSING_PARAMETER('pool_id')
+        
+        # 直接调用并返回
+        return event_bus.eventbus_find_pool_configs(pool_id)
+    except Exception as e:
+        logger.error(f"获取配置列表时出错: {str(e)}", exc_info=True)
+        return ApiResponse.error(f'获取所有配置文件名时出错: {str(e)}', 500)   
+
