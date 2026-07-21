@@ -895,3 +895,14 @@ def harden_items_list(request):
                 yaml_file = yaml_files[0]
                 
                 try:
+                    with open(yaml_file, 'r', encoding='utf-8') as f:
+                        config = yaml.safe_load(f)
+                    
+                    if config and 'description' in config:
+                        items.append({
+                            'id': item_dir.name,
+                            'name': config.get('description', item_dir.name),
+                            'description': config.get('description', ''),
+                            'category': category,
+                            'dep': config.get('dep', 0),
+                            'item_id': config.get('id', 0)
