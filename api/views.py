@@ -1114,3 +1114,34 @@ def save_conf_content(request):
         'data': None
     }, status=405)
     
+# 删除配置
+@api_view(['GET', 'POST'])
+def delete_conf(request):
+    """
+    删除指定配置
+    接收POST请求, 包含:
+    - pool_id: 云池ID（如 pool-1）
+    - config_name: 配置文件名（如 playbook_123456.yml）
+    """
+    if request.method == 'POST':
+        try:
+            # 解析JSON数据
+            data = json.loads(request.body)
+            
+            # 获取请求参数
+            pool_id = data.get('pool_id')
+            config_name = data.get('config_name')
+            
+            # 验证必要参数
+            if not all([pool_id, config_name]):
+                return CommonResponses.MISSING_PARAMETER('pool_id 或 config_name')
+            
+            # 调用工具函数
+            return event_bus.eventbus_delete_conf(pool_id, config_name)
+            
+        except Exception as e:
+            logger.error(f"删除配置时出错: {str(e)}", exc_info=True)
+            return ApiResponse.error(f'删除配置时出错: {str(e)}', 500)
+    
+    return ApiResponse.error('方法不允许', 405)
+
