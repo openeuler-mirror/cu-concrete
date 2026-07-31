@@ -1,0 +1,277 @@
+[
+  {
+    "name": "AddSecure_13",
+    "department": 1,
+    "description": "添加用于安全管理的账户"
+  },
+  {
+    "name": "CheckEmptyAccount_1",
+    "department": 1,
+    "description": "空口令检查"
+  },
+  {
+    "name": "CheckIcmp_20",
+    "department": 1,
+    "description": "禁止响应ping,避免被扫描发现"
+  },
+  {
+    "name": "CheckRootDir_9",
+    "department": 1,
+    "description": "rootdir权限设定"
+  },
+  {
+    "name": "CheckUidZero_4",
+    "department": 1,
+    "description": "uid为0用户检查"
+  },
+  {
+    "name": "ClearHistoryCmd_25",
+    "department": 1,
+    "description": "删除历史命令行记录"
+  },
+  {
+    "name": "DelDangeFile_19",
+    "department": 1,
+    "description": "删除.netrc,.rhosts的文件"
+  },
+  {
+    "name": "Delbanner_18",
+    "department": 1,
+    "description": "会话界面的提醒字符段备份并删除"
+  },
+  {
+    "name": "DeleteKeyword_17",
+    "department": 1,
+    "description": "删除带有特定记录的log"
+  },
+  {
+    "name": "DisableFtpAnonymous_21",
+    "department": 1,
+    "description": "禁止匿名账户登录ftp"
+  },
+  {
+    "name": "ForbiIp_30",
+    "department": 1,
+    "description": "禁止ip路由转发"
+  },
+  {
+    "name": "HistSize_23",
+    "department": 1,
+    "description": "控制当前bash会话中保留的命令"
+  },
+  {
+    "name": "LockFile_29",
+    "department": 1,
+    "description": "锁定关键文件"
+  },
+  {
+    "name": "LockingInvalidAccount_2",
+    "department": 1,
+    "description": "锁定无效用户"
+  },
+  {
+    "name": "LoginTmout_10",
+    "department": 1,
+    "description": "用户会话无操作时长中断设定"
+  },
+  {
+    "name": "LoginUserLock_7",
+    "department": 1,
+    "description": "ssh密码输入错误锁定账户的设定"
+  },
+  {
+    "name": "PassRepe_26",
+    "department": 1,
+    "description": "密码不能与历史的5个密码相同"
+  },
+  {
+    "name": "ReUserShell_24",
+    "department": 1,
+    "description": "修改特定用户的shell域"
+  },
+  {
+    "name": "RebuildUmask_8",
+    "department": 1,
+    "description": "umask设置用户文件权限"
+  },
+  {
+    "name": "RebuildUser_5",
+    "department": 1,
+    "description": "用户密码长度和有效期相关设定"
+  },
+  {
+    "name": "Resetlsrm_27",
+    "department": 1,
+    "description": "修改ls、rm的显示信息"
+  },
+  {
+    "name": "RootLogin_16",
+    "department": 1,
+    "description": "禁止root账户ssh登录"
+  },
+  {
+    "name": "RsySlog_12",
+    "department": 1,
+    "description": "设置远程log的存放"
+  },
+  {
+    "name": "SSHRoot_22",
+    "department": 1,
+    "description": "修改ssh登录端口"
+  },
+  {
+    "name": "SetCrack_6",
+    "department": 1,
+    "description": "修改密码相关限制"
+  },
+  {
+    "name": "ShutCAD_28",
+    "department": 1,
+    "description": "关闭ctrl+alt+del重启功能"
+  },
+  {
+    "name": "SuWheel_14",
+    "department": 1,
+    "description": "su权限的设定"
+  },
+  {
+    "name": "SysLog_11",
+    "department": 1,
+    "description": "本地系统日志设定"
+  },
+  {
+    "name": "Telent_15",
+    "department": 1,
+    "description": "关闭telent,使用openssh"
+  },
+  {
+    "name": "UserFilePermission_3",
+    "department": 1,
+    "description": "账户权限设置"
+  },
+  {
+    "name": "AuditConSock_9",
+    "department": 2,
+    "description": "为containerd.sock.ttrpc配置审计功能"
+  },
+  {
+    "name": "AuditConToml_10",
+    "department": 2,
+    "description": "为containerd.toml配置审计功能"
+  },
+  {
+    "name": "AuditContainerShim_13",
+    "department": 2,
+    "description": "为/usr/bin/containerd-shim配置审计功能"
+  },
+  {
+    "name": "AuditContainerd_2",
+    "department": 2,
+    "description": "为containerd.pid配置审计功能"
+  },
+  {
+    "name": "AuditDebug_8",
+    "department": 2,
+    "description": "为containerd-debug.sock配置审计功能"
+  },
+  {
+    "name": "AuditDockerd_1",
+    "department": 2,
+    "description": "为/usr/bin/dockerd文件配置审计功能"
+  },
+  {
+    "name": "AuditEtc_4",
+    "department": 2,
+    "description": "为/etc/docker配置审计功能"
+  },
+  {
+    "name": "AuditRunc_14",
+    "department": 2,
+    "description": "为/usr/bin/runc配置审计功能"
+  },
+  {
+    "name": "AuditService_5",
+    "department": 2,
+    "description": "为docker.service进程配置审计功能"
+  },
+  {
+    "name": "AuditSock_6",
+    "department": 2,
+    "description": "为containerd.sock配置审计功能"
+  },
+  {
+    "name": "AuditSocket_7",
+    "department": 2,
+    "description": "为/var/run/docker.sock配置审计功能"
+  },
+  {
+    "name": "AuditSysconfig_11",
+    "department": 2,
+    "description": "为/etc/sysconfig/docker配置审计功能"
+  },
+  {
+    "name": "AuditUsContainerd_12",
+    "department": 2,
+    "description": "为/usr/bin/containerd配置审计功能"
+  },
+  {
+    "name": "AuditVar_3",
+    "department": 2,
+    "description": "为/var/lib/docker配置审计功能"
+  },
+  {
+    "name": "CheckOwDebug_24",
+    "department": 2,
+    "description": "修改containerd-debug.sock文件所有者 "
+  },
+  {
+    "name": "CheckOwDoSock_17",
+    "department": 2,
+    "description": "修改/var/run/docker.sock文件所有者"
+  },
+  {
+    "name": "CheckOwDocker_15",
+    "department": 2,
+    "description": "修改/etc/docker文件所有者"
+  },
+  {
+    "name": "CheckOwSockCont_21",
+    "department": 2,
+    "description": "修改containerd.sock文件所有者"
+  },
+  {
+    "name": "CheckOwSysconfig_19",
+    "department": 2,
+    "description": "修改/etc/sysconfig/docker文件所有者"
+  },
+  {
+    "name": "CheckPeDebug_25",
+    "department": 2,
+    "description": "修改containerd-debug.sock文件权限"
+  },
+  {
+    "name": "CheckPeDoSock_18",
+    "department": 2,
+    "description": "修改/var/run/docker.sock文件权限"
+  },
+  {
+    "name": "CheckPeDocker_16",
+    "department": 2,
+    "description": "修改/etc/docker文件权限"
+  },
+  {
+    "name": "CheckPeSockCont_22",
+    "department": 2,
+    "description": "修改containerd.sock文件权限"
+  },
+  {
+    "name": "CheckPeSysconfig_20",
+    "department": 2,
+    "description": "修改/etc/sysconfig/docker文件权限"
+  },
+  {
+    "name": "deleteUserDocker_23",
+    "department": 2,
+    "description": "删除docker组未被信任的用户,增加信任用户"
+  }
+]
