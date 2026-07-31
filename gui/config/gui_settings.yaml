@@ -1,0 +1,10 @@
+last_plugin: shell.restore
+show_categories:
+- shell
+- policy
+- api
+- utility
+theme: default
+window:
+  height: 720
+  width: 1100
