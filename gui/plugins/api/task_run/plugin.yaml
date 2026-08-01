@@ -1,0 +1,7 @@
+id: api.task_run
+name: 任务执行
+category: api
+order: 20
+entry: plugin:TaskRunPlugin
+standalone: true
+description: 展示任务执行入口说明并预览 harden 配置
