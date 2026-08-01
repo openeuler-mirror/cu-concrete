@@ -1,0 +1,12 @@
+id: policy.AuditDebug_8
+name: AuditDebug_8
+category: policy
+order: 35
+entry: plugin:Policy_AuditDebug_8_Plugin
+standalone: true
+description: 为containerd-debug.sock配置审计功能
+policy_name: AuditDebug_8
+department: 2
+tags:
+  - policy
+  - dept2
