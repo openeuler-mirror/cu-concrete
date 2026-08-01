@@ -1,0 +1,12 @@
+id: policy.AuditConToml_10
+name: AuditConToml_10
+category: policy
+order: 32
+entry: plugin:Policy_AuditConToml_10_Plugin
+standalone: true
+description: 为containerd.toml配置审计功能
+policy_name: AuditConToml_10
+department: 2
+tags:
+  - policy
+  - dept2
