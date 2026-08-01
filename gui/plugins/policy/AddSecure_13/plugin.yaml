@@ -1,0 +1,12 @@
+id: policy.AddSecure_13
+name: AddSecure_13
+category: policy
+order: 1
+entry: plugin:Policy_AddSecure_13_Plugin
+standalone: true
+description: 添加用于安全管理的账户
+policy_name: AddSecure_13
+department: 1
+tags:
+  - policy
+  - dept1
