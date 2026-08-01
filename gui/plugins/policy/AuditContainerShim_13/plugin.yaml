@@ -1,0 +1,12 @@
+id: policy.AuditContainerShim_13
+name: AuditContainerShim_13
+category: policy
+order: 33
+entry: plugin:Policy_AuditContainerShim_13_Plugin
+standalone: true
+description: 为/usr/bin/containerd-shim配置审计功能
+policy_name: AuditContainerShim_13
+department: 2
+tags:
+  - policy
+  - dept2
