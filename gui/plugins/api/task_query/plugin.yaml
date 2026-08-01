@@ -1,0 +1,7 @@
+id: api.task_query
+name: 任务查询
+category: api
+order: 30
+entry: plugin:TaskQueryPlugin
+standalone: true
+description: 读取 conf_data 作为任务/配置查询视图
