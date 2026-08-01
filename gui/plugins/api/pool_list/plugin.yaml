@@ -1,0 +1,7 @@
+id: api.pool_list
+name: 云池列表
+category: api
+order: 10
+entry: plugin:PoolListPlugin
+standalone: true
+description: 读取 api/config.yaml 展示云池
