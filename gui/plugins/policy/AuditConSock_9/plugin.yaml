@@ -1,0 +1,12 @@
+id: policy.AuditConSock_9
+name: AuditConSock_9
+category: policy
+order: 31
+entry: plugin:Policy_AuditConSock_9_Plugin
+standalone: true
+description: 为containerd.sock.ttrpc配置审计功能
+policy_name: AuditConSock_9
+department: 2
+tags:
+  - policy
+  - dept2
