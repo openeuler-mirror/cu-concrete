@@ -1,0 +1,7 @@
+id: api.result_query
+name: 结果查询
+category: api
+order: 40
+entry: plugin:ResultQueryPlugin
+standalone: true
+description: 列出 data/results 下结果文件
