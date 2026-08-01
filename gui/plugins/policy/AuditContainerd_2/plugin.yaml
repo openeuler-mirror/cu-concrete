@@ -1,0 +1,12 @@
+id: policy.AuditContainerd_2
+name: AuditContainerd_2
+category: policy
+order: 34
+entry: plugin:Policy_AuditContainerd_2_Plugin
+standalone: true
+description: 为containerd.pid配置审计功能
+policy_name: AuditContainerd_2
+department: 2
+tags:
+  - policy
+  - dept2
