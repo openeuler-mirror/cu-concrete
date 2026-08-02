@@ -1,0 +1,12 @@
+id: policy.AuditService_5
+name: AuditService_5
+category: policy
+order: 39
+entry: plugin:Policy_AuditService_5_Plugin
+standalone: true
+description: 为docker.service进程配置审计功能
+policy_name: AuditService_5
+department: 2
+tags:
+  - policy
+  - dept2
