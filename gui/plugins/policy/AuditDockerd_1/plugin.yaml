@@ -1,0 +1,12 @@
+id: policy.AuditDockerd_1
+name: AuditDockerd_1
+category: policy
+order: 36
+entry: plugin:Policy_AuditDockerd_1_Plugin
+standalone: true
+description: 为/usr/bin/dockerd文件配置审计功能
+policy_name: AuditDockerd_1
+department: 2
+tags:
+  - policy
+  - dept2
