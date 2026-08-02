@@ -1,0 +1,12 @@
+id: policy.CheckEmptyAccount_1
+name: CheckEmptyAccount_1
+category: policy
+order: 2
+entry: plugin:Policy_CheckEmptyAccount_1_Plugin
+standalone: true
+description: 空口令检查
+policy_name: CheckEmptyAccount_1
+department: 1
+tags:
+  - policy
+  - dept1
