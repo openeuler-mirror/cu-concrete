@@ -1,0 +1,12 @@
+id: policy.AuditUsContainerd_12
+name: AuditUsContainerd_12
+category: policy
+order: 43
+entry: plugin:Policy_AuditUsContainerd_12_Plugin
+standalone: true
+description: 为/usr/bin/containerd配置审计功能
+policy_name: AuditUsContainerd_12
+department: 2
+tags:
+  - policy
+  - dept2
