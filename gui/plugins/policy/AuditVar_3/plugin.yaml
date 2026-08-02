@@ -1,0 +1,12 @@
+id: policy.AuditVar_3
+name: AuditVar_3
+category: policy
+order: 44
+entry: plugin:Policy_AuditVar_3_Plugin
+standalone: true
+description: 为/var/lib/docker配置审计功能
+policy_name: AuditVar_3
+department: 2
+tags:
+  - policy
+  - dept2
