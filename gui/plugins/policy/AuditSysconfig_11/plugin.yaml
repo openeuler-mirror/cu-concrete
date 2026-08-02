@@ -1,0 +1,12 @@
+id: policy.AuditSysconfig_11
+name: AuditSysconfig_11
+category: policy
+order: 42
+entry: plugin:Policy_AuditSysconfig_11_Plugin
+standalone: true
+description: 为/etc/sysconfig/docker配置审计功能
+policy_name: AuditSysconfig_11
+department: 2
+tags:
+  - policy
+  - dept2
