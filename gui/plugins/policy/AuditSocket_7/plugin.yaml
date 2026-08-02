@@ -1,0 +1,12 @@
+id: policy.AuditSocket_7
+name: AuditSocket_7
+category: policy
+order: 41
+entry: plugin:Policy_AuditSocket_7_Plugin
+standalone: true
+description: 为/var/run/docker.sock配置审计功能
+policy_name: AuditSocket_7
+department: 2
+tags:
+  - policy
+  - dept2
