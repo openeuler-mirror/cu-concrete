@@ -1,0 +1,12 @@
+id: policy.AuditSock_6
+name: AuditSock_6
+category: policy
+order: 40
+entry: plugin:Policy_AuditSock_6_Plugin
+standalone: true
+description: 为containerd.sock配置审计功能
+policy_name: AuditSock_6
+department: 2
+tags:
+  - policy
+  - dept2
