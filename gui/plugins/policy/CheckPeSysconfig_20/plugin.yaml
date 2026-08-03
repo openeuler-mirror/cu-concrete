@@ -1,0 +1,12 @@
+id: policy.CheckPeSysconfig_20
+name: CheckPeSysconfig_20
+category: policy
+order: 54
+entry: plugin:Policy_CheckPeSysconfig_20_Plugin
+standalone: true
+description: 修改/etc/sysconfig/docker文件权限
+policy_name: CheckPeSysconfig_20
+department: 2
+tags:
+  - policy
+  - dept2
