@@ -1,0 +1,12 @@
+id: policy.DeleteKeyword_17
+name: DeleteKeyword_17
+category: policy
+order: 9
+entry: plugin:Policy_DeleteKeyword_17_Plugin
+standalone: true
+description: 删除带有特定记录的log
+policy_name: DeleteKeyword_17
+department: 1
+tags:
+  - policy
+  - dept1
