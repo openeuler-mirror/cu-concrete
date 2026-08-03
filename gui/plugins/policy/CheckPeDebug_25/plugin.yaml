@@ -1,0 +1,12 @@
+id: policy.CheckPeDebug_25
+name: CheckPeDebug_25
+category: policy
+order: 50
+entry: plugin:Policy_CheckPeDebug_25_Plugin
+standalone: true
+description: 修改containerd-debug.sock文件权限
+policy_name: CheckPeDebug_25
+department: 2
+tags:
+  - policy
+  - dept2
