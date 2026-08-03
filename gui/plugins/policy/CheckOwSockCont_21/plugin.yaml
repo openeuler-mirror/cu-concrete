@@ -1,0 +1,12 @@
+id: policy.CheckOwSockCont_21
+name: CheckOwSockCont_21
+category: policy
+order: 48
+entry: plugin:Policy_CheckOwSockCont_21_Plugin
+standalone: true
+description: 修改containerd.sock文件所有者
+policy_name: CheckOwSockCont_21
+department: 2
+tags:
+  - policy
+  - dept2
