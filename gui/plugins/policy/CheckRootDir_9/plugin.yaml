@@ -1,0 +1,12 @@
+id: policy.CheckRootDir_9
+name: CheckRootDir_9
+category: policy
+order: 4
+entry: plugin:Policy_CheckRootDir_9_Plugin
+standalone: true
+description: rootdir权限设定
+policy_name: CheckRootDir_9
+department: 1
+tags:
+  - policy
+  - dept1
