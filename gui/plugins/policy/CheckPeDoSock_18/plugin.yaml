@@ -1,0 +1,12 @@
+id: policy.CheckPeDoSock_18
+name: CheckPeDoSock_18
+category: policy
+order: 51
+entry: plugin:Policy_CheckPeDoSock_18_Plugin
+standalone: true
+description: 修改/var/run/docker.sock文件权限
+policy_name: CheckPeDoSock_18
+department: 2
+tags:
+  - policy
+  - dept2
