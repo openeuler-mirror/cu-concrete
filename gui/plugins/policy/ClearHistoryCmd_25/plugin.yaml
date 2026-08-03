@@ -1,0 +1,12 @@
+id: policy.ClearHistoryCmd_25
+name: ClearHistoryCmd_25
+category: policy
+order: 6
+entry: plugin:Policy_ClearHistoryCmd_25_Plugin
+standalone: true
+description: 删除历史命令行记录
+policy_name: ClearHistoryCmd_25
+department: 1
+tags:
+  - policy
+  - dept1
