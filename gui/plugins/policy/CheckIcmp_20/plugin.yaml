@@ -1,0 +1,12 @@
+id: policy.CheckIcmp_20
+name: CheckIcmp_20
+category: policy
+order: 3
+entry: plugin:Policy_CheckIcmp_20_Plugin
+standalone: true
+description: 禁止响应ping,避免被扫描发现
+policy_name: CheckIcmp_20
+department: 1
+tags:
+  - policy
+  - dept1
