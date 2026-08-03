@@ -1,0 +1,12 @@
+id: policy.DisableFtpAnonymous_21
+name: DisableFtpAnonymous_21
+category: policy
+order: 10
+entry: plugin:Policy_DisableFtpAnonymous_21_Plugin
+standalone: true
+description: 禁止匿名账户登录ftp
+policy_name: DisableFtpAnonymous_21
+department: 1
+tags:
+  - policy
+  - dept1
