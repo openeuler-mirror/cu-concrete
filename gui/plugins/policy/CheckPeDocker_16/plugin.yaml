@@ -1,0 +1,12 @@
+id: policy.CheckPeDocker_16
+name: CheckPeDocker_16
+category: policy
+order: 52
+entry: plugin:Policy_CheckPeDocker_16_Plugin
+standalone: true
+description: 修改/etc/docker文件权限
+policy_name: CheckPeDocker_16
+department: 2
+tags:
+  - policy
+  - dept2
