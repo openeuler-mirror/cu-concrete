@@ -1,0 +1,12 @@
+id: policy.CheckOwDebug_24
+name: CheckOwDebug_24
+category: policy
+order: 45
+entry: plugin:Policy_CheckOwDebug_24_Plugin
+standalone: true
+description: 修改containerd-debug.sock文件所有者 
+policy_name: CheckOwDebug_24
+department: 2
+tags:
+  - policy
+  - dept2
