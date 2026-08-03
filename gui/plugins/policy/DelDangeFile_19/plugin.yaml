@@ -1,0 +1,12 @@
+id: policy.DelDangeFile_19
+name: DelDangeFile_19
+category: policy
+order: 7
+entry: plugin:Policy_DelDangeFile_19_Plugin
+standalone: true
+description: 删除.netrc,.rhosts的文件
+policy_name: DelDangeFile_19
+department: 1
+tags:
+  - policy
+  - dept1
