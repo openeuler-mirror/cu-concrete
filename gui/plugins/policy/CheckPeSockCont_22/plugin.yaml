@@ -1,0 +1,12 @@
+id: policy.CheckPeSockCont_22
+name: CheckPeSockCont_22
+category: policy
+order: 53
+entry: plugin:Policy_CheckPeSockCont_22_Plugin
+standalone: true
+description: 修改containerd.sock文件权限
+policy_name: CheckPeSockCont_22
+department: 2
+tags:
+  - policy
+  - dept2
