@@ -1,0 +1,12 @@
+id: policy.CheckUidZero_4
+name: CheckUidZero_4
+category: policy
+order: 5
+entry: plugin:Policy_CheckUidZero_4_Plugin
+standalone: true
+description: uid为0用户检查
+policy_name: CheckUidZero_4
+department: 1
+tags:
+  - policy
+  - dept1
