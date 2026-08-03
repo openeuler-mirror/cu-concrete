@@ -1,0 +1,12 @@
+id: policy.CheckOwSysconfig_19
+name: CheckOwSysconfig_19
+category: policy
+order: 49
+entry: plugin:Policy_CheckOwSysconfig_19_Plugin
+standalone: true
+description: 修改/etc/sysconfig/docker文件所有者
+policy_name: CheckOwSysconfig_19
+department: 2
+tags:
+  - policy
+  - dept2
