@@ -1,0 +1,12 @@
+id: policy.CheckOwDocker_15
+name: CheckOwDocker_15
+category: policy
+order: 47
+entry: plugin:Policy_CheckOwDocker_15_Plugin
+standalone: true
+description: 修改/etc/docker文件所有者
+policy_name: CheckOwDocker_15
+department: 2
+tags:
+  - policy
+  - dept2
