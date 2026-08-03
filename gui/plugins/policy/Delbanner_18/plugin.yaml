@@ -1,0 +1,12 @@
+id: policy.Delbanner_18
+name: Delbanner_18
+category: policy
+order: 8
+entry: plugin:Policy_Delbanner_18_Plugin
+standalone: true
+description: 会话界面的提醒字符段备份并删除
+policy_name: Delbanner_18
+department: 1
+tags:
+  - policy
+  - dept1
