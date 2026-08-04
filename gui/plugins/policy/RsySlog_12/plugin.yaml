@@ -1,0 +1,12 @@
+id: policy.RsySlog_12
+name: RsySlog_12
+category: policy
+order: 23
+entry: plugin:Policy_RsySlog_12_Plugin
+standalone: true
+description: 设置远程log的存放
+policy_name: RsySlog_12
+department: 1
+tags:
+  - policy
+  - dept1
