@@ -1,0 +1,12 @@
+id: policy.LockFile_29
+name: LockFile_29
+category: policy
+order: 13
+entry: plugin:Policy_LockFile_29_Plugin
+standalone: true
+description: 锁定关键文件
+policy_name: LockFile_29
+department: 1
+tags:
+  - policy
+  - dept1
