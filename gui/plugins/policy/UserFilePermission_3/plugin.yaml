@@ -1,0 +1,12 @@
+id: policy.UserFilePermission_3
+name: UserFilePermission_3
+category: policy
+order: 30
+entry: plugin:Policy_UserFilePermission_3_Plugin
+standalone: true
+description: 账户权限设置
+policy_name: UserFilePermission_3
+department: 1
+tags:
+  - policy
+  - dept1
