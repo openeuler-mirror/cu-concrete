@@ -1,0 +1,12 @@
+id: policy.SysLog_11
+name: SysLog_11
+category: policy
+order: 28
+entry: plugin:Policy_SysLog_11_Plugin
+standalone: true
+description: 本地系统日志设定
+policy_name: SysLog_11
+department: 1
+tags:
+  - policy
+  - dept1
