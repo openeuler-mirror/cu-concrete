@@ -1,0 +1,12 @@
+id: policy.deleteUserDocker_23
+name: deleteUserDocker_23
+category: policy
+order: 55
+entry: plugin:Policy_deleteUserDocker_23_Plugin
+standalone: true
+description: 删除docker组未被信任的用户,增加信任用户
+policy_name: deleteUserDocker_23
+department: 2
+tags:
+  - policy
+  - dept2
