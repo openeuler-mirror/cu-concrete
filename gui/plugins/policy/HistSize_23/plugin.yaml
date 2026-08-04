@@ -1,0 +1,12 @@
+id: policy.HistSize_23
+name: HistSize_23
+category: policy
+order: 12
+entry: plugin:Policy_HistSize_23_Plugin
+standalone: true
+description: 控制当前bash会话中保留的命令
+policy_name: HistSize_23
+department: 1
+tags:
+  - policy
+  - dept1
