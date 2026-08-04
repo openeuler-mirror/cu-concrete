@@ -1,0 +1,12 @@
+id: policy.LoginTmout_10
+name: LoginTmout_10
+category: policy
+order: 15
+entry: plugin:Policy_LoginTmout_10_Plugin
+standalone: true
+description: 用户会话无操作时长中断设定
+policy_name: LoginTmout_10
+department: 1
+tags:
+  - policy
+  - dept1
