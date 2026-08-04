@@ -1,0 +1,12 @@
+id: policy.Telent_15
+name: Telent_15
+category: policy
+order: 29
+entry: plugin:Policy_Telent_15_Plugin
+standalone: true
+description: 关闭telent,使用openssh
+policy_name: Telent_15
+department: 1
+tags:
+  - policy
+  - dept1
