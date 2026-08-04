@@ -1,0 +1,12 @@
+id: policy.LoginUserLock_7
+name: LoginUserLock_7
+category: policy
+order: 16
+entry: plugin:Policy_LoginUserLock_7_Plugin
+standalone: true
+description: ssh密码输入错误锁定账户的设定
+policy_name: LoginUserLock_7
+department: 1
+tags:
+  - policy
+  - dept1
