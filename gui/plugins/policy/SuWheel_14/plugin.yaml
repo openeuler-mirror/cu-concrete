@@ -1,0 +1,12 @@
+id: policy.SuWheel_14
+name: SuWheel_14
+category: policy
+order: 27
+entry: plugin:Policy_SuWheel_14_Plugin
+standalone: true
+description: su权限的设定
+policy_name: SuWheel_14
+department: 1
+tags:
+  - policy
+  - dept1
