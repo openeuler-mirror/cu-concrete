@@ -1,0 +1,12 @@
+id: policy.PassRepe_26
+name: PassRepe_26
+category: policy
+order: 17
+entry: plugin:Policy_PassRepe_26_Plugin
+standalone: true
+description: 密码不能与历史的5个密码相同
+policy_name: PassRepe_26
+department: 1
+tags:
+  - policy
+  - dept1
