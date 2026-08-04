@@ -1,0 +1,12 @@
+id: policy.SSHRoot_22
+name: SSHRoot_22
+category: policy
+order: 24
+entry: plugin:Policy_SSHRoot_22_Plugin
+standalone: true
+description: 修改ssh登录端口
+policy_name: SSHRoot_22
+department: 1
+tags:
+  - policy
+  - dept1
