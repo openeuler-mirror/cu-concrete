@@ -1,0 +1,12 @@
+id: policy.ForbiIp_30
+name: ForbiIp_30
+category: policy
+order: 11
+entry: plugin:Policy_ForbiIp_30_Plugin
+standalone: true
+description: 禁止ip路由转发
+policy_name: ForbiIp_30
+department: 1
+tags:
+  - policy
+  - dept1
