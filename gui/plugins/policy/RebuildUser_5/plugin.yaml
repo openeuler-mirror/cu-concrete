@@ -1,0 +1,12 @@
+id: policy.RebuildUser_5
+name: RebuildUser_5
+category: policy
+order: 20
+entry: plugin:Policy_RebuildUser_5_Plugin
+standalone: true
+description: 用户密码长度和有效期相关设定
+policy_name: RebuildUser_5
+department: 1
+tags:
+  - policy
+  - dept1
