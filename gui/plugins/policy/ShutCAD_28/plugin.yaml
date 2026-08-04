@@ -1,0 +1,12 @@
+id: policy.ShutCAD_28
+name: ShutCAD_28
+category: policy
+order: 26
+entry: plugin:Policy_ShutCAD_28_Plugin
+standalone: true
+description: 关闭ctrl+alt+del重启功能
+policy_name: ShutCAD_28
+department: 1
+tags:
+  - policy
+  - dept1
