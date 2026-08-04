@@ -1,0 +1,12 @@
+id: policy.SetCrack_6
+name: SetCrack_6
+category: policy
+order: 25
+entry: plugin:Policy_SetCrack_6_Plugin
+standalone: true
+description: 修改密码相关限制
+policy_name: SetCrack_6
+department: 1
+tags:
+  - policy
+  - dept1
