@@ -1,0 +1,12 @@
+id: policy.LockingInvalidAccount_2
+name: LockingInvalidAccount_2
+category: policy
+order: 14
+entry: plugin:Policy_LockingInvalidAccount_2_Plugin
+standalone: true
+description: 锁定无效用户
+policy_name: LockingInvalidAccount_2
+department: 1
+tags:
+  - policy
+  - dept1
