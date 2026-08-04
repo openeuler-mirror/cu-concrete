@@ -1,0 +1,12 @@
+id: policy.RebuildUmask_8
+name: RebuildUmask_8
+category: policy
+order: 19
+entry: plugin:Policy_RebuildUmask_8_Plugin
+standalone: true
+description: umask设置用户文件权限
+policy_name: RebuildUmask_8
+department: 1
+tags:
+  - policy
+  - dept1
