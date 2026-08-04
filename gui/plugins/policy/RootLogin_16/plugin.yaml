@@ -1,0 +1,12 @@
+id: policy.RootLogin_16
+name: RootLogin_16
+category: policy
+order: 22
+entry: plugin:Policy_RootLogin_16_Plugin
+standalone: true
+description: 禁止root账户ssh登录
+policy_name: RootLogin_16
+department: 1
+tags:
+  - policy
+  - dept1
