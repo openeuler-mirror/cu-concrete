@@ -1,0 +1,12 @@
+id: policy.ReUserShell_24
+name: ReUserShell_24
+category: policy
+order: 18
+entry: plugin:Policy_ReUserShell_24_Plugin
+standalone: true
+description: 修改特定用户的shell域
+policy_name: ReUserShell_24
+department: 1
+tags:
+  - policy
+  - dept1
