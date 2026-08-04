@@ -1,0 +1,12 @@
+id: policy.Resetlsrm_27
+name: Resetlsrm_27
+category: policy
+order: 21
+entry: plugin:Policy_Resetlsrm_27_Plugin
+standalone: true
+description: 修改ls、rm的显示信息
+policy_name: Resetlsrm_27
+department: 1
+tags:
+  - policy
+  - dept1
