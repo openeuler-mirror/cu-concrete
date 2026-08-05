@@ -1,0 +1,7 @@
+id: utility.diagnostics
+name: 环境自检
+category: utility
+order: 50
+entry: plugin:DiagnosticsPlugin
+standalone: true
+description: 检查 GTK、仓库路径、策略目录是否可用
