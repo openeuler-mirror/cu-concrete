@@ -1,0 +1,7 @@
+id: shell.logs
+name: 日志
+category: shell
+order: 40
+entry: plugin:LogsPlugin
+standalone: true
+description: 查看 GUI 与业务日志
