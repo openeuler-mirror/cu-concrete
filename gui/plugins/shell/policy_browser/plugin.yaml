@@ -1,0 +1,7 @@
+id: shell.policy_browser
+name: 策略浏览
+category: shell
+order: 50
+entry: plugin:PolicyBrowserPlugin
+standalone: true
+description: 按部门浏览全部策略元数据
