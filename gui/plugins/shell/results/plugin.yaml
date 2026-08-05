@@ -1,0 +1,7 @@
+id: shell.results
+name: 结果展示
+category: shell
+order: 80
+entry: plugin:ResultsPlugin
+standalone: true
+description: 订阅并展示操作结果
