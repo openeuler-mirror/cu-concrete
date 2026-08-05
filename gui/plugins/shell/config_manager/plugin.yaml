@@ -1,0 +1,7 @@
+id: shell.config_manager
+name: 配置管理
+category: shell
+order: 60
+entry: plugin:ConfigManagerPlugin
+standalone: true
+description: 查看/编辑 GUI 配置
