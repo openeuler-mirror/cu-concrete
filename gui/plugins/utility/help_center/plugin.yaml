@@ -1,0 +1,7 @@
+id: utility.help_center
+name: 帮助中心
+category: utility
+order: 10
+entry: plugin:HelpCenterPlugin
+standalone: true
+description: 索引全部插件 README 与操作说明
