@@ -1,0 +1,7 @@
+id: shell.settings
+name: 设置
+category: shell
+order: 90
+entry: plugin:SettingsPlugin
+standalone: true
+description: 界面偏好设置
