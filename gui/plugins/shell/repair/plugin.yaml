@@ -1,0 +1,7 @@
+id: shell.repair
+name: 修复
+category: shell
+order: 30
+entry: plugin:RepairPlugin
+standalone: true
+description: 对异常策略项执行 reset()
