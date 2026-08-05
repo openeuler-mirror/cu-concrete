@@ -1,0 +1,7 @@
+id: utility.import_export
+name: 导入导出
+category: utility
+order: 20
+entry: plugin:ImportExportPlugin
+standalone: true
+description: 导出插件列表/结果摘要，导入选中项列表
