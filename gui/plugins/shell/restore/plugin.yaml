@@ -1,0 +1,7 @@
+id: shell.restore
+name: 还原
+category: shell
+order: 20
+entry: plugin:RestorePlugin
+standalone: true
+description: 对已加固策略项执行 rollback()
