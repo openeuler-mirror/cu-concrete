@@ -1,0 +1,7 @@
+id: shell.about
+name: 关于
+category: shell
+order: 100
+entry: plugin:AboutPlugin
+standalone: true
+description: 版本与项目信息
