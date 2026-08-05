@@ -1,0 +1,7 @@
+id: shell.harden
+name: 加固
+category: shell
+order: 10
+entry: plugin:HardenPlugin
+standalone: true
+description: 对未加固策略项执行 fix()
