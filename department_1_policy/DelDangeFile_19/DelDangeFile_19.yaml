@@ -3,9 +3,8 @@ dep: 1
 #加固项编号
 id: 19
 query:
+    path: '/home'
     form: 
         - '.netrc'
         - '.rhosts'
-
-
 description: "删除.netrc,.rhosts的文件"
