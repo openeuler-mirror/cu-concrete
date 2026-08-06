@@ -4,9 +4,9 @@ dep: 1
 id: 1
 query:
   - path: "/etc/shadow" #配置文件路径
-    form: '( $2 == "") { print $1 }'  #正则表达式
+    form: '( $2 == "" || $2 == "!" || $2 == "*" || $2 == "!*") { print $1 }'  #正则表达式
 change:
   - set: "chpasswd"
-    value: "123@123!"
+    value: "123@cuos!!"
 backup_path: "/etc/shadow_bak"
 description: '空口令检查'
