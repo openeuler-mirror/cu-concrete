@@ -99,6 +99,18 @@ rm -rf /var/log/cu-concrete/
 rm -rf /etc/cu-concrete/
 
 %changelog
+* Fri Jul 17 2026 YueShuolei <yuesl6@chinaunicom.cn> - 1.2-6
+- fix: modify desktop name
+
+* Thu Jul 16 2026 YueShuolei <yuesl6@chinaunicom.cn> - 1.2-5
+- fix: Bug fixes for security hardening items
+
+* Tue Jun 16 2026 YueShuolei <yuesl6@chinaunicom.cn> - 1.2-4
+- feat: Fix uvicorn package and desktop display bug
+
+* Fri May 08 2026 YueShuolei <yuesl6@chinaunicom.cn> - 1.2-3
+- feat: Add Patent Module for Task Processing
+
 * Fri Feb 27 2026 GuoCe <guoc63@chinaunicom.cn> - 1.2-2
 - feat: use shred to enhance rm command secure erasure
 
