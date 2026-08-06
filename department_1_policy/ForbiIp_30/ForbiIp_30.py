@@ -56,12 +56,11 @@ class ForbiIp_30(base_fix):
         self.finalfix()
     
     def check(self):
-        except_value=True
-        cmd=['sysctl','-n',self.config['change']['set']]
-        result=base_shell(cmd)
+        except_value = True
+        cmd = ['sysctl', '-n', self.config['change']['set']]
+        result = base_shell(cmd)
         if '0' not in result[0]:
-            except_value=False
-        
+            except_value = False
         return except_value
     
     def rollback(self):
