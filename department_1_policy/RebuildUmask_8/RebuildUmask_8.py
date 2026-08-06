@@ -45,7 +45,7 @@ class RebuildUmask_8(base_fix):
             bsf.sed_shell(flag[0],self.config['change']['value'],self.config['query']['path'])
         else:
             cmd=['sudo','tee','-a',self.config['query']['path']]
-            base_shell(cmd,input=self.config['change']['value'])
+            base_shell(cmd,input=f"\n{self.config['change']['value']}")
         cmd = ['bash', '-c', 'source {}'.format(self.config['query']['path'])]
         base_shell(cmd)
         data='type:fix,des:{}'.format(self.config['description'])
@@ -68,7 +68,7 @@ class RebuildUmask_8(base_fix):
             bsf.sed_shell(flag[0],self.config['recovery']['value'],self.config['query']['path'])
         else:
             cmd=['sudo','tee','-a',self.config['query']['path']]
-            base_shell(cmd,input=self.config['recovery']['value'])
+            base_shell(cmd,input=f"\n{self.config['recovery']['value']}")
         cmd = ['bash', '-c', 'source {}'.format(self.config['query']['path'])]
         base_shell(cmd)
         result = self.check()
