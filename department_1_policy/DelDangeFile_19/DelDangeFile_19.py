@@ -42,78 +42,68 @@ class DelDangeFile_19(base_fix):
         self.status_form.loc[str(self.config['dep'])+str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
         
-        # 查找危险文件
-        cmd=['find','/home','-type','f','-name',self.config['query']['form'][0]]
-        cmd2=['find','/home','-type','f','-name',self.config['query']['form'][1]]
+        # 搜索并处理危险文件
+        home_dir = self.config['query']['path']
+        for file_name in self.config['query']['form']:
+            cmd = ['find', home_dir, '-type', 'f', '-name', file_name]
+            result = base_shell(cmd)
+            if result[1] == 0 and result[0]:
+                file_list = result[0].strip().split('\n')
+                for file_path in file_list:
+                    if file_path:
+                        # 备份文件（_bak后缀）
+                        bsf.cp_shell(file_path, file_path + '_bak')
+                        # 删除原文件
+                        cmd_rm = ['rm', '-f', file_path]
+                        base_shell(cmd_rm)
         
-        result1=base_shell(cmd)
-        result2=base_shell(cmd2)
-        # 处理查找到的文件
-        if result1[1] == 0 and result1[0]:  # 如果命令执行成功且找到了文件
-            files1 = result1[0].strip().split('\n')
-
-            for file_path in files1:
-                if file_path:  # 确保路径不为空
-                    # 备份文件
-                    bsf.cp_shell(file_path, file_path+'.bak')
-                    # 删除文件
-                    cmd_rm = ['rm', '-f', file_path]
-                    base_shell(cmd_rm)
-                    
-        if result2[1] == 0 and result2[0]:  # 如果命令执行成功且找到了文件
-            files2 = result2[0].strip().split('\n')
-            for file_path in files2:
-                if file_path:  # 确保路径不为空
-                    # 备份文件
-                    bsf.cp_shell(file_path, file_path+'.bak')
-                    # 删除文件
-                    cmd_rm = ['rm', '-f', file_path]
-                    base_shell(cmd_rm)
-                    
-        data='type:fix,des:{}'.format(self.config['description'])
-        logging.info(data) 
-        self.finalfix() 
+        data = 'type:fix,des:{}'.format(self.config['description'])
+        logging.info(data)
+        self.finalfix()
 
     def check(self):
-        except_value=True
-        cmd=['find','/home','-type','f','-name',self.config['query']['form'][0]]
-        cmd2=['find','/home','-type','f','-name',self.config['query']['form'][1]]
-        result1=base_shell(cmd)
-        result2=base_shell(cmd2)
+        except_value = True
+        home_dir = self.config['query']['path']
+        dangerous_files = self.config['query']['form']  # ['.netrc', '.rhosts']
         
-        # # 输出调试信息（实际使用时应该移除）
-        # print(result1,result2,self.config['query']['form'])
+        # 遍历/home目录检查是否存在危险文件
+        for root, dirs, files in os.walk(home_dir):
+            for file in files:
+                if file in dangerous_files:
+                    except_value = False
+                    return except_value
         
-        # 检查是否有找到危险文件
-        # 如果命令执行成功（返回码为0）且找到了文件（stdout不为空），则需要加固
-        if (result1[1] == 0 and result1[0]) or (result2[1] == 0 and result2[0]):
-            except_value=False
         return except_value
     
     def rollback(self):
-        # 在回滚时，应该恢复备份的文件
-        cmd=['find','/home','-type','f','-name',self.config['query']['form'][0]+'.bak']
-        cmd2=['find','/home','-type','f','-name',self.config['query']['form'][1]+'.bak']
-        
-        result1=base_shell(cmd)
-        result2=base_shell(cmd2)
-        
-        if result1[1] == 0 and result1[0]:
-            backup_files1 = result1[0].strip().split('\n')
-            for backup_file in backup_files1:
-                if backup_file and backup_file.endswith('.bak'):
-                    original_file = backup_file[:-4]  # 移除.bak后缀
-                    bsf.cp_shell(backup_file, original_file)
-                    
-        if result2[1] == 0 and result2[0]:
-            backup_files2 = result2[0].strip().split('\n')
-            for backup_file in backup_files2:
-                if backup_file and backup_file.endswith('.bak'):
-                    original_file = backup_file[:-4]  # 移除.bak后缀
-                    bsf.cp_shell(backup_file, original_file)
-        
+        home_dir = self.config['query']['path']
+        for file_name in self.config['query']['form']:
+            # 1. 先查找原始文件是否存在
+            cmd_find = ['find', home_dir, '-type', 'f', '-name', file_name]
+            result = base_shell(cmd_find)
+
+            if result[1] == 0 and result[0]:
+                # 原始文件已存在，跳过
+                continue
+
+            # 2. 原始文件不存在，查找备份文件
+            cmd_find_bak = ['find', home_dir, '-type', 'f', '-name', file_name + '_bak']
+            result_bak = base_shell(cmd_find_bak)
+
+            if result_bak[1] == 0 and result_bak[0]:
+                # 3. 有备份文件，重命名恢复
+                backup_files = result_bak[0].strip().split('\n')
+                for backup_file in backup_files:
+                    if backup_file and backup_file.endswith('_bak'):
+                        original_file = backup_file[:-4]
+                        bsf.mv_shell(backup_file, original_file)
+            else:
+                # 4. 没有备份文件，创建空的原始文件
+                original_path = os.path.join(home_dir, file_name)
+                bsf.touch_shell(original_path)
+
+        # 更新状态
         result = self.check()
-        # 每次还原前都读取最新的 pkl，避免覆盖其他加固项状态
         if os.path.exists(self.pkl_file):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
@@ -125,7 +115,6 @@ class DelDangeFile_19(base_fix):
     def reset(self):
         self.rollback()
         self.fix()
-    
 
     def get_des(self):
         description=self.config['description']
