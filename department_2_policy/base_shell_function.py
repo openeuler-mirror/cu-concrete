@@ -33,7 +33,7 @@ class base_shell_function:
     
     @staticmethod
     def mv_shell(source_path,new_path):
-        cmd=["mv","-p","source_path",new_path]
+        cmd=["mv",source_path,new_path]
         return base_shell(cmd)
 
     @staticmethod
