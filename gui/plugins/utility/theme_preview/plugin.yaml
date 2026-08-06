@@ -1,0 +1,7 @@
+id: utility.theme_preview
+name: 主题预览
+category: utility
+order: 30
+entry: plugin:ThemePreviewPlugin
+standalone: true
+description: 预览 GTK 控件外观（不影响业务）
