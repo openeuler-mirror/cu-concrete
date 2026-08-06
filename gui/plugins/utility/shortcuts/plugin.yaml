@@ -1,0 +1,7 @@
+id: utility.shortcuts
+name: 快捷键说明
+category: utility
+order: 40
+entry: plugin:ShortcutsPlugin
+standalone: true
+description: 列出推荐操作方式
