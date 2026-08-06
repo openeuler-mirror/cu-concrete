@@ -1,10 +1,10 @@
 Name:           cu-concrete
 Version:        1.2
-Release:        2
+Release:        6
 Summary:        A security hardening tool for system configuration
 
 License:        MulanPSL v2
-URL:            liuk311@chinaunicom.cn
+URL:            yuesl6@chinaunicom.cn
 Source0:        %{name}.tar.gz
 BuildArch:      noarch
 
@@ -33,12 +33,12 @@ It supports compliance with CIS, 等级保护, and other security standards.
 
 %prep
 %setup -q -n %{name}-%{version} -c
-
+# %setup -q -n %{name}
 
 %build
 # 如果是纯脚本工具，无需编译，可留空或添加预处理脚本
 # 例如：生成版本信息、检查依赖等
-#echo "Building %{name}-%{version}"
+# echo "Building %{name}-%{version}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -47,12 +47,17 @@ mkdir -p %{buildroot}/usr/bin/
 mkdir -p %{buildroot}/usr/share/doc/cu-concrete/
 mkdir -p %{buildroot}/var/log/cu-concrete/
 mkdir -p %{buildroot}/etc/cu-concrete/
-
+mkdir -p %{buildroot}/usr/share/applications/
+mkdir -p %{buildroot}/usr/share/cu-concrete/
 
 # 复制主程序与配置文件
 cp -a * %{buildroot}/opt/cu-concrete/
 rm -f %{buildroot}/opt/cu-concrete/*.spec
 rm -f %{buildroot}/opt/cu-concrete/*.md
+
+# 复制 .desktop 和图标文件
+cp -a cu-concrete.desktop %{buildroot}/usr/share/applications/
+cp -a cu-concrete-logo.svg %{buildroot}/usr/share/cu-concrete/
 
 # 创建启动脚本软链接
 ln -sf /opt/cu-concrete/main.py %{buildroot}/usr/bin/cu-concrete
@@ -68,13 +73,22 @@ cp -a README.md LICENSE %{buildroot}/usr/share/doc/cu-concrete/
 /etc/cu-concrete/
 /var/log/cu-concrete/
 
+/usr/share/applications/%{name}.desktop
+/usr/share/cu-concrete/%{name}-logo.svg
+
 %post
 # 安装后操作：设置权限、注册服务（可选）
 chmod +x /opt/cu-concrete/*.py
 chmod +x /opt/cu-concrete/*.sh
+sed -i 's/\r$//' /opt/cu-concrete/*.py /opt/cu-concrete/*.sh
 chmod 755 /opt/cu-concrete
 find /opt/cu-concrete -type d -exec chmod 755 {} \;
 chown -R root:root /opt/cu-concrete/
+
+# 更新桌面数据库 - 让系统能识别新的.desktop文件
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database /usr/share/applications/ || true
+fi
 
 echo "cu-concrete installed successfully."
 
@@ -83,7 +97,6 @@ echo "cu-concrete installed successfully."
 rm -rf /opt/cu-concrete/
 rm -rf /var/log/cu-concrete/
 rm -rf /etc/cu-concrete/
-
 
 %changelog
 * Fri Feb 27 2026 GuoCe <guoc63@chinaunicom.cn> - 1.2-2
