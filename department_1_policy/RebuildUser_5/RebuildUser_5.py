@@ -73,50 +73,38 @@ class RebuildUser_5(base_fix):
         
         
     def check(self):
-        except_value=True
-        line = bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0]
+        # except_value = False 代表不安全，可加固
+        # except_value = True 代表安全，可还原
+        except_value = True
 
-        parts = line.split()  # 按换行字符分割
-        value = int(parts[1])  # 第二个元素是数值
- 
-        if value==99999:
-            except_value=False
-            
-        line = bsf.grep_shell(self.config['query']['form'][1],self.config['query']['path'])[0]
-        parts = line.split()  # 按空白字符分割
-        value = int(parts[1])  # 第二个元素是数值
+        for i in range(len(self.config['query']['form'])):
+            line = bsf.grep_shell(self.config['query']['form'][i], self.config['query']['path'])[0]
+            parts = line.split()
+            current_value = int(parts[1])
 
-        if value==5:
-            except_value=False
+            # 从 change 配置中解析期望值（取第二列数字）
+            expected_parts = self.config['change']['value'][i].split()
+            expected_value = int(expected_parts[1])
 
-        line = bsf.grep_shell(self.config['query']['form'][2],self.config['query']['path'])[0]
-        parts = line.split()  # 按空白字符分割
-        value = int(parts[1])  # 第二个元素是数值
+            if current_value != expected_value:
+                except_value = False
 
-        if value==0:
-            except_value=False
-            
-        line = bsf.grep_shell(self.config['query']['form'][3],self.config['query']['path'])[0]
-        parts = line.split()  # 按空白字符分割
-        value = int(parts[1])  # 第二个元素是数值
-
-        if value!=7:
-            except_value=False
         return except_value
 
     def rollback(self):
-        if bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0]!=None:
-            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][0],self.config['query']['path'])[0],self.config['recovery']['value'][0],self.config['query']['path']) 
+        
+        if bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0] is not None:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][0], self.config['query']['path'])[0],self.config['recovery']['value'][0],self.config['query']['path']) 
         else:
             bsf.append_line(self.config['recovery']['value'][0],self.config['query']['path'])
             
-        if bsf.grep_shell(self.config['query']['form'][1],self.config['query']['path'])[0]!=None:
-            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][1],self.config['query']['path'])[0],self.config['recovery']['value'][1],self.config['query']['path']) 
+        if bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0] is not None:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][1], self.config['query']['path'])[0],self.config['recovery']['value'][1],self.config['query']['path']) 
         else:
             bsf.append_line(self.config['recovery']['value'][1],self.config['query']['path'])
             
-        if bsf.grep_shell(self.config['query']['form'][2],self.config['query']['path'])[0]!=None:
-            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][2],self.config['query']['path'])[0],self.config['recovery']['value'][2],self.config['query']['path']) 
+        if bsf.grep_shell(self.config['query']['form'][2], self.config['query']['path'])[0] is not None:
+            bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][2], self.config['query']['path'])[0],self.config['recovery']['value'][2],self.config['query']['path']) 
         else:
             bsf.append_line(self.config['recovery']['value'][2], self.config['query']['path'])
 
@@ -124,14 +112,17 @@ class RebuildUser_5(base_fix):
             bsf.sed_shell(bsf.grep_shell(self.config['query']['form'][3], self.config['query']['path'])[0], self.config['recovery']['value'][3], self.config['query']['path'])
         else:
             bsf.append_line(self.config['recovery']['value'][3], self.config['query']['path'])
+
         result = self.check()
+        
         # 每次还原前都读取最新的 pkl，避免覆盖其他加固项状态
         if os.path.exists(self.pkl_file):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             bsf.append_line(self.config['recovery']['value'][3],self.config['query']['path'])
-        result=self.check()
-        if result==False:
+        
+        result = self.check()
+        if result==False:   # False 代表可加固状态
             self.status_form.loc[str(self.config['dep'])+str(self.config['id']),'status']=0
             self.status_form.to_pickle(self.pkl_file)
 
