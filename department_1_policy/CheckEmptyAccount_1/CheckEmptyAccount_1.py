@@ -13,9 +13,8 @@ from base_shell import base_shell
 import logging
 # import pandas as pd
 import Panda as pd
-logger = logging.getLogger(__name__)
-# TestCase-部门编号-子加固项名称-子加固项编号
-# 优化：统一日志变量命名
+logging.getLogger(__name__)
+#TestCase-部门编号-子加固项名称-子加固项编号
 class CheckEmptyAccount_1(base_fix):    
     def __init__(self):
         super().__init__()
@@ -50,7 +49,7 @@ class CheckEmptyAccount_1(base_fix):
             reuslt=base_shell(commond_list,input=input_data)
             if reuslt[1]!=0:
                 flag=False
-        data = f"type:fix,des:{self.config['description']}"
+        data='type:fix,des:{}'.format(self.config['description'])
         logging.info(data)
         self.finalfix()
         
