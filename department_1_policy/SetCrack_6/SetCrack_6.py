@@ -4,18 +4,15 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_dir)
 project_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(project_dir)
-import json
 import yaml
-import time
 from base_fix import base_fix
 from base_shell_function import base_shell_function as bsf
 from base_shell import base_shell
 import logging
-# import pandas as pd
 import Panda as pd
 logging.getLogger(__name__)
 #TestCase-部门编号-子加固项名称-子加固项编号
-class SetCrack_6(base_fix):    
+class SetCrack_6(base_fix):
     def __init__(self):
         super().__init__()
 
@@ -39,6 +36,7 @@ class SetCrack_6(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        
         self.status_form.loc[str(self.config['dep'])+str(self.config['id']), 'status'] = 1
         self.status_form.to_pickle(self.pkl_file)
         bsf.touch_shell(self.config['backup_path'])
@@ -67,6 +65,7 @@ class SetCrack_6(base_fix):
             self.status_form = pd.read_pickle(self.pkl_file)
         else:
             self.status_form = pd.DataFrame(columns=['status', 'module_name', 'module_path'])
+        
         bsf.cp_shell(self.config['backup_path'], self.config['query']['path'])
         result = self.check()
         if result == False:
