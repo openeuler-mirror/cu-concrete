@@ -1,5 +1,4 @@
 import pickle
-import copy
 class DataFrame:
     def __init__(self, columns=None):
         self._data = {}  # 刚开始是空字典，没有行 ✅
