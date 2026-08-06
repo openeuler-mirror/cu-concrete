@@ -43,6 +43,7 @@ class CheckUidZero_4(base_fix):
         self.status_form.to_pickle(self.pkl_file)
         bsf.cp_shell(self.config['query'][0]['path'],self.config['backup_path'])
         result=bsf.awk_shell(":",self.config['query'][0]['form'],self.config['query'][0]['path'])
+        # 只处理非root且uid=0的用户
         users = [user for user in result[0].splitlines() if user != 'root']
         for user in users:
             cmd=['id',user]
@@ -69,7 +70,9 @@ class CheckUidZero_4(base_fix):
             
 
     def rollback(self):
-        pass
+        # 首先从备份还原/etc/passwd文件
+        bsf.cp_shell(self.config['backup_path'], self.config['query'][0]['path'])
+        
         result = self.check()
         # 每次还原前都读取最新的 pkl，避免覆盖其他加固项状态
         if os.path.exists(self.pkl_file):
