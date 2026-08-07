@@ -1,8 +1,3 @@
-# 做事件总线, 实现功能：
-# 1、使用单例模式
-# 2、实现事业部 和 公司层 的加固项匹配
-# 3、生成ansible脚本 并生成记录
-
 from rest_framework.response import Response
 from rest_framework import status
 import threading
@@ -32,10 +27,6 @@ class Eventbus(Singleton):
         self._initialized = True
         
         # 两个独立的写锁
-        self.save_conf_content_lock = threading.Lock()
-        self.delete_conf_lock = threading.Lock()
-        self.generate_config_lock = threading.Lock()
-        self.save_generated_config_lock = threading.Lock()
 
     def eventbus_pool_list(self, request):
         """
@@ -43,3 +34,4 @@ class Eventbus(Singleton):
         """
         return pool_list(request)
         
+
