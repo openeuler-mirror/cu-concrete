@@ -1,12 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
-import csv
 from pathlib import Path
-import re
-import yaml
-import shutil
-import os
 import logging
 # 设置日志
 logger = logging.getLogger(__name__)
@@ -17,7 +12,6 @@ from drf_yasg import openapi
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render
-import uuid
 # 导入统一响应工具
 from .response_utils import ApiResponse, CommonResponses
 
@@ -25,17 +19,12 @@ from .response_utils import ApiResponse, CommonResponses
 from . import task_manager
 
 import pandas
-from django.http import JsonResponse
-import json
 # 导入事件总线
 from .eventbus import Eventbus
 # 创建事件总线对象
 event_bus = Eventbus()
-
-# 云池地址
-path= Path(__file__).parent / "config.yaml"
-with open(path, 'r', encoding='utf-8') as f:
-    CLOUD_POOLS = yaml.load(f,Loader=yaml.Loader)
+# 导入配置读取工具（云池与机器信息、安全配置记录）
+from .conf_utils import get_pool, get_config_record
 
 
 def index(request):
@@ -117,12 +106,14 @@ def index(request):
 def execute_playbook(request):
     """
     执行ansible-playbook脚本的接口（异步模式）
-    接收云池ID参数, 创建异步任务执行playbook
+    接收云池ID与安全配置名, 创建异步任务执行playbook
     
     同一云池内串行执行（互斥），不同云池并行执行
     
     Query Parameters:
         pool_id (str): 云池ID, 例如: pool-1, pool-2, pool-3
+        config_name (str): 安全配置文件名, 例如: playbook_xxx.yml（必填）
+            执行时使用该安全配置生成的 inventory.ini 作为机器清单、playbook.yml 作为执行脚本
     
     Returns:
         Response: 包含任务ID的响应对象
@@ -133,22 +124,34 @@ def execute_playbook(request):
                     "task_id": "任务ID",
                     "status": "running",
                     "pool_id": "云池ID",
-                    "pool_name": "云池名称"
+                    "pool_name": "云池名称",
+                    "config_name": "安全配置名"
                 }
             }
     """
     try:
-        # 从查询参数获取 pool_id
+        # 从查询参数获取 pool_id 与 config_name
         pool_id = request.query_params.get('pool_id')
+        config_name = request.query_params.get('config_name')
         
         if not pool_id:
             return CommonResponses.MISSING_PARAMETER('pool_id')
+        if not config_name:
+            return CommonResponses.MISSING_PARAMETER('config_name')
         
-        if pool_id not in CLOUD_POOLS:
+        pool = get_pool(pool_id)
+        if not pool:
             return CommonResponses.INVALID_PARAMETER(f'无效的云池ID: {pool_id}')
         
-        pool_info = CLOUD_POOLS[pool_id]
-        
+        # 读取所选安全配置（配置文件由后端解析，前端不参与）
+        config = get_config_record(pool_id, config_name)
+        if not config:
+            return CommonResponses.RESOURCE_NOT_FOUND(
+                f'云池 {pool_id} 中未找到安全配置: {config_name}')
+        if not (config.get('serverConfigPath') and config.get('execFilePath')):
+            return CommonResponses.RESOURCE_NOT_FOUND(
+                f'安全配置 {config_name} 的配置文件缺失，无法执行')
+
         # 检查云池是否正在运行任务（同一云池串行）
         if task_manager.is_pool_running(pool_id):
             return CommonResponses.CONFLICT(f'云池 {pool_id} 正在执行其他任务，请稍后再试')
@@ -158,19 +161,20 @@ def execute_playbook(request):
             return CommonResponses.CONFLICT(f'云池 {pool_id} 正在执行其他任务，请稍后再试')
         
         # 创建任务
-        task_id = task_manager.create_task(pool_id, pool_info['name'])
+        task_id = task_manager.create_task(pool_id, pool['name'], config_name=config_name)
         
-        # 启动异步执行
-        task_manager.run_ansible_playbook_async(task_id, pool_id, pool_info)
+        # 启动异步执行（使用配置中的 inventory + playbook）
+        task_manager.run_ansible_playbook_async(task_id, pool_id, pool, config=config)
         
-        logger.info(f"任务 {task_id} 已提交，云池: {pool_id}")
+        logger.info(f"任务 {task_id} 已提交，云池: {pool_id}，安全配置: {config_name}")
         
         # 立即返回任务信息
         return CommonResponses.OPERATION_SUCCESS({
             'task_id': task_id,
             'status': 'running',
             'pool_id': pool_id,
-            'pool_name': pool_info['name']
+            'pool_name': pool['name'],
+            'config_name': config_name
         }, message='任务已提交')
         
     except Exception as e:
@@ -759,165 +763,51 @@ def get_task_logs_view(request):
 @api_view(['GET'])
 def pool_hosts(request):
     """
-    获取云池的机器列表
-    
+    获取云池的机器列表（全部由后端解析）
+
     Query Parameters:
         pool_id (str): 云池ID
+        config_name (str, optional): 安全配置文件名
+            - 不传: 读取 conf_cloud_pools_info.yaml 中该云池的机器台账
+            - 传入: 解析该安全配置对应的 inventory（任务执行页使用）
         
     Returns:
         机器列表
     """
     try:
         pool_id = request.query_params.get('pool_id')
+        config_name = request.query_params.get('config_name')
         if not pool_id:
             return CommonResponses.MISSING_PARAMETER('pool_id')
         
-        if pool_id not in CLOUD_POOLS:
+        if not get_pool(pool_id):
             return CommonResponses.RESOURCE_NOT_FOUND(f'云池 {pool_id} 不存在')
         
-        pool_info = CLOUD_POOLS[pool_id]
-
-        # 从云池配置中获取机器列表
-        hosts = []
-        
-        # 优先从ansible_inventory文件读取
-        inventory_path = pool_info.get('ansible_inventory')
-        if inventory_path and os.path.exists(inventory_path):
-            with open(inventory_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    # 跳过空行、注释行、组定义行和变量定义行
-                    if line and not line.startswith('[') and not line.startswith('#') and not line.startswith('ansible_'):
-                        hosts.append({'name': line, 'ip': line})
-        else:
-            # 回退到hosts或list字段
-            host_list = pool_info.get('hosts', [])
-            
-            if isinstance(host_list, str) and os.path.exists(host_list):
-                # 如果hosts是文件路径
-                with open(host_list, 'r', encoding='utf-8') as f:
-                    for line in f:
-                        line = line.strip()
-                        if line and not line.startswith('[') and not line.startswith('#'):
-                            hosts.append({'name': line, 'ip': line})
-            elif isinstance(host_list, list):
-                # hosts是列表
-                for host in host_list:
-                    if isinstance(host, dict):
-                        hosts.append(host)
-                    else:
-                        hosts.append({'name': str(host), 'ip': str(host)})
-
-        return CommonResponses.QUERY_SUCCESS({
-            'count': len(hosts),
-            'list': hosts
-        })
+        # 读取配置文件并解析主机列表（后端完成，前端仅渲染）
+        return event_bus.eventbus_get_pool_hosts(pool_id, config_name)
     except Exception as e:
         logger.error(f"获取云池机器列表时出错: {str(e)}")
         return ApiResponse.error(f'获取云池机器列表时出错: {str(e)}', 500)
 
 
-@swagger_auto_schema(
-    method='get',
-    responses={
-        200: openapi.Response(
-            description="查询成功",
-            examples={
-                "application/json": {
-                    "code": 200,
-                    "message": "查询成功",
-                    "data": {
-                        "count": 60,
-                        "list": [
-                            {
-                                "id": "CheckEmptyAccount_1",
-                                "name": "检查空口令账号",
-                                "description": "检测系统中是否存在空口令账号",
-                                "category": "系统安全",
-                                "dep": 1
-                            }
-                        ]
-                    }
-                }
-            }
-        ),
-        500: openapi.Response(
-            description="服务器内部错误",
-            examples={
-                "application/json": {
-                    "code": 500,
-                    "message": "获取加固项列表时出错: 具体错误信息",
-                    "data": None
-                }
-            }
-        )
-    }
-)
-
-@api_view(['GET'])
-def harden_items_list(request):
+# 根据pool名获取所有配置文件名
+@api_view(['GET', 'POST'])
+def from_pool_get_configs(request):
     """
-    获取所有可用的加固项列表
-    
-    动态扫描department_1_policy、department_2_policy、department_3_policy......目录下的YAML文件
-    
-    Returns:
-        加固项列表, 包含id、name、description、category、dep等信息
+    根据pool名获取所有配置文件名
     """
     try:
-        items = []
-        base_path = Path("/opt/cu-concrete").resolve()
-        # 定义部门映射
-        dep_mapping = {
-            'department_1_policy': '系统安全',
-            'department_2_policy': '容器安全',
-            'department_3_policy': '应用安全'
-        }
-
-        # 扫描三个策略目录
-        for dep_dir, category in dep_mapping.items():
-            dep_path = base_path / dep_dir
-
-            if not dep_path.exists():
-                continue
-            
-            # 遍历目录下的所有子目录
-            for item_dir in dep_path.iterdir():
-                
-                if not item_dir.is_dir():
-                    continue
-                    
-                # 查找YAML文件
-                yaml_files = list(item_dir.glob('*.yaml'))
-                if not yaml_files:
-                    continue
-                    
-                yaml_file = yaml_files[0]
-                
-                try:
-                    with open(yaml_file, 'r', encoding='utf-8') as f:
-                        config = yaml.safe_load(f)
-                    
-                    if config and 'description' in config:
-                        items.append({
-                            'id': item_dir.name,
-                            'name': config.get('description', item_dir.name),
-                            'description': config.get('description', ''),
-                            'category': category,
-                            'dep': config.get('dep', 0),
-                            'item_id': config.get('id', 0)
-                        })
-                except Exception as e:
-                    logger.warning(f"读取YAML文件失败 {yaml_file}: {str(e)}")
-                    continue
-        # 按部门和ID排序
-        items.sort(key=lambda x: (x['dep'], x['item_id']))
-        return CommonResponses.QUERY_SUCCESS({
-            'count': len(items),
-            'list': items
-        })
+        # 正确获取pool_id参数
+        if request.method == 'GET':
+            pool_id = request.query_params.get('pool_id')
+        else:  # POST
+            pool_id = request.data.get('pool_id')
+        
+        if not pool_id:
+            return CommonResponses.MISSING_PARAMETER('pool_id')
+        
+        # 直接调用并返回
+        return event_bus.eventbus_find_pool_configs(pool_id)
     except Exception as e:
-        logger.error(f"获取加固项列表时出错: {str(e)}")
-        return ApiResponse.error(f'获取加固项列表时出错: {str(e)}', 500)
-
-
+        logger.error(f"获取配置列表时出错: {str(e)}", exc_info=True)
+        return ApiResponse.error(f'获取所有配置文件名时出错: {str(e)}', 500)   
