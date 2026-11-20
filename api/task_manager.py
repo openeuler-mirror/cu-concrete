@@ -16,17 +16,43 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def find_policy_yaml(project_root: str, policy_id: str) -> str | None:
-    """根据策略ID查找对应的 YAML 配置文件路径"""
-    # 在 department_*_policy 目录下查找
-    for dept_dir in Path(project_root).glob("department_*_policy"):
-        if dept_dir.is_dir():
-            # 查找匹配的策略目录
-            for policy_dir in dept_dir.glob(f"{policy_id}"):
-                if policy_dir.is_dir():
-                    yaml_file = policy_dir / f"{policy_id}.yaml"
-                    if yaml_file.exists():
-                        return str(yaml_file)
+def find_policy_yaml(project_root: str, policy_id: str, dep: str = None) -> str | None:
+    """
+    根据策略ID查找对应的 YAML 配置文件路径
+
+    策略目录命名格式: department_{dep}_policy/Items_{item_id}_{名称}/Items_{item_id}_{名称}.yaml
+
+    Args:
+        project_root: 项目根目录
+        policy_id: 加固项编号(item_id), 例如: 3、12、212
+        dep: 部门编号(可选)。传入后只在对应部门目录下查找,
+             避免 212 这类 "部门+编号" 拼接值产生歧义
+    Returns:
+        str: YAML 文件路径; 未找到返回 None
+    """
+    root = Path(project_root)
+    if dep:
+        dept_dirs = [root / f'department_{dep}_policy']
+    else:
+        dept_dirs = [d for d in root.glob('department_*_policy') if d.is_dir()]
+
+    # 兼容两种目录命名: Items_13_xxx(当前) 与 Xxx_13(旧)
+    try:
+        patterns = [f'Items_{int(policy_id):02d}_*', f'*{policy_id}']
+    except (TypeError, ValueError):
+        patterns = [f'*{policy_id}']
+
+    for dept_dir in dept_dirs:
+        if not dept_dir.is_dir():
+            continue
+        for pattern in patterns:
+            for policy_dir in dept_dir.glob(pattern):
+                if not policy_dir.is_dir():
+                    continue
+                # YAML 文件名与目录名一致
+                yaml_file = policy_dir / f'{policy_dir.name}.yaml'
+                if yaml_file.exists():
+                    return str(yaml_file)
     return None
 
 # 数据存储目录配置
@@ -149,9 +175,14 @@ def get_or_create_task_timestamp(task_id: str) -> str:
         return task_id
 
 
-def create_task(pool_id: str, pool_name: str) -> str:
+def create_task(pool_id: str, pool_name: str, config_name: str = None) -> str:
     """
     创建新任务
+    
+    Args:
+        pool_id: 云池ID
+        pool_name: 云池名称
+        config_name: 本次执行使用的安全配置名（为空表示使用云池默认配置）
     
     Returns:
         task_id: 任务唯一标识
@@ -163,6 +194,7 @@ def create_task(pool_id: str, pool_name: str) -> str:
             'task_id': task_id,
             'pool_id': pool_id,
             'pool_name': pool_name,
+            'config_name': config_name,  # 执行使用的安全配置名
             'status': 'running',  # running, completed, failed
             'created_at': datetime.datetime.now().isoformat(),
             'completed_at': None,
@@ -316,43 +348,78 @@ def release_pool_lock(pool_id: str):
             logger.info(f"云池 {pool_id} 释放执行锁")
 
 
-def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
+def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict, config: dict = None):
     """
     异步执行Ansible Playbook
     
     使用任务ID作为数据目录标识，确保精确匹配
+
+    Args:
+        task_id: 任务ID
+        pool_id: 云池ID
+        pool_info: 云池信息（conf_cloud_pools_info.yaml 中的条目）
+        config: 安全配置记录。为空时直接标记任务失败——
+            机器清单与执行脚本一律来自所选安全配置，云池本身不再配置 inventory/playbook 路径
     """
+    if not config:
+        error_msg = "未指定安全配置，无法执行加固任务"
+        logger.error(error_msg)
+        append_task_log(task_id, f"ERROR: {error_msg}")
+        update_task_status(task_id, 'failed', error_message=error_msg)
+        return
+
+    # 运行时信息：inventory 与 playbook 一律取自所选安全配置
+    run_info = dict(pool_info)
+    run_info['ansible_inventory'] = config.get('serverConfigPath')
+    run_info['playbook_path'] = config.get('execFilePath')
+    # 结果过滤所需的加固项 dep_id（来源于配置中 playbook 的 items 列表）
+    run_info['list'] = config.get('dep_ids') or []
+
     def target():
         try:
             # 记录脚本信息
-            script_name = os.path.basename(pool_info['playbook_path'])
+            script_name = os.path.basename(run_info['playbook_path'])
             update_task_script(task_id, script_name)
             
             # 记录加固策略中文名称列表
-            policy_ids = pool_info.get('list', [])
             policy_names = []
             current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            for policy_id in policy_ids:
+
+            # 优先用配置中的 {dep}_{item_id} 精确定位（item_id, dep）
+            # 缺失时退化为 run_info['list'] 中的 dep_id 拼接值，此时部门未知
+            policy_refs = []
+            for item in (config.get('harden_items') or []):
+                parts = str(item).split('_')
+                if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+                    policy_refs.append((parts[1], parts[0]))
+            if not policy_refs:
+                policy_refs = [(str(pid), None) for pid in run_info.get('list', [])]
+
+            for item_id, dep in policy_refs:
+                label = f'{dep}_{item_id}' if dep else item_id
                 # 查找对应的 YAML 文件读取中文描述
-                yaml_path = find_policy_yaml(current_dir, policy_id)
+                yaml_path = find_policy_yaml(current_dir, item_id, dep)
                 if yaml_path:
                     try:
                         with open(yaml_path, 'r', encoding='utf-8') as f:
                             import yaml
-                            config = yaml.safe_load(f)
-                            if config and 'description' in config:
-                                policy_names.append(config['description'])
+                            policy_config = yaml.safe_load(f)
+                            if policy_config and 'description' in policy_config:
+                                policy_names.append(policy_config['description'])
                             else:
-                                policy_names.append(policy_id)
+                                policy_names.append(label)
                     except Exception as e:
-                        logger.warning(f"读取策略配置失败 {policy_id}: {e}")
-                        policy_names.append(policy_id)
+                        logger.warning(f"读取策略配置失败 {label}: {e}")
+                        policy_names.append(label)
                 else:
-                    policy_names.append(policy_id)
+                    logger.warning(f"未找到加固项 {label} 对应的策略 YAML 文件")
+                    policy_names.append(label)
             update_task_policy_names(task_id, policy_names)
             
             append_task_log(task_id, f"开始执行云池 {pool_id} 的加固任务")
-            append_task_log(task_id, f"Playbook路径: {pool_info['playbook_path']}")
+            append_task_log(task_id, f"安全配置: {config.get('name')}")
+            append_task_log(task_id, f"Playbook路径: {run_info['playbook_path']}")
+            append_task_log(task_id, f"主机清单路径: {run_info['ansible_inventory']}")
             append_task_log(task_id, f"加固策略数: {len(policy_names)}")
             
             # 使用任务ID作为数据标识
@@ -361,8 +428,8 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
             append_task_log(task_id, f"任务标识: {task_id}")
             
             # 执行ansible-playbook，传入任务ID环境变量
-            playbook_path = pool_info['playbook_path']
-            inventory_path = pool_info['ansible_inventory']
+            playbook_path = run_info['playbook_path']
+            inventory_path = run_info['ansible_inventory']
             cmd = [
                 'ansible-playbook',
                 '-i', inventory_path,
@@ -404,8 +471,8 @@ def run_ansible_playbook_async(task_id: str, pool_id: str, pool_info: dict):
             
             append_task_log(task_id, "ansible-playbook 执行成功，开始生成结果文件")
             
-            # 使用任务ID作为目录标识进行合并
-            combine_result = run_combine_to_csv(pool_info, task_id)
+            # 使用任务ID作为目录标识进行合并（按实际执行的加固项过滤结果）
+            combine_result = run_combine_to_csv(run_info, task_id)
             
             if not combine_result['success']:
                 error_msg = f"combine_to_csv 执行失败: {combine_result['error']}"
