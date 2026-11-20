@@ -338,6 +338,28 @@
             display: none;
         }
 
+        /* 任务执行 - 目标机器列表 */
+        .config-list {
+            max-height: 260px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        .host-row {
+            padding: 6px 10px;
+            font-size: 13px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #333;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .host-row:last-child {
+            border-bottom: none;
+        }
+
         .pool-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -418,6 +440,58 @@
             background: #f0f0f0;
         }
 
+        /* 加固项序号徽标（列表左侧，便于数序号） */
+        .harden-item-index {
+            min-width: 26px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 11px;
+            background: #e8e8e8;
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .harden-item.selected .harden-item-index {
+            background: #28a745;
+            color: #fff;
+        }
+
+        /* 加固项业务编号（如 1_3，最终写入 playbook 的 items） */
+        .harden-item-code {
+            font-size: 12px;
+            font-family: Consolas, Monaco, monospace;
+            color: #666;
+            background: #f2f3f5;
+            border: 1px solid #e4e6e9;
+            border-radius: 4px;
+            padding: 2px 8px;
+            flex-shrink: 0;
+        }
+
+        /* 加固项统计条 */
+        .harden-item-summary {
+            font-size: 13px;
+            color: #666;
+            margin: 8px 0;
+            padding: 6px 10px;
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .harden-item-summary strong {
+            color: #333;
+        }
+
+        .harden-item-summary .selected-count {
+            color: #28a745;
+        }
+
         .harden-item.selected {
             background: #d4edda;
             border-color: #28a745;
@@ -453,6 +527,16 @@
             margin-left: 8px;
         }
 
+        /* 调整playbook页面的网格布局 */
+        #playbook .grid {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            transition: grid-template-columns 0.3s ease;
+        }
+
+        #playbook.grid-narrow-selected .grid {
+            grid-template-columns: minmax(400px, 1fr) 250px 550px;
+            transition: grid-template-columns 0.3s ease;
+        }
     </style>
 </head>
 
@@ -464,13 +548,13 @@
         </div>
 
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('pools')">☁️ 云池管理</div>
+            <div class="tab active" onclick="switchTab('tasks_execution')">☁️ 任务执行</div>
             <div class="tab" onclick="switchTab('tasks')">📋 任务管理</div>
             <div class="tab" onclick="switchTab('results')">📊 执行结果</div>
         </div>
 
-        <!-- 云池管理 -->
-        <div id="pools" class="tab-content active">
+        <!-- 任务执行 -->
+        <div id="tasks_execution" class="tab-content active">
             <div class="grid">
                 <div class="card">
                     <div class="card-title">
@@ -489,10 +573,27 @@
                     </div>
                     <div class="form-group">
                         <label>选择云池</label>
-                        <select id="executePoolId">
+                        <select id="executePoolId" onchange="loadExecuteConfigs()">
                             <option value="">请先获取云池列表</option>
                         </select>
                     </div>
+
+                    <!-- 安全配置下拉选择（根据所选云池动态加载，按生成时间倒序） -->
+                    <div class="form-group">
+                        <label>选择安全配置</label>
+                        <select id="executeConfigId" onchange="selectExecuteConfig(this.value)" disabled>
+                            <option value="">请先选择云池</option>
+                        </select>
+                    </div>
+
+                    <!-- 目标机器（由后端解析 inventory 文件） -->
+                    <div class="form-group">
+                        <label>目标机器（<span id="executeHostCount">0</span> 台）</label>
+                        <div id="executeHostList" class="config-list">
+                            <p style="color: #999; text-align: center;">请先选择云池和安全配置</p>
+                        </div>
+                    </div>
+
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="executePlaybook()">
                             ▶️ 执行加固
@@ -575,6 +676,8 @@
             </div>
         </div>
 
+    </div>
+
     <script>
         // API基础URL
         const API_BASE_URL = '';
@@ -583,17 +686,24 @@
         let currentPage = 1;
         let totalPages = 1;
         let currentResultFile = '';
-        // 添加全局变量用于防抖
-        let showMessageTimeout;
-
-        // Playbook生成器状态
+        // 任务执行页状态（云池 -> 安全配置 -> 目标机器）
+        let executeState = {
+            poolId: '',        // 当前选中的云池ID
+            selectedIndex: -1, // 当前选中的安全配置下标，-1表示未选择
+            configs: [],       // 当前云池下可用的安全配置列表
+            hosts: []          // 所选安全配置对应的机器列表（后端解析得到）
+        };
 
         // 切换标签页
-        function switchTab(tabName) {
+        // trigger: 可选，指定要高亮的标签元素（从卡片等元素跳转时传入）
+        function switchTab(tabName, trigger) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-            event.target.classList.add('active');
+            const triggerEl = trigger || (window.event ? window.event.currentTarget : null);
+            if (triggerEl) {
+                triggerEl.classList.add('active');
+            }
             document.getElementById(tabName).classList.add('active');
         }
 
@@ -650,11 +760,15 @@
             if (data.code === 200) {
                 const pools = data.data.list;
 
-                // 更新第一个tab的下拉框
+                // 更新第一个tab的下拉框（保留"请选择云池"占位项）
                 const poolSelect = document.getElementById('executePoolId');
-                poolSelect.innerHTML = pools.map(pool =>
-                    `<option value="${pool.id}">${pool.name} (${pool.id})</option>`
-                ).join('');
+                poolSelect.innerHTML = '<option value="">请选择云池</option>' +
+                    pools.map(pool =>
+                        `<option value="${pool.id}">${pool.name} (${pool.id})</option>`
+                    ).join('');
+
+                // 云池列表刷新后需重置安全配置选择
+                loadExecuteConfigs();
 
                 // 显示云池卡片
                 container.innerHTML = `
@@ -672,33 +786,163 @@
             }
         }
 
-        // 选择云池
+        // 选择云池（点击左侧云池卡片时触发，需同步加载该云池的安全配置）
         function selectPool(poolId) {
             document.getElementById('executePoolId').value = poolId;
             showMessage('executeResult', `已选择云池: ${poolId}`, 'info');
+            loadExecuteConfigs();
+        }
+
+        // 加载所选云池下可用的安全配置列表
+        async function loadExecuteConfigs() {
+            const poolId = document.getElementById('executePoolId').value;
+
+            // 重置选择状态
+            executeState.poolId = poolId;
+            executeState.selectedIndex = -1;
+            executeState.configs = [];
+            executeState.hosts = [];
+
+            renderExecuteHostList();
+            renderExecuteConfigSelect();
+
+            if (!poolId) {
+                return;
+            }
+
+            const data = await apiRequest(
+                `${API_BASE_URL}/cu-concrete/from-pool-get-configs/?pool_id=${encodeURIComponent(poolId)}`
+            );
+
+            if (data.code === 200) {
+                executeState.configs = data.data.list || [];
+                renderExecuteConfigSelect();
+            } else {
+                executeState.configs = [];
+                // 该云池还没有任何配置记录属于正常情况（后端返回404）
+                const isNoConfig = data.code === 404;
+                renderExecuteConfigSelect(isNoConfig
+                    ? '该云池暂无安全配置'
+                    : `加载失败：${data.message || '请稍后重试'}`);
+                if (!isNoConfig) {
+                    showMessage('executeResult', `加载安全配置失败: ${data.message}`, 'error');
+                }
+            }
+        }
+
+        // 渲染安全配置下拉列表
+        function renderExecuteConfigSelect(emptyText = '该云池暂无安全配置') {
+            const select = document.getElementById('executeConfigId');
+
+            if (executeState.configs.length === 0) {
+                select.disabled = true;
+                select.innerHTML = `<option value="">${executeState.poolId ? emptyText : '请先选择云池'}</option>`;
+                return;
+            }
+
+            select.disabled = false;
+            select.innerHTML = '<option value="">请选择安全配置</option>' +
+                executeState.configs.map((config, index) =>
+                    `<option value="${index}">${config.name}（${config.description || '无描述'}）</option>`
+                ).join('');
+        }
+
+        // 选择安全配置（下拉框 change 事件）
+        function selectExecuteConfig(value) {
+            const index = value === '' ? -1 : parseInt(value, 10);
+            executeState.selectedIndex = Number.isNaN(index) ? -1 : index;
+
+            const config = executeState.configs[executeState.selectedIndex];
+            if (!config) {
+                renderExecuteHostList();
+                return;
+            }
+
+            showMessage('executeResult', `已选择安全配置: ${config.name}`, 'info');
+            loadExecuteHosts();
+        }
+
+        // 加载所选安全配置的目标机器（由后端解析 inventory）
+        async function loadExecuteHosts() {
+            const container = document.getElementById('executeHostList');
+            const config = executeState.configs[executeState.selectedIndex];
+
+            if (!config) {
+                renderExecuteHostList();
+                return;
+            }
+
+            container.innerHTML = '<div class="loading"></div> 正在加载机器列表...';
+
+            const data = await fetchPoolHosts(executeState.poolId, config.id);
+
+            if (data.code === 200) {
+                executeState.hosts = data.data.list || [];
+                renderExecuteHostList();
+            } else {
+                executeState.hosts = [];
+                container.innerHTML = `<p style="color: red;">加载失败: ${data.message || '无法获取机器列表'}</p>`;
+                document.getElementById('executeHostCount').textContent = '0';
+            }
+        }
+
+        // 渲染目标机器（只读展示，实际执行范围由所选配置决定）
+        function renderExecuteHostList() {
+            const container = document.getElementById('executeHostList');
+            const config = executeState.configs[executeState.selectedIndex];
+
+            // 未选云池/未选配置时的引导提示
+            if (!config) {
+                document.getElementById('executeHostCount').textContent = '0';
+                container.innerHTML = `<p style="color: #999; text-align: center;">${executeState.poolId ? '请先选择安全配置' : '请先选择云池和安全配置'}</p>`;
+                return;
+            }
+
+            if (!executeState.hosts || executeState.hosts.length === 0) {
+                document.getElementById('executeHostCount').textContent = '0';
+                container.innerHTML = '<p style="color: #999; text-align: center;">该安全配置暂无机器信息</p>';
+                return;
+            }
+
+            document.getElementById('executeHostCount').textContent = executeState.hosts.length;
+            container.innerHTML = executeState.hosts.map(host => `
+                <div class="host-row">${host.ip || host.name}</div>
+            `).join('');
         }
 
         // 执行加固任务
         async function executePlaybook() {
             const poolId = document.getElementById('executePoolId').value;
+            const config = executeState.configs[executeState.selectedIndex];
 
             if (!poolId) {
                 showMessage('executeResult', '请先选择云池', 'error');
                 return;
             }
 
+            if (!config) {
+                showMessage('executeResult', '请先选择安全配置', 'error');
+                return;
+            }
+
             const resultDiv = document.getElementById('executeResult');
             resultDiv.innerHTML = '<div class="loading"></div> 正在提交任务...';
 
-            // 修改为 URL 查询参数方式
-            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/execute-playbook/?pool_id=${encodeURIComponent(poolId)}`, {
+            // URL 查询参数方式，携带所选安全配置名
+            const params = new URLSearchParams();
+            params.append('pool_id', poolId);
+            params.append('config_name', config.id);
+
+            const data = await apiRequest(`${API_BASE_URL}/cu-concrete/execute-playbook/?${params.toString()}`, {
                 method: 'POST'
             });
 
             if (data.code === 200) {
                 showMessage('executeResult', `
                     <strong>任务已提交!</strong><br>
-                    任务ID: ${data.data.task_id}
+                    任务ID: ${data.data.task_id}<br>
+                    云池: ${data.data.pool_name || poolId} (${poolId})<br>
+                    安全配置: ${config.name}
                 `, 'success');
             } else {
                 showMessage('executeResult', `提交失败: ${data.message}`, 'error');
@@ -892,6 +1136,23 @@
             loadPools();
         });
 
+        // 获取云池机器列表（任务执行页使用）
+        // inventory 文件一律由后端解析，前端只负责渲染
+        // config_name 为空时取云池自身 inventory，传入时取该安全配置对应的 inventory
+        async function fetchPoolHosts(poolId, configName = '') {
+            if (!poolId) {
+                return { code: 400, message: '请先选择云池', data: { list: [] } };
+            }
+
+            let url = `${API_BASE_URL}/cu-concrete/pool-hosts/?pool_id=${encodeURIComponent(poolId)}`;
+            if (configName) {
+                url += `&config_name=${encodeURIComponent(configName)}`;
+            }
+
+            return await apiRequest(url);
+        }
+
     </script>
 </body>
+
 </html>
