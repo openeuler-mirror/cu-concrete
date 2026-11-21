@@ -1,0 +1,12 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 9
+change:
+    form: "root:root"
+    path: "/root"
+    value: '700'
+recovery:
+    value: '550'
+description: 'root家目录权限收紧为700'
+# 检查rootdir相关权限
