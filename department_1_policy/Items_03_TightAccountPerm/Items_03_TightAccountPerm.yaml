@@ -1,0 +1,18 @@
+dep: 1
+id: 3
+query:
+  path:
+    - '/etc/passwd'
+    - '/etc/shadow'
+    - '/etc/group'
+harden_before:
+  value:
+    - '644'
+    - '600'
+    - '644'
+harden_after:
+  value: 
+    - '644'
+    - '400'
+    - '644'
+description: '账户文件权限收紧：/etc/shadow 权限改为400'
