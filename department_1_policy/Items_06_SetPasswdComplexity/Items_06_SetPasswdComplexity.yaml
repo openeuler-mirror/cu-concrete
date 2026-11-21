@@ -1,0 +1,32 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 6
+query:
+    # 宽松正则: 兼容不同空格格式
+    form: '^password\s+requisite\s+pam_pwquality\.so'
+    path:
+        - '/etc/pam.d/system-auth'
+        - '/etc/pam.d/password-auth'
+change:
+    # 参数合并版(基线参数 + difok=3), 空格统一为单空格
+    value: 'password requisite pam_pwquality.so minlen=10 minclass=4 difok=3 enforce_for_root try_first_pass local_users_only retry=3 dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1'
+    # 检测时要求的参数, 全部存在才判定为已加固(不满足即视为未加固)
+    required:
+        - minlen=10
+        - minclass=4
+        - difok=3
+        - enforce_for_root
+        - try_first_pass
+        - local_users_only
+        - retry=3
+        - dcredit=-1
+        - ucredit=-1
+        - lcredit=-1
+        - ocredit=-1
+    # 还原值: system-auth 与 password-auth 统一使用, 去掉长度/复杂度等限制, 仅保留基础参数
+    recovery: 'password requisite pam_pwquality.so try_first_pass local_users_only'
+description: '密码复杂度策略：最少10位四类字符、与旧密码差3位'
+# 设置密码组成限制,difok新密码必须和旧密码3位不同,密码组成必须有大小写字母,数字,特殊符号
+# /etc/pam.d/system-auth 与 /etc/pam.d/password-auth 均需加固
+# /etc/pam.d/system-auth 的配置优先级高于 /etc/security/pwquality.conf
