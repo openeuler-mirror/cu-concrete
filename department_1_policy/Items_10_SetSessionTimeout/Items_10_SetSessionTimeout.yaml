@@ -1,0 +1,16 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 10
+change:
+    # TMOUT 配置行的匹配式(grep -E / sed BRE): 查找、判定、清理、还原共用
+    form: '^export[[:space:]]*TMOUT='
+    path: "/etc/profile"
+    # 加固值: 在文件末尾另起一行写入
+    value: 'export TMOUT=300'
+
+description: '会话超时自动断开：300秒无操作自动注销'
+# 设置登录无操作中断会话时间
+# 加固: 清理 /etc/profile 中已有的 export TMOUT= 配置行, 然后在文件末尾另起一行写入 export TMOUT=300
+# 判定: 文件中不存在 export TMOUT= 开头的配置 -> 未加固; 存在时取值是 300 -> 已加固, 否则未加固
+# 还原: 删除 export TMOUT= 配置行, 回到未设置状态
