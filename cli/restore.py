@@ -11,6 +11,7 @@ sys.path.insert(0, project_root)
 
 from checklist import checklist
 from rollbacklist import rollbacklist
+import action_logger
 
 
 class Restorer:
@@ -26,7 +27,7 @@ class Restorer:
         flag_path = os.path.join(path, 'flag.txt')
         if not os.path.exists(flag_path):
             with open(flag_path, 'w', encoding='utf-8') as f:
-                content = f.write("1")
+                f.write("1")
                 flag = 1
         else:
             with open(flag_path, 'r', encoding='utf-8') as f:
@@ -55,7 +56,7 @@ class Restorer:
             # print(f"[{dep_id}] {description}")
         print("-" * 50)
         print(f"总共 {len(available_items[0])} 个可还原项")
-        
+
     def restore_all(self):
         """还原所有已加固项"""
         self.logger.info("开始执行全部还原项")
@@ -65,7 +66,7 @@ class Restorer:
         flag_path = os.path.join(path, 'flag.txt')
         if not os.path.exists(flag_path):
             with open(flag_path, 'w', encoding='utf-8') as f:
-                content = f.write("1")
+                f.write("1")
                 flag = 1
         else:
             with open(flag_path, 'r', encoding='utf-8') as f:
@@ -83,7 +84,6 @@ class Restorer:
                 
         if not available_items:
             print("没有可还原的项目")
-            self.logger.info("没有可还原的项目")
             return
             
         print(f"发现 {len(available_items[0])} 个可还原项，开始执行...")
@@ -93,7 +93,7 @@ class Restorer:
         
     def restore_items(self, item_ids):
         """还原指定ID的项"""
-        self.logger.info(f"开始执行指定还原项: {item_ids}")
+        self.logger.info(f"开始执行指定还原项: {item_ids[1] if len(item_ids) > 1 else ''}")
         print("正在扫描系统安全状态...")
         
         instance_tuple = self.checker.sec_checklist()
@@ -121,7 +121,6 @@ class Restorer:
         
         if not target_items:
             print("没有匹配的可还原项")
-            self.logger.warning("没有匹配的可还原项")
             return
             
         print(f"找到 {len(target_items[0])} 个匹配项，开始执行...")
@@ -135,14 +134,20 @@ class Restorer:
         for desc,instance in items[1].items():
             choice_list.append(instance)
         # 执行还原
+        action_logger.log_start("还原", choice_list)
+        succeeded = []
+        failed = []
         for i, instance in enumerate(choice_list):
             dep_id = f"{instance.config['dep']}_{instance.config['id']}"
             description = instance.get_des()
-            # 移除了INFO日志记录 self.logger.info(f"正在还原 [{dep_id}] {description}")
             print(f"[{i+1}/{len(choice_list)}] 正在还原 [{dep_id}] {description}...")
+            action_logger.log_item_begin("还原", instance)
             try:
                 instance.rollback()
-                # 移除了INFO日志记录 self.logger.info(f"还原完成 [{dep_id}] {description}")
+                succeeded.append(instance)
+                action_logger.log_item_success("还原", instance)
             except Exception as e:
-                self.logger.error(f"还原失败 [{dep_id}] {description}: {e}")
+                failed.append((instance, e))
+                action_logger.log_item_failure("还原", instance, e)
                 print(f"错误: {e}")
+        action_logger.log_summary("还原", succeeded, failed)
