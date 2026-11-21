@@ -1,0 +1,8 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 2
+query:
+    #锁定账户名
+    value: ['listen', 'gdm', 'webservd', 'nobody', 'nobody4', 'noaccess']
+description: '锁定系统内置无用账户（listen/gdm/webservd/nobody等）'
