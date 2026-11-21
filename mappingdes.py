@@ -1,4 +1,5 @@
 import os
+import sys
 import importlib.util
 import subprocess
 import time
@@ -105,6 +106,10 @@ def load_sec_class(department_id):
     for index, value in status['status'].items():
         module_name = status.loc[index, 'module_name']
         module_path = status.loc[index, 'module_path']
+        # 兜底: pkl 里记录的路径已失效时(如加固项目录/文件改名), 按目录名重新推导,
+        # 避免直接抛 FileNotFoundError 导致整个加固命令不可用
+        if not os.path.isfile(module_path):
+            module_path = os.path.join(department_path, module_name, module_name + '.py')
         # 只加载一次module和cls（全局缓存）
         if module_name not in _cls_cache:
             if module_name not in _module_cache:
@@ -181,6 +186,17 @@ def load_departments(department_ids):
 
     for i, (dep, module_name, module_path, pkl) in enumerate(entries):
         try:
+            # 隔离同名模块: 各部门目录下都有 base_fix / base_shell / base_shell_function,
+            # 而各加固项模块用 sys.path.append 把自己的部门目录追加到末尾,
+            # 先被加载的部门会占用 sys.modules 缓存, 导致后加载部门的加固项
+            # 拿到别的部门的基类(报 "object has no attribute 'set_kv'")。
+            # 这里把当前部门目录插到 sys.path 最前, 并清掉同名模块缓存,
+            # 保证每个部门都用自己的同名模块。
+            dept_path = os.path.dirname(os.path.dirname(module_path))
+            if dept_path not in sys.path:
+                sys.path.insert(0, dept_path)
+            for _same_name in ('base_fix', 'base_shell', 'base_shell_function'):
+                sys.modules.pop(_same_name, None)
             # 全局缓存逻辑
             if module_name not in _cls_cache:
                 if module_name not in _module_cache:
@@ -295,6 +311,17 @@ def load_departments_no_ui(department_ids):
 
     for i, (dep, module_name, module_path, pkl) in enumerate(entries):
         try:
+            # 隔离同名模块: 各部门目录下都有 base_fix / base_shell / base_shell_function,
+            # 而各加固项模块用 sys.path.append 把自己的部门目录追加到末尾,
+            # 先被加载的部门会占用 sys.modules 缓存, 导致后加载部门的加固项
+            # 拿到别的部门的基类(报 "object has no attribute 'set_kv'")。
+            # 这里把当前部门目录插到 sys.path 最前, 并清掉同名模块缓存,
+            # 保证每个部门都用自己的同名模块。
+            dept_path = os.path.dirname(os.path.dirname(module_path))
+            if dept_path not in sys.path:
+                sys.path.insert(0, dept_path)
+            for _same_name in ('base_fix', 'base_shell', 'base_shell_function'):
+                sys.modules.pop(_same_name, None)
             # 全局缓存逻辑
             if module_name not in _cls_cache:
                 if module_name not in _module_cache:
