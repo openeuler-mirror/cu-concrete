@@ -11,6 +11,7 @@ sys.path.insert(0, project_root)
 
 from checklist import checklist
 from resetlist import resetlist
+import action_logger
 
 
 class Repairer:
@@ -26,7 +27,7 @@ class Repairer:
         flag_path = os.path.join(path, 'flag.txt')
         if not os.path.exists(flag_path):
             with open(flag_path, 'w', encoding='utf-8') as f:
-                content = f.write("1")
+                f.write("1")
                 flag = 1
         else:
             with open(flag_path, 'r', encoding='utf-8') as f:
@@ -55,7 +56,7 @@ class Repairer:
             # print(f"[{dep_id}] {description}")
         print("-" * 50)
         print(f"总共 {len(available_items[0])} 个可修复项")
-        
+
     def repair_all(self):
         """执行所有已修复项"""
         self.logger.info("开始执行全部修复项")
@@ -65,7 +66,7 @@ class Repairer:
         flag_path = os.path.join(path, 'flag.txt')
         if not os.path.exists(flag_path):
             with open(flag_path, 'w', encoding='utf-8') as f:
-                content = f.write("1")
+                f.write("1")
                 flag = 1
         else:
             with open(flag_path, 'r', encoding='utf-8') as f:
@@ -83,7 +84,6 @@ class Repairer:
                 
         if not available_items:
             print("没有可修复的项目")
-            self.logger.info("没有可修复的项目")
             return
             
         print(f"发现 {len(available_items[0])} 个可修复项，开始执行...")
@@ -94,7 +94,7 @@ class Repairer:
         
     def repair_items(self, item_ids):
         """修复指定ID的项"""
-        self.logger.info(f"开始执行指定修复项: {item_ids}")
+        self.logger.info(f"开始执行指定修复项: {item_ids[1] if len(item_ids) > 1 else ''}")
         print("正在扫描系统安全状态...")
         
         instance_tuple = self.checker.sec_checklist()
@@ -122,7 +122,6 @@ class Repairer:
         
         if not target_items:
             print("没有匹配的可修复项")
-            self.logger.warning("没有匹配的可修复项")
             return
         print(f"找到 {len(target_items[0])} 个匹配项，开始执行...")
         self._execute_repair(target_items)
@@ -135,12 +134,20 @@ class Repairer:
         for desc,instance in items[1].items():
             choice_list.append(instance)
         # 执行还原
+        action_logger.log_start("修复", choice_list)
+        succeeded = []
+        failed = []
         for i, instance in enumerate(choice_list):
             dep_id = f"{instance.config['dep']}_{instance.config['id']}"
             description = instance.get_des()
             print(f"[{i+1}/{len(choice_list)}] 正在修复 [{dep_id}] {description}...")
+            action_logger.log_item_begin("修复", instance)
             try:
                 instance.reset()
+                succeeded.append(instance)
+                action_logger.log_item_success("修复", instance)
             except Exception as e:
-                self.logger.error(f"修复失败 [{dep_id}] {description}: {e}")
+                failed.append((instance, e))
+                action_logger.log_item_failure("修复", instance, e)
                 print(f"错误: {e}")
+        action_logger.log_summary("修复", succeeded, failed)
