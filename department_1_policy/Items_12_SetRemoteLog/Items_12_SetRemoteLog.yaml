@@ -1,0 +1,12 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 12
+query:
+    form: "@192.168.0.1"
+    path: "/etc/rsyslog.conf"
+    
+change:
+    value: "*.*    @192.168.0.1"
+
+description: '全部日志远程转发至192.168.0.1'
