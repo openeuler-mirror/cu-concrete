@@ -1,4 +1,4 @@
-from base_shell import base_shell,base_pipe_shell
+﻿from base_shell import base_shell,base_pipe_shell
 import os
 class base_shell_function:
     def __init__(self):
@@ -48,7 +48,6 @@ class base_shell_function:
 
     @staticmethod
     def awk_shell(split,form,path):
-        #eg. `awk -F ":" '( $2 == "" ) { print $1 }' /etc/shadow`
         cmd = ["awk", "-F", split, form, path]
         return base_shell(cmd)
 
