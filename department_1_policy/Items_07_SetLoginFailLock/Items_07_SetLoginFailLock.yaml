@@ -1,0 +1,23 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 7
+query:
+    path:
+        - "/etc/pam.d/system-auth"
+        - "/etc/pam.d/password-auth"
+harden_before: 
+    value: 
+        - 'deny=3 even_deny_root unlock_time=60'
+        - 'auth required pam_faillock.so preauth audit deny=3 even_deny_root unlock_time=60'
+        - 'auth [default=die] pam_faillock.so authfail audit deny=3 even_deny_root unlock_time=60'
+        - 'auth sufficient pam_faillock.so authsucc audit deny=3 even_deny_root unlock_time=60'
+harden_after:
+    value: 
+        - 'deny=5 even_deny_root unlock_time=900'
+        - 'auth required pam_faillock.so preauth audit deny=5 even_deny_root unlock_time=900'
+        - 'auth [default=die] pam_faillock.so authfail audit deny=5 even_deny_root unlock_time=900'
+        - 'auth sufficient pam_faillock.so authsucc audit deny=5 even_deny_root unlock_time=900'
+description: '登录失败锁定：连续失败5次锁定900秒'
+# 加固目标: 与 default_0_policy/Items_07_PamLockPolicy 的落地文本逐字符一致
+# 加固后，ssh密码输入错误的的情况下锁定账户,输入错误5次后,root及其他用户锁定900秒
