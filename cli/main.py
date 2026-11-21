@@ -17,6 +17,7 @@ sys.path.insert(0, project_root)
 from cli.harden import Hardener
 from cli.restore import Restorer
 from cli.repair import Repairer
+from cli.default_harden import DefaultHardener
 from cli.logger import setup_logger
 
 def main():
@@ -42,6 +43,13 @@ def main():
     repair_parser.add_argument('--all', action='store_true', help='执行所有修复项')
     repair_parser.add_argument('--list', action='store_true', help='列出可修复项')
     repair_parser.add_argument('items', nargs='*', help='指定要修复的项ID')
+
+    # 系统安装期一次性加固命令（不可还原，仅供系统安装时使用）
+    default_parser = subparsers.add_parser('default_harden', help='安装期一次性加固（基线 + 部门指定加固项，无还原）')
+    default_parser.add_argument('--all', action='store_true',
+                                help='执行安装期加固（Items_01_Baseline + department_1 指定的 24 个加固项）')
+    default_parser.add_argument('--list', action='store_true',
+                                help='列出安装期基线各配置项的加固状态')
     
     # # 日志命令
     # log_parser = subparsers.add_parser('log', help='查看操作日志')
@@ -86,6 +94,16 @@ def main():
             repairer.repair_items(args.items)
         else:
             repairer.list_items()
+
+    elif args.command == 'default_harden':
+        # 安装期总流程: 基线加固 + department_1 指定加固项 + 清理临时文件(见 cli/default_harden.py)
+        default_hardener = DefaultHardener(logger)
+        if args.list:
+            default_hardener.list_items()
+        elif args.all:
+            default_hardener.harden_all()
+        else:
+            default_hardener.list_items()
             
     # elif args.command == 'log':
     #     # 处理日志相关操作
