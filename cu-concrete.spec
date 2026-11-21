@@ -1,6 +1,6 @@
 Name:           cu-concrete
 Version:        1.2
-Release:        6
+Release:        8
 Summary:        A security hardening tool for system configuration
 
 License:        MulanPSL v2
@@ -99,6 +99,12 @@ rm -rf /var/log/cu-concrete/
 rm -rf /etc/cu-concrete/
 
 %changelog
+* Tue Nov 17 2026 YueShuolei <yuesl6@chinaunicom.cn> - 1.2-8
+- fix: Bug fixes for security hardening items
+
+* Tue Nov 03 2026 YueShuolei <yuesl6@chinaunicom.cn> - 1.2-7
+- feat: Add security baseline hardening items for system installation and optimize existing hardening items
+
 * Fri Jul 17 2026 YueShuolei <yuesl6@chinaunicom.cn> - 1.2-6
 - fix: modify desktop name
 

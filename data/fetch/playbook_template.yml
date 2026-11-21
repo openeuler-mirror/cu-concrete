@@ -64,7 +64,7 @@
     - name: Run hardening script (python3 main.py harden --all)
       when: cu_dir_check.stat.exists
       ansible.builtin.command:
-        cmd: python3 main.py harden items 1_1,1_2
+        cmd: python3 main.py harden items 2_1,2_12
         chdir: "{{ cu_concrete_path }}"
       changed_when: true
 
