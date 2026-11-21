@@ -1,0 +1,30 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 11
+#目标配置文件
+path: '/etc/rsyslog.conf'
+#加固配置项(key 为 rsyslog 的 selector, value 为日志落盘路径)
+#注: 还原时统一删除该配置行, 回到 rsyslog 内置默认值(不写回裸 selector)
+entries:
+  #记录所有计划任务(cron)的执行日志
+  - key: "cron.*"
+    value: "/var/log/cron"
+  #记录所有认证和权限相关的操作
+  - key: "authpriv.*"
+    value: "/var/log/secure"
+#加固/还原后执行的服务操作(写在配置里, 便于统一查看与调整)
+commands:
+    fix:
+        #重启 rsyslog 使日志配置立即生效
+        - "sudo systemctl restart rsyslog.service"
+        #设置 rsyslog 开机自启, 保证重启后仍采集日志
+        - "sudo systemctl enable rsyslog.service"
+    rollback:
+        #重启 rsyslog 使还原后的配置生效
+        - "sudo systemctl restart rsyslog.service"
+
+description: '系统日志落盘：计划任务与认证日志分别落地'
+# 配置系统日志到路径
+#1.记录 所有计划任务（cron）的执行日志
+#2.记录 所有认证和权限相关的操作 到 /var/log/secure
