@@ -1,0 +1,25 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 26
+query:
+    # 宽松正则: 兼容不同空格格式
+    form: '^password\s+sufficient\s+pam_unix\.so'
+    path:
+        - '/etc/pam.d/system-auth'
+        - '/etc/pam.d/password-auth'
+change:
+    # 空格统一为单空格
+    value: "password sufficient pam_unix.so sha512 shadow nullok try_first_pass use_authtok remember=5"
+    # 检测时要求的参数, 全部存在才判定为已加固
+    required:
+        - sha512
+        - shadow
+        - nullok
+        - try_first_pass
+        - use_authtok
+        - remember=5
+recovery:
+    # 还原为不含 remember=5 的标准行(注意: 不能使用正则原文)
+    value: "password sufficient pam_unix.so sha512 shadow nullok try_first_pass use_authtok"
+description: '密码历史复用限制：禁止重复使用近5次旧密码'
