@@ -1,0 +1,19 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 38
+#目标配置文件
+path: '/etc/sysctl.conf'
+#加固配置项(迁移自 default_0_policy/Items_05_SysctlKernel, 对应 cuos-harden.conf 204)
+entries:
+  #关闭内核 sysrq 魔法按键
+  #还原时显式写回 1, 而不是删除该配置行。
+  #原因: sysctl -p 只会把"文件中存在的键"写入内核, 文件里删掉某个键并不会让内核
+  #恢复默认值; 该键已被 sysctl -p 写入为 0 后, 删除配置行运行层仍是 0,
+  #还原后系统实际仍处于加固态, 配置与运行时脱节。
+  #写成 1 后再 sysctl -p, 配置层与运行时层同时恢复 SysRq 魔法键(同 1_30 禁止IP路由转发)。
+  - key: "kernel.sysrq"
+    sep: "="
+    value: "0"
+    recovery: "1"
+description: '禁用内核SysRq魔法按键'
