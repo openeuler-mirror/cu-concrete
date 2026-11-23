@@ -1,0 +1,31 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 22
+query:
+    path: 
+        - '/etc/ssh/sshd_config'
+
+    # 生效中的 Port 声明行(未注释), 用于识别真实生效的端口声明
+    form: '^[ \t]*Port[ \t]+[0-9]+'
+change:
+    # 加固时执行的防火墙命令: 先放行新端口 10022 后重载
+    fix_set:
+        - 'sudo firewall-cmd --zone=public --add-port=10022/tcp --permanent'
+        - 'sudo firewall-cmd --reload'
+    # 加固时执行的防火墙命令(第二阶段): sshd 在新端口生效后再关闭原端口 22 并重载
+    fix_close:
+        - 'sudo firewall-cmd --zone=public --remove-port=22/tcp --permanent'
+        - 'sudo firewall-cmd --reload'
+    # 还原时执行的防火墙命令: 先放行原端口 22 后重载
+    rollback_set:
+        - 'sudo firewall-cmd --zone=public --add-port=22/tcp --permanent'
+        - 'sudo firewall-cmd --reload'
+    # 还原时执行的防火墙命令(第二阶段): sshd 在原端口生效后再关闭新端口 10022 并重载
+    rollback_close:
+        - 'sudo firewall-cmd --zone=public --remove-port=10022/tcp --permanent'
+        - 'sudo firewall-cmd --reload'
+    value: 
+        - 'Port 10022'
+        - 'Port 22'
+description: 'SSH端口修改为10022'
