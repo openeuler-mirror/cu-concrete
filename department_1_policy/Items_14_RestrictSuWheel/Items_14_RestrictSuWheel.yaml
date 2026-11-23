@@ -1,0 +1,30 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 14
+query:
+    # form: 仅用于 grep/sed 匹配的正则表达式
+    # value: 实际写入文件的配置行(与 default_0_policy/Items_07 保持一致, 单空格)
+    # 三项统一按"整行精确匹配"判定: 行必须存在、未被注释、内容等于对应的 value
+    form:
+        - "auth.*required.*pam_wheel.so.*use_uid"
+        # 匹配所有 SU_WHEEL_ONLY 行(不限值), 值不对时才能被规范为标准行
+        - "SU_WHEEL_ONLY"
+        - 'auth.*sufficient.*pam_rootok\.so'
+    value:
+        - "auth required pam_wheel.so use_uid"
+        - "SU_WHEEL_ONLY yes"
+        - "auth sufficient pam_rootok.so"
+    path:
+        - "/etc/pam.d/su"
+        - "/etc/login.defs"
+        - "/etc/pam.d/su"
+
+description: '仅wheel组成员可su到root'
+# 实现"只有wheel组能su"需要:
+#   1) /etc/pam.d/su   auth sufficient pam_rootok.so   (root执行su的豁免, 缺失会导致root也无法su, 故还原不做删除)
+#   2) /etc/pam.d/su   auth required pam_wheel.so use_uid (核心限制, 非wheel组成员不可su到root)
+#   3) /etc/login.defs SU_WHEEL_ONLY yes                (兜底, su不带用户名时只允许切到wheel组成员)
+#   4) /etc/group 中存在wheel组, 需授权的用户加入该组
+# 注: 1) 由本项负责写入与检测; 还原时只注释 pam_wheel 行(撤销限制),
+#     pam_rootok 行保留, 避免 root 失去 su 豁免而无法登录
