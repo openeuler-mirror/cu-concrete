@@ -1,0 +1,13 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 28
+query:
+    # 需要禁用的软链接: 加固=删除它, 还原=重新创建它
+    path: "/etc/systemd/system/ctrl-alt-del.target"
+    # 该软链接指向的目标, 还原时按此重建
+    link_target: "/usr/lib/systemd/system/reboot.target"
+description: '禁用Ctrl+Alt+Del重启'
+# 防止误操作重启
+# 加固态: 该软链接被删除, systemd找不到 ctrl-alt-del.target, Ctrl+Alt+Del 重启失效
+# 还原态: 重新创建软链接 -> /usr/lib/systemd/system/reboot.target
