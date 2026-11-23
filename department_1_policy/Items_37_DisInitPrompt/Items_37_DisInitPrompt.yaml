@@ -1,0 +1,14 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 37
+#目标配置文件
+path: '/etc/sysconfig/init'
+#加固配置项(迁移自 default_0_policy/Items_03_CronAtPerm, 对应 cuos-harden.conf 217)
+#注: 本项所有配置项都不设还原值, 还原时统一删除该配置行, 回到系统默认值
+entries:
+  #关闭系统初始化交互提示(还原时删除该行, 回到默认值yes)
+  - key: "PROMPT"
+    sep: "="
+    value: "no"
+description: '关闭系统初始化交互提示'
