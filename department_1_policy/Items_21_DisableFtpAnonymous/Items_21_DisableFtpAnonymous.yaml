@@ -1,0 +1,18 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 21
+query:
+    # vsftpd 配置文件(存在才处理; 未安装 vsftpd 视为无需加固)
+    path:
+        - '/etc/vsftpd/vsftpd.conf'
+        - '/etc/vsftpd.conf'
+#加固前: 匿名登录允许(发行版默认)
+harden_before:
+    value: 'anonymous_enable=YES'
+#加固后: 禁止匿名登录
+harden_after:
+    value: 'anonymous_enable=NO'
+description: '禁止FTP匿名用户登录'
+#1.修改 vsftpd 配置, 禁止匿名用户登录 FTP
+#2.重启 vsftpd 使配置生效
