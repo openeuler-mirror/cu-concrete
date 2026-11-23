@@ -1,0 +1,17 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 18
+query:
+    path: 
+        - '/etc/issue'
+        - '/etc/issue.net'
+        - '/etc/motd'
+change:
+    value:
+        - '/etc/issue.bak'
+        - '/etc/issue.net.bak'
+        - '/etc/motd.bak'
+#写入重建后文件的警告语
+banner: "Authorized users only. All activities may be monitored and reported."
+description: '登录警告横幅：重建登录提示并写入监控警告语'
