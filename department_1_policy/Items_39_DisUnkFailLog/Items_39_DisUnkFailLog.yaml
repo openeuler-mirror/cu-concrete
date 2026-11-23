@@ -1,0 +1,13 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 39
+#目标配置文件
+path: '/etc/login.defs'
+#加固配置项(迁移自 default_0_policy/Items_08_PasswordAging, 对应 cuos-harden.conf 622)
+#注: 本项所有配置项都不设还原值, 还原时统一删除该配置行, 回到系统默认值
+entries:
+  #关闭未知账号登录失败日志(还原时删除该行, 回到默认值yes)
+  - key: "LOG_UNKFAIL_ENAB"
+    value: "no"
+description: '关闭未知账号登录失败日志'
