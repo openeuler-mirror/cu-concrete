@@ -1,0 +1,16 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 32
+#目标配置文件
+path: '/etc/ssh/sshd_config'
+#加固配置项(迁移自 default_0_policy/Items_01_SshHarden, 对应 cuos-harden.conf 111/132)
+#注: 本项所有配置项都不设还原值, 还原时统一删除该配置行, 回到 sshd 内置默认值
+entries:
+  #不因客户端不响应而断开连接(还原时删除该行, 回到sshd内置默认值3)
+  - key: "ClientAliveCountMax"
+    value: "0"
+  #空闲15分钟(900秒)后发送探测消息(还原时删除该行, 回到sshd内置默认值0, 即不探测)
+  - key: "ClientAliveInterval"
+    value: "900"
+description: 'SSH会话保活：空闲900秒探测、客户端无响应不断开'
