@@ -1,0 +1,14 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 5
+query:
+    path: 
+      - "docker.service" #配置文件路径
+      - "/etc/audit/rules.d/05-docker.rules"
+      - "/usr/sbin/auditctl"
+change:
+    set: "auditctl"
+    value: "'^[^#;]'"
+description: '为docker.service进程配置审计功能'
+#Ensure auditing is configured for the Docker related files (Automated) cis 1.1.3
