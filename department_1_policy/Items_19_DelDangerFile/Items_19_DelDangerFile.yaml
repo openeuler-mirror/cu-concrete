@@ -1,0 +1,10 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 19
+query:
+    path: '/home'
+    form: 
+        - '.netrc'
+        - '.rhosts'
+description: '删除用户目录下的.netrc与.rhosts危险文件'
