@@ -1,0 +1,24 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 30
+query:
+    # net.ipv4.ip_forward 配置行的匹配式(grep -E / sed BRE): 查找、判定、清理、还原共用
+    # 等号两侧允许空格, 同时覆盖 "net.ipv4.ip_forward=0" 与 "net.ipv4.ip_forward = 0" 两种写法
+    form: '^net\.ipv4\.ip_forward[[:space:]]*='
+    path: "/etc/sysctl.conf"
+change:
+    # 加固值: 禁止ip路由转发, 在文件末尾另起一行写入
+    value: 'net.ipv4.ip_forward=0'
+    # 还原值: 显式写回 1, 而不是删除配置行。
+    # 原因: sysctl -p 只会把"文件中存在的键"写入内核, 文件里删掉某个键并不会让内核
+    # 恢复默认值; 而 net.ipv4.ip_forward 的内核默认值本身就是 0(禁止转发),
+    # 删除配置行后运行层仍是 0, 还原后系统实际仍处于加固态, 配置与运行时脱节。
+    # 写成 1 后再 sysctl -p, 配置层与运行时层同时恢复 IP 转发能力。
+    recovery: 'net.ipv4.ip_forward=1'
+
+description: '禁止IP路由转发'
+# 禁止ip路由转发
+# 加固: 清理 /etc/sysctl.conf 中已有的 net.ipv4.ip_forward 配置行, 然后在文件末尾另起一行写入 net.ipv4.ip_forward=0
+# 判定: 文件中不存在 net.ipv4.ip_forward 配置行 -> 未加固; 存在时取值是 0 -> 已加固, 否则未加固
+# 还原: 把 net.ipv4.ip_forward 写回 1(配置项始终保留在配置文件中), 并 sysctl -p 让运行时立即生效
