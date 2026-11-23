@@ -1,0 +1,12 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 36
+#目标配置文件
+path: '/etc/ssh/sshd_config'
+#加固配置项(迁移自 default_0_policy/Items_01_SshHarden, 对应 cuos-harden.conf 120)
+entries:
+  #禁用SSH隧道(还原时删除该行, 回到sshd内置默认值no)
+  - key: "PermitTunnel"
+    value: "no"
+description: '禁用SSH隧道'
