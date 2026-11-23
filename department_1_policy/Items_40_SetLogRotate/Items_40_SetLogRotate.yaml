@@ -1,0 +1,13 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 40
+#目标配置文件
+path: '/etc/logrotate.conf'
+#加固配置项(迁移自 default_0_policy/Items_10_LogAudit, 对应 cuos-harden.conf 941)
+entries:
+  #日志轮转保留份数(还原为发行版默认值4)
+  - key: "rotate"
+    value: "6"
+    recovery: "4"
+description: '日志轮转保留份数设为6'
