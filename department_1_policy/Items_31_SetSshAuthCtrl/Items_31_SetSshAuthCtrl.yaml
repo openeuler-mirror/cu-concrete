@@ -1,0 +1,31 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 31
+#目标配置文件
+path: '/etc/ssh/sshd_config'
+#加固配置项(迁移自 default_0_policy/Items_01_SshHarden, 对应 cuos-harden.conf 105/106/108/109/133)
+#注: 本项所有配置项都不设还原值, 还原时统一删除该配置行, 回到 sshd 内置默认值
+entries:
+  #启用公钥认证
+  - key: "PubkeyAuthentication"
+    value: "yes"
+  #启用RSA认证
+  - key: "RSAAuthentication"
+    value: "yes"
+  #不使用~/.rhosts和~/.shosts做RSA主机认证
+  - key: "RhostsRSAAuthentication"
+    value: "no"
+  #不读取用户~/.rhosts和~/.shosts文件
+  - key: "IgnoreRhosts"
+    value: "yes"
+  #禁用基于主机的认证
+  - key: "HostbasedAuthentication"
+    value: "no"
+  #每个连接最多允许4次认证尝试(还原时删除该行, 回到sshd内置默认值6)
+  - key: "MaxAuthTries"
+    value: "4"
+  #禁止使用用户环境变量(~/.ssh/environment)
+  - key: "PermitUserEnvironment"
+    value: "no"
+description: 'SSH认证方式加固：启用公钥/RSA、禁用rhosts与主机认证、认证尝试限4次'
