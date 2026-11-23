@@ -1,0 +1,13 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 35
+#目标配置文件
+path: '/etc/ssh/sshd_config'
+#加固配置项(迁移自 default_0_policy/Items_01_SshHarden, 对应 cuos-harden.conf 117)
+entries:
+  #sftp子系统记录认证日志(还原为sshd内置默认的sftp-server)
+  - key: "Subsystem sftp"
+    value: "/usr/libexec/openssh/sftp-server -l INFO -f AUTH"
+    recovery: "/usr/libexec/openssh/sftp-server"
+description: 'SFTP子系统日志：开启INFO级别并记录到AUTH'
