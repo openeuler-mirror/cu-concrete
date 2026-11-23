@@ -1,0 +1,12 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 27
+query:
+    path: "/root/.bashrc"
+change:
+    value: 
+        - "alias ls='ls -alh'"
+        - "alias rm='rm -i'"
+description: 'rm改为交互确认、ls显示全部文件详情'
+
