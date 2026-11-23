@@ -1,0 +1,20 @@
+#部门编号
+dep: 1
+#加固项编号
+id: 23
+query:
+    # 被加固的配置文件
+    path: '/etc/profile'
+    # 查找/判定/清理/还原共用的匹配式: 匹配所有以 export HISTSIZE 开头的配置行
+    # 等号两侧允许空格, 同时覆盖 "export HISTSIZE=5" 与 "export  HISTSIZE = 5" 两种写法
+    form: '^export[[:space:]]*HISTSIZE'
+change:
+    # 加固值: 命令历史保留条数
+    value: 'export HISTSIZE=5'
+description: '命令历史保留条数：只保留最近5条命令'
+# 控制当前 bash 会话中的命令保留为 5 个
+# 加固: 已存在 export HISTSIZE 配置行 -> 就地把值改写为 export HISTSIZE=5;
+#       不存在 -> 在文件末尾空一行后追加 export HISTSIZE=5;
+#       完成后 source /etc/profile 使当前会话立即生效
+# 判定: 存在 export HISTSIZE 配置行且内容完全等于 export HISTSIZE=5 -> 已加固, 否则未加固
+# 还原: 删除所有以 export HISTSIZE 开头的配置行, 并 source /etc/profile 使当前会话立即生效
