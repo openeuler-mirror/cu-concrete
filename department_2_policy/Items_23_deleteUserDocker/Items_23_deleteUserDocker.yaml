@@ -1,0 +1,11 @@
+#部门编号
+dep: 2
+#加固项编号
+id: 23
+query:
+    path: 'docker'
+    form: ['liukuntest','liukuntest2']
+change:
+    value: ['test1','test2']
+description: '删除docker组未被信任的用户,增加信任用户'
+#Ensure auditing is configured for the Docker related files (Automated) cis 1.1.3
