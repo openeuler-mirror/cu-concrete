@@ -1,0 +1,69 @@
+# 云池与机器信息配置
+#
+# 说明：
+# 1、pools 为云池台账，machines 为该云池下的机器台账
+# 2、配置生成页选择云池后的机器列表来自本文件；执行加固时的实际机器范围来自所选安全配置
+# 3、[servers:vars] 中的 SSH 参数（用户、端口、私钥）在 data/fetch/fetch_template.ini 中配置
+#
+# 机器字段说明：
+#   ip      机器IP（必填，同一云池内唯一）
+#   name    主机名（选填）
+#   user    SSH 登录用户（选填，默认 root）
+#   port    SSH 端口（选填，默认 22）
+#   os      操作系统（选填）
+#   desc    备注（选填）
+
+pools:
+  - id: pool-1
+    name: 例:生产环境业务云池
+    desc: 生产环境业务云池
+    createTime: '2026-04-22 18:58:57'
+    machines:
+      - ip: 示例IP地址01
+        name: 生产业务节点01
+        user: root
+        port: 10022
+        os: CUOS 4.0
+        desc: 业务节点
+      - ip: 示例IP地址02
+        name: 生产业务节点02
+        user: root
+        port: 10022
+        os: CUOS 4.0
+        desc: 业务节点
+
+  - id: pool-2
+    name: 例:测试环境云池
+    desc: 测试环境云池
+    createTime: '2026-05-10 09:30:00'
+    machines:
+      - ip: 示例IP地址01
+        name: 测试环境节点01
+        user: root
+        port: 10022
+        os: CUOS 4.0
+        desc: 测试节点01
+      - ip: 示例IP地址02
+        name: 测试环境节点02
+        user: root
+        port: 10022
+        os: CUOS 4.0
+        desc: 测试节点02
+
+  - id: pool-3
+    name: 例:容器集群云池
+    desc: 容器集群云池
+    createTime: '2026-06-01 14:20:00'
+    machines:
+      - ip: 示例IP地址01
+        name: k8s-node-01
+        user: root
+        port: 10022
+        os: CUOS 4.0
+        desc: 容器节点01
+      - ip: 示例IP地址02
+        name: k8s-node-02
+        user: root
+        port: 10022
+        os: CUOS 4.0
+        desc: 容器节点02
