@@ -1,0 +1,177 @@
+#安装期加固项编号
+id: 1
+description: "安装期安全基线加固：SSH服务/内核网络参数/PAM认证/账户密码/Shell会话/计划任务/关键文件权限/系统安全对象"
+# 本项为安装期基线合并项, 配置按安全域分类(categories), 每类可含:
+#   name          : 分类名称
+#   desc          : 该类加固项的功能描述(做什么、达到什么效果)
+#   entries        : kv 型配置      {path, key, value, sep?}
+#   skip_missing   : true 时, 目标文件不存在视为无需加固(不判定为未加固)
+#   chmod_entries  : 权限收紧       {path, mode}
+#   cron_paths     : 计划任务路径   属主 root:root + og-rwx
+#   deny_files     : 删除的禁止名单文件
+#   allow_files    : 建立的白名单文件 root:root + og-rwx
+#   remove_files   : 直接删除的文件
+#   dbus_helper    : 修复属主与 setuid 位的程序(root:dbus + 4750)
+#
+# 沿革: 由原 11 个安装期加固项合并而来
+#   Items_01_SshHarden / Items_03_CronAtPerm / Items_04_SysctlNetwork / Items_05_SysctlKernel
+#   Items_07_PamLockPolicy / Items_08_PasswordAging / Items_10_LogAudit / Items_11_ShellSession
+#   Items_12_CriticalFilePerm / Items_13_LogFilePerm / Items_14_SysObjectFix
+#
+# 注: 原 /boot/grub2/grub.cfg 600、/etc/xinetd.conf 600 (conf 990)
+#     依赖目标机是否预装对应组件, 已取消加固, 不再执行
+#注: 原 vsftpd.conf 的 3 条 kv 配置(conf 930/931) 与 systemctl restart vsftpd.service
+#    依赖目标机是否预装 vsftpd, 已取消加固
+#注: 日志落地路径(cron.* -> /var/log/cron, authpriv.* -> /var/log/secure) 与 rsyslog 服务
+#    已在 department_1_policy 的 Items_11_SetSysLog 接管, 本项不再重复管理
+#注: 本项只写配置文件, 不再执行 systemctl/sysctl 等生效命令,
+#    配置改写后需由安装流程或管理员重启对应服务使其生效
+categories:
+  # ============ 1. SSH 服务加固 ============
+  - name: "SSH 服务加固"
+    desc: "限定 SSH 协议版本为 2, 关闭 X11/TCP/Agent 转发与网关端口, 禁止空密码登录, 限定加密/消息认证/密钥交换算法白名单, 开启严格模式与 PAM 认证"
+    #基线对应: cuos-harden.conf 一、SSH server setting (101-121)
+    entries:
+      - {path: "/etc/ssh/sshd_config", key: "Protocol", value: "2"}
+      - {path: "/etc/ssh/sshd_config", key: "SyslogFacility", value: "AUTH"}
+      - {path: "/etc/ssh/sshd_config", key: "X11Forwarding", value: "no"}
+      - {path: "/etc/ssh/sshd_config", key: "PermitEmptyPasswords", value: "no"}
+      #加密算法白名单
+      - {path: "/etc/ssh/sshd_config", key: "Ciphers", value: "aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com"}
+      #消息认证码算法白名单
+      - {path: "/etc/ssh/sshd_config", key: "MACs", value: "hmac-sha2-512,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-256-etm@openssh.com"}
+      #登录前检查用户文件/家目录属主和权限
+      - {path: "/etc/ssh/sshd_config", key: "StrictModes", value: "yes"}
+      - {path: "/etc/ssh/sshd_config", key: "UsePAM", value: "yes"}
+      #禁止 TCP 转发
+      - {path: "/etc/ssh/sshd_config", key: "AllowTcpForwarding", value: "no"}
+      - {path: "/etc/ssh/sshd_config", key: "AllowAgentForwarding", value: "no"}
+      - {path: "/etc/ssh/sshd_config", key: "GatewayPorts", value: "no"}
+      #CVE-2015-4000 密钥交换算法白名单
+      - {path: "/etc/ssh/sshd_config", key: "KexAlgorithms", value: "curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256"}
+
+  # ============ 2. 内核与网络参数 ============
+  - name: "内核与网络参数"
+    desc: "禁止 ICMP 重定向与 IP 源路由, 忽略伪造的 ICMP 错误响应, 开启反向路径校验与 TCP-SYN cookie 防护, 禁止普通用户读取 dmesg, 启用地址空间随机化"
+    #基线对应: cuos-harden.conf 三、Kernel parameters (302-310、320、407)
+    entries:
+      #禁止发送 ICMP 重定向
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.all.send_redirects", value: "0", sep: "="}
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.default.send_redirects", value: "0", sep: "="}
+      #禁止 IP 源路由
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.all.accept_source_route", value: "0", sep: "="}
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.default.accept_source_route", value: "0", sep: "="}
+      #禁止接受 ICMP 重定向
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.all.accept_redirects", value: "0", sep: "="}
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.default.accept_redirects", value: "0", sep: "="}
+      #网关安全重定向
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.all.secure_redirects", value: "0", sep: "="}
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.default.secure_redirects", value: "0", sep: "="}
+      #不响应广播 ping
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.icmp_echo_ignore_broadcasts", value: "1", sep: "="}
+      #忽略伪造的错误响应
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.icmp_ignore_bogus_error_responses", value: "1", sep: "="}
+      #所有网卡开启反向路径校验
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.all.rp_filter", value: "1", sep: "="}
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.conf.default.rp_filter", value: "1", sep: "="}
+      #开启 TCP-SYN cookie 防护
+      - {path: "/etc/sysctl.conf", key: "net.ipv4.tcp_syncookies", value: "1", sep: "="}
+      #IPv6 禁止接受 ICMP 重定向
+      - {path: "/etc/sysctl.conf", key: "net.ipv6.conf.all.accept_redirects", value: "0", sep: "="}
+      - {path: "/etc/sysctl.conf", key: "net.ipv6.conf.default.accept_redirects", value: "0", sep: "="}
+      #禁止普通用户读取 dmesg
+      - {path: "/etc/sysctl.conf", key: "kernel.dmesg_restrict", value: "1", sep: "="}
+      #开启地址空间布局随机化
+      - {path: "/etc/sysctl.conf", key: "kernel.randomize_va_space", value: "2", sep: "="}
+
+  # ============ 3. PAM 与登录认证 ============
+  - name: "PAM 与登录认证"
+    desc: "限制 root 用户只能从安全终端登录, 防止绕过终端管控直接以 root 身份登录系统"
+    #基线对应: cuos-harden.conf 五、PAM 认证 (914)
+    entries:
+      #限制 root 只能从安全终端登录
+      - {path: "/etc/pam.d/login", key: "auth required pam_securetty.so", value: ""}
+
+  # ============ 4. 账户与密码策略 ============
+  - name: "账户与密码策略"
+    desc: "使用 su 切换用户时不传递用户环境变量, 防止环境变量被用于构造攻击路径"
+    #基线对应: cuos-harden.conf 六、login.defs 配置 (403)
+    entries:
+      #使用 su 时限制用户环境变量
+      #注: login.defs 的语法是 "KEY value"(空格分隔), 不能写成 "KEY=value", 否则 shadow 取不到该值
+      - {path: "/etc/login.defs", key: "ALWAYS_SET_PATH", value: "yes"}
+
+  # ============ 5. Shell 会话与用户环境 ============
+  - name: "Shell 会话与用户环境"
+    desc: "关闭 core dump 避免进程内存被转储泄露, csh 登录时使用 umask 077 限制新建文件的默认权限"
+    #基线对应: cuos-harden.conf 九~十一 + 杂项 (404、950-951)
+    #未装 tcsh 时 /etc/csh.login 不存在, 视为无需加固
+    skip_missing: true
+    entries:
+      #关闭 core dump
+      - {path: "/etc/security/limits.conf", key: "* soft core", value: "0"}
+      - {path: "/etc/security/limits.conf", key: "* hard core", value: "0"}
+      #csh 登录默认 umask 077
+      - {path: "/etc/csh.login", key: "umask", value: "077"}
+
+  # ============ 6. 计划任务权限 ============
+  - name: "计划任务权限"
+    desc: "收紧计划任务目录与 crontab 的属主和权限, 删除 at/cron 的 deny 名单并建立 allow 白名单, 防止普通用户越权执行计划任务"
+    #基线对应: cuos-harden.conf 二、System access (208-215)
+    #cron 目录/文件: root:root 且 og-rwx
+    cron_paths:
+      - /etc/crontab
+      - /etc/cron.d
+      - /etc/cron.hourly
+      - /etc/cron.daily
+      - /etc/cron.weekly
+      - /etc/cron.monthly
+    #删除 deny 文件
+    deny_files:
+      - /etc/at.deny
+      - /etc/cron.deny
+    #建立 allow 白名单文件
+    allow_files:
+      - /etc/at.allow
+      - /etc/cron.allow
+
+  # ============ 7. 关键文件与启动目录权限 ============
+  - name: "关键文件与启动目录权限"
+    desc: "收紧各运行级别启动目录的权限, 防止普通用户写入启动项实现提权持久化, 并限制 /etc/security 目录的访问权限"
+    #基线对应: cuos-harden.conf 九~十一 + 杂项 (990)
+    chmod_entries:
+      #启动脚本目录, 防止普通用户写入启动项
+      - {path: "/etc/rc.d/init.d", mode: "750"}
+      - {path: "/etc/rc0.d", mode: "750"}
+      - {path: "/etc/rc1.d", mode: "750"}
+      - {path: "/etc/rc2.d", mode: "750"}
+      - {path: "/etc/rc3.d", mode: "750"}
+      - {path: "/etc/rc4.d", mode: "750"}
+      - {path: "/etc/rc5.d", mode: "750"}
+      - {path: "/etc/rc6.d", mode: "750"}
+      #安全目录与服务清单
+      - {path: "/etc/security", mode: "700"}
+      - {path: "/etc/services", mode: "644"}
+
+  # ============ 8. 日志文件权限 ============
+  - name: "日志文件权限"
+    desc: "限制系统日志与登录审计日志的读取权限, 防止敏感日志被普通用户读取或清除, 登录失败计数保留属组可读"
+    #基线对应: cuos-harden.conf 十一、杂项 (991)
+    chmod_entries:
+      #系统日志, 仅属主可读写
+      - {path: "/var/log/messages", mode: "600"}
+      - {path: "/var/log/maillog", mode: "600"}
+      #登录审计日志, 仅属主可读写
+      - {path: "/var/log/secure", mode: "600"}
+      #登录失败计数, 属主可写、属组可读
+      - {path: "/var/log/wtmp", mode: "664"}
+
+  # ============ 9. 系统安全对象修复 ============
+  - name: "系统安全对象修复"
+    desc: "删除已不再使用的 SHA1 邮件 CA 证书包, 修复 dbus 启动助手的属主与 setuid 位, 避免其被利用为提权跳板"
+    #基线对应: cuos-harden.conf 十一、杂项 (402、700)
+    #删除 SHA1 pem
+    remove_files:
+      - /etc/pki/ca-trust/extracted/pem/email-ca-bundle.pem
+    #修复 dbus-daemon-launch-helper 属主/权限(root:dbus + 4750)
+    dbus_helper: /usr/libexec/dbus-1/dbus-daemon-launch-helper
